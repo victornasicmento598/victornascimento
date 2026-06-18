@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Victor Nascimento — Analista de Sistemas | IA, Automação & Desenvolvimento Web</title>
+  <meta name="description" content="Soluções práticas em IA, automação e desenvolvimento web para destravar processos, melhorar atendimento e acelerar resultados. Landing Pages, Websites, Mini-sistemas e Consultoria de TI.">
+  <meta property="og:title" content="Victor Nascimento — Analista de Sistemas">
+  <meta property="og:description" content="Soluções práticas em IA, automação e desenvolvimento web para destravar processos e acelerar resultados.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] },
+          colors: {
+            neon: '#1A3FD4',
+            'neon-dim': '#1530A8',
+            'neon-dark': '#0D1A6B',
+            surface: { 50: '#f8f9ff', 100: '#eef0ff', 200: '#e0e4ff', 300: '#c7cdff', 400: '#a3adff', 500: '#7b88ff' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg: #FFFFFF;
+      --fg: #111111;
+      --muted: #666;
+      --accent: #1A3FD4;
+      --accent-rgb: 26, 63, 212;
+      --card: rgba(255,255,255,0.85);
+      --card-hover: #FFFFFF;
+      --border: rgba(0,0,0,0.07);
+      --border-hover: rgba(26, 63, 212, 0.35);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { background: var(--bg); color: var(--fg); overflow-x: clip; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); overflow-x: hidden; -webkit-font-smoothing: antialiased; min-width: 320px; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f3f4f6; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
+    ::selection { background: rgba(var(--accent-rgb), 0.12); color: #0D1A6B; }
+    *:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+    .bg-grid {
+      background-image: linear-gradient(rgba(26,63,212,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(26,63,212,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .glow-orb { position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; max-width: 100%; }
+
+    .glass-card {
+      background: var(--card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border); border-radius: 16px;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .glass-card:hover {
+      background: var(--card-hover); border-color: var(--border-hover);
+      box-shadow: 0 8px 30px rgba(var(--accent-rgb), 0.08), 0 2px 8px rgba(0,0,0,0.04);
+      transform: translateY(-4px);
+    }
+
+    .btn-neon {
+      background: var(--accent); color: #fff; font-weight: 700; border-radius: 12px;
+      padding: 14px 28px; transition: all 0.3s ease; position: relative; overflow: hidden;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      text-decoration: none; font-size: 0.95rem; white-space: nowrap;
+    }
+    .btn-neon:hover { box-shadow: 0 6px 25px rgba(var(--accent-rgb), 0.35); transform: translateY(-2px); }
+    .btn-neon::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 60%); pointer-events: none; }
+
+    .btn-outline {
+      border: 1.5px solid rgba(var(--accent-rgb), 0.4); color: var(--accent); font-weight: 600;
+      border-radius: 12px; padding: 14px 28px; transition: all 0.3s ease;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      text-decoration: none; background: transparent; font-size: 0.95rem; white-space: nowrap;
+    }
+    .btn-outline:hover { background: rgba(var(--accent-rgb), 0.06); border-color: var(--accent); box-shadow: 0 4px 16px rgba(var(--accent-rgb), 0.1); }
+
+    .typewriter-cursor {
+      display: inline-block; width: 3px; height: 1.1em; background: var(--accent);
+      margin-left: 4px; vertical-align: text-bottom; animation: cursorBlink 1s step-end infinite; border-radius: 2px;
+    }
+    @keyframes cursorBlink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+
+    .marquee-wrapper { overflow: hidden; width: 100%; max-width: 100vw; }
+    .marquee-track { display: flex; width: max-content; animation: marqueeScroll 40s linear infinite; }
+    .marquee-track:hover { animation-play-state: paused; }
+    .marquee-track-reverse { animation-direction: reverse; animation-duration: 40s; }
+    @keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    .timeline-line { position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: rgba(0,0,0,0.06); }
+    .timeline-line-progress { position: absolute; left: 19px; top: 0; width: 2px; height: 0; background: linear-gradient(to bottom, var(--accent), rgba(var(--accent-rgb), 0.15)); transition: height 0.1s linear; }
+    .timeline-dot {
+      width: 12px; height: 12px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.12);
+      background: var(--bg); position: absolute; left: 14px; top: 6px; z-index: 2; transition: all 0.5s ease;
+    }
+    .timeline-dot.active { border-color: var(--accent); box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.35); background: var(--accent); }
+
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 100px;
+      font-size: 0.85rem; font-weight: 500; background: #f5f6ff;
+      border: 1px solid rgba(var(--accent-rgb), 0.1); color: #555; transition: all 0.3s ease;
+    }
+    .chip:hover { border-color: rgba(var(--accent-rgb), 0.35); color: var(--accent); background: rgba(var(--accent-rgb), 0.05); }
+
+    #hero {
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    #hero > div.z-10 {
+      padding-top: 25px !important;
+    }
+
+    #hero .profile-frame {
+      position: relative; width: 100%; max-width: 440px;
+      border-radius: 24px; overflow: visible; flex-shrink: 0;
+      margin: 0 auto;
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    #hero .profile-frame img {
+      width: 130%;
+      height: auto;
+      max-width: none;
+      object-fit: contain;
+      object-position: center center;
+      display: block;
+      border-radius: 0;
+      position: relative;
+      z-index: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .header-blur {
+      background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    main section[id]:not(#hero) {
+      scroll-margin-top: 76px;
+      padding-top: 3.5rem !important;
+    }
+
+    @media (min-width: 768px) {
+      main section[id]:not(#hero) {
+        padding-top: 4.5rem !important;
+      }
+    }
+
+    .site-footer {
+      background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.035), var(--bg) 34%);
+      color: var(--fg);
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .site-footer-card {
+      border: 1px solid rgba(var(--accent-rgb), 0.10);
+      border-radius: 0 0 32px 32px;
+      padding: 44px 0 56px;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 18px 50px rgba(var(--accent-rgb), 0.06);
+    }
+
+    .footer-logo {
+      width: 54px;
+      height: 54px;
+      border: 1px solid rgba(var(--accent-rgb), 0.18);
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(var(--accent-rgb), 0.04);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .footer-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .footer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 46px;
+      border: 1px solid rgba(var(--accent-rgb), 0.14);
+      border-radius: 999px;
+      padding: 10px 18px;
+      color: rgba(17,17,17,0.82);
+      font-size: 0.95rem;
+      font-weight: 500;
+      white-space: nowrap;
+      background: rgba(var(--accent-rgb), 0.03);
+    }
+
+    .footer-pill::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .footer-link {
+      display: inline-flex;
+      width: max-content;
+      color: rgba(17,17,17,0.78);
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--accent);
+      transform: translateX(3px);
+    }
+
+    .footer-action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      min-height: 58px;
+      border-radius: 8px;
+      border: 1px solid rgba(var(--accent-rgb), 0.18);
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 1.05rem;
+      text-decoration: none;
+      background: rgba(var(--accent-rgb), 0.05);
+      transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .footer-action:hover {
+      transform: translateY(-2px);
+      background: rgba(var(--accent-rgb), 0.09);
+      box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.12);
+    }
+
+    .footer-action.whatsapp {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .footer-action.github,
+    .footer-action.linkedin { background: rgba(var(--accent-rgb), 0.05); }
+
+    .footer-bottom {
+      min-height: 92px;
+      border-top: 1px solid rgba(var(--accent-rgb), 0.10);
+      color: rgba(17,17,17,0.72);
+      padding-right: 92px;
+    }
+
+    .neon-separator { height: 1px; background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), 0.2), transparent); }
+    .parallax-layer { transition: transform 0.1s linear; will-change: transform; }
+
+    .mini-card {
+      background: #f8f9ff; border: 1px solid rgba(var(--accent-rgb), 0.08);
+      border-radius: 12px; padding: 14px 16px; transition: all 0.3s ease;
+    }
+    .mini-card:hover { border-color: rgba(var(--accent-rgb), 0.25); background: rgba(var(--accent-rgb), 0.04); }
+
+    .mobile-menu {
+      position: fixed; inset: 0; background: rgba(255,255,255,0.97); backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px); z-index: 90; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 24px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .mobile-menu.open { opacity: 1; pointer-events: all; }
+    .mobile-menu a { font-size: 1.5rem; font-weight: 600; color: #444; text-decoration: none; transition: color 0.2s; }
+    .mobile-menu a:hover { color: var(--accent); }
+
+    .whatsapp-float {
+      position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; background: #25D366;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 80;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: all 0.3s ease; text-decoration: none; flex-shrink: 0;
+    }
+    .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 4px 30px rgba(37,211,102,0.6); }
+    .whatsapp-float svg { width: 28px; height: 28px; fill: #fff; }
+
+    .lang-bar { height: 6px; border-radius: 3px; background: rgba(0,0,0,0.06); overflow: hidden; }
+    .lang-bar-fill {
+      height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), rgba(var(--accent-rgb), 0.45));
+      transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); width: 0;
+    }
+
+    .logo-img { height: 34px; width: auto; border-radius: 8px; }
+    .header-link {
+      color: rgba(17,17,17,0.64); border-radius: 8px; padding: 7px 10px;
+      font-size: 0.8125rem; font-weight: 600; text-decoration: none;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+    .header-blur nav a {
+      color: rgba(17,17,17,0.64) !important; border-radius: 8px !important;
+      padding: 7px 10px !important; font-size: 0.8125rem !important; font-weight: 600 !important;
+      text-decoration: none; transition: color 0.2s ease, background 0.2s ease;
+    }
+    .header-blur nav a:hover { color: var(--accent) !important; background: rgba(var(--accent-rgb), 0.06) !important; }
+    .header-link:hover { color: var(--accent); background: rgba(var(--accent-rgb), 0.06); }
+    .header-brand-name { color: var(--fg); }
+    .header-menu-button:hover { background: rgba(var(--accent-rgb), 0.06); }
+    .header-menu-icon { color: var(--accent); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .marquee-track { animation: none !important; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .typewriter-cursor { animation: none; opacity: 1; }
+      .glass-card:hover, .btn-neon:hover, .btn-outline:hover, .whatsapp-float:hover { transform: none; }
+      .parallax-layer, .lang-bar-fill, .timeline-line-progress { transition: none; }
+    }
+    @media (max-width: 767px) {
+      #hero .profile-frame {
+        aspect-ratio: auto;
+        min-height: 0;
+      }
+    }
+    @media (max-width: 640px) {
+      #hero .profile-frame { max-width: 260px; border-radius: 20px; }
+      #hero .profile-frame img { width: 130%; }
+      .btn-neon, .btn-outline { padding: 12px 20px; font-size: 0.875rem; }
+      .logo-img { height: 28px; }
+      .site-footer-card { border-radius: 0 0 24px 24px; padding: 32px 0 40px; }
+      .footer-pill { width: 100%; justify-content: center; }
+      .footer-action { font-size: 0.95rem; }
+      .footer-bottom { padding-right: 0; padding-bottom: 78px; }
+    }
+  </style>
+</head>
+<body class="bg-grid">
+
+  <!-- HEADER -->
+  <header class="header-blur fixed top-0 left-0 right-0 z-50 w-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="#hero" class="flex items-center gap-2.5 no-underline flex-shrink-0" aria-label="Voltar ao topo">
+        <img src="brand-icons-svg/vn-logo.svg" alt="Logo VN" class="logo-img">
+        <span class="header-brand-name hidden sm:inline text-sm font-semibold">Victor Nascimento</span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-1" aria-label="Navegação principal">
+        <a href="#sobre" class="header-link">Sobre</a>
+        <a href="#servicos" class="px-3 py-2 text-sm text-gray-500 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">Serviços</a>
+        <a href="#competencias" class="px-3 py-2 text-sm text-gray-500 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">Competências</a>
+        <a href="#experiencia" class="px-3 py-2 text-sm text-gray-500 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">Experiência</a>
+        <a href="#certificacoes" class="px-3 py-2 text-sm text-gray-500 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">Certificações</a>
+        <a href="#idiomas" class="header-link">Idiomas</a>
+        <a href="#contato" class="header-link">Contato</a>
+      </nav>
+      <div class="flex items-center gap-3 flex-shrink-0">
+        <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon !py-2 !px-3.5 !text-[0.75rem] !rounded-lg hidden sm:inline-flex">
+          <i class="fa-brands fa-whatsapp text-xs"></i> Fale no WhatsApp
+        </a>
+        <button id="menuToggle" class="header-menu-button lg:hidden w-10 h-10 flex items-center justify-center rounded-lg transition-colors" aria-label="Abrir menu" aria-expanded="false">
+          <i class="header-menu-icon fa-solid fa-bars text-lg" id="menuIcon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Menu de navegação">
+    <button id="menuClose" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100" aria-label="Fechar menu">
+      <i class="fa-solid fa-xmark text-gray-600 text-xl"></i>
+    </button>
+    <a href="#sobre">Sobre</a><a href="#servicos">Serviços</a><a href="#competencias">Competências</a>
+    <a href="#experiencia">Experiência</a><a href="#certificacoes">Certificações</a><a href="#idiomas">Idiomas</a><a href="#contato">Contato</a>
+    <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon mt-4">
+      <i class="fa-brands fa-whatsapp"></i> Fale no WhatsApp
+    </a>
+  </div>
+
+  <main>
+    <!-- HERO -->
+    <section id="hero" class="relative min-h-screen flex items-center pt-16 overflow-hidden">
+      <div class="glow-orb" style="width:600px;height:600px;background:rgba(26,63,212,0.05);top:-200px;right:-200px;"></div>
+      <div class="glow-orb" style="width:400px;height:400px;background:rgba(26,63,212,0.035);bottom:-100px;left:-150px;"></div>
+      <!-- Marca d'água VN no fundo da hero -->
+      <img src="brand-icons-svg/vn-logo.svg" alt="VN Logo Background" class="absolute pointer-events-none select-none opacity-[0.04] max-w-none w-[700px] sm:w-[900px] md:w-[1000px] lg:w-[1200px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0">
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 relative z-10">
+        <!-- MOBILE HERO -->
+        <div class="flex flex-col items-center gap-8 md:hidden">
+          <div class="reveal reveal-delay-2 parallax-layer" data-speed="-0.015">
+            <div class="profile-frame mx-auto">
+              <img src="assets/hero.png" alt="Foto de Victor Nascimento — Analista de Sistemas" loading="eager" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:#f5f6ff;display:flex;align-items:center;justify-content:center;border-radius:20px;\'><i class=\'fa-solid fa-user\' style=\'font-size:3rem;color:rgba(26,63,212,0.2);\'></i></div>'">
+            </div>
+          </div>
+          <div class="w-full text-center min-w-0 parallax-layer" data-speed="0.02">
+            <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-neon/5 border border-neon/10 mb-5 reveal">
+              <span class="w-2 h-2 rounded-full bg-neon animate-pulse flex-shrink-0"></span>
+              <span class="text-xs text-neon/70 font-medium">Porto Alegre, RS — Disponível</span>
+            </div>
+            <h1 class="text-3xl font-extrabold leading-[1.1] tracking-tight text-gray-900 mb-3 reveal reveal-delay-1">
+              Victor Nascimento
+              <span class="block text-gray-400 font-semibold text-xl mt-1">Analista de Sistemas</span>
+            </h1>
+            <div class="text-lg font-bold text-neon mb-4 reveal reveal-delay-2" style="min-height:1.6em;" aria-live="polite" aria-atomic="true">
+              <span id="typewriter"></span><span class="typewriter-cursor"></span>
+            </div>
+            <p class="text-sm text-gray-500 leading-relaxed max-w-xl mx-auto mb-7 reveal reveal-delay-3">Soluções práticas em IA, automação e desenvolvimento web para destravar processos, melhorar atendimento e acelerar resultados.</p>
+            <div class="flex flex-col gap-3 mb-7 reveal reveal-delay-4">
+              <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon w-full text-center"><i class="fa-brands fa-whatsapp text-lg"></i> Chamar no WhatsApp</a>
+              <a href="#servicos" class="btn-outline w-full text-center">Ver serviços <i class="fa-solid fa-arrow-down text-sm"></i></a>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5 w-full max-w-sm mx-auto reveal reveal-delay-5">
+              <div class="mini-card"><i class="fa-solid fa-brain text-neon text-xs mb-1"></i><p class="text-xs font-semibold text-gray-700 leading-tight">IA & Automação</p></div>
+              <div class="mini-card"><i class="fa-solid fa-rocket text-neon text-xs mb-1"></i><p class="text-xs font-semibold text-gray-700 leading-tight">Web & Landing Pages</p></div>
+              <div class="mini-card"><i class="fa-solid fa-server text-neon text-xs mb-1"></i><p class="text-xs font-semibold text-gray-700 leading-tight">Infra & Eventos Críticos</p></div>
+              <div class="mini-card"><i class="fa-solid fa-users-gear text-neon text-xs mb-1"></i><p class="text-xs font-semibold text-gray-700 leading-tight">Liderança Técnica</p></div>
+            </div>
+          </div>
+        </div>
+        <!-- DESKTOP HERO -->
+        <div class="hidden md:flex md:flex-row md:items-center md:gap-12 lg:gap-16">
+          <div class="flex-1 text-left min-w-0 parallax-layer" data-speed="0.02">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neon/5 border border-neon/10 mb-8 reveal">
+              <span class="w-2 h-2 rounded-full bg-neon animate-pulse flex-shrink-0"></span>
+              <span class="text-sm text-neon/70 font-medium">Porto Alegre, RS — Disponível para projetos</span>
+            </div>
+            <h1 class="text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-gray-900 mb-6 reveal reveal-delay-1">
+              Victor Nascimento
+              <span class="block text-gray-400 font-semibold text-3xl lg:text-4xl mt-2">Analista de Sistemas</span>
+            </h1>
+            <div class="text-2xl lg:text-3xl font-bold text-neon mb-6 reveal reveal-delay-2" style="min-height:1.8em;" aria-live="polite" aria-atomic="true">
+              <span id="typewriterDesktop"></span><span class="typewriter-cursor"></span>
+            </div>
+            <p class="text-lg text-gray-500 leading-relaxed max-w-xl mb-10 reveal reveal-delay-3">Soluções práticas em IA, automação e desenvolvimento web para destravar processos, melhorar atendimento e acelerar resultados.</p>
+            <div class="flex flex-row gap-4 mb-12 reveal reveal-delay-4">
+              <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon"><i class="fa-brands fa-whatsapp text-lg"></i> Chamar no WhatsApp</a>
+              <a href="#servicos" class="btn-outline">Ver serviços <i class="fa-solid fa-arrow-down text-sm"></i></a>
+            </div>
+            <div class="grid grid-cols-2 gap-3 max-w-md reveal reveal-delay-5">
+              <div class="mini-card"><i class="fa-solid fa-brain text-neon text-sm mb-1.5"></i><p class="text-sm font-semibold text-gray-700">IA & Automação</p></div>
+              <div class="mini-card"><i class="fa-solid fa-rocket text-neon text-sm mb-1.5"></i><p class="text-sm font-semibold text-gray-700">Web & Landing Pages</p></div>
+              <div class="mini-card"><i class="fa-solid fa-server text-neon text-sm mb-1.5"></i><p class="text-sm font-semibold text-gray-700">Infra & Eventos Críticos</p></div>
+              <div class="mini-card"><i class="fa-solid fa-users-gear text-neon text-sm mb-1.5"></i><p class="text-sm font-semibold text-gray-700">Liderança Técnica</p></div>
+            </div>
+          </div>
+          <div class="flex-shrink-0 reveal reveal-delay-3 parallax-layer" data-speed="-0.015">
+            <div class="profile-frame" style="max-width:340px;">
+              <img src="assets/hero.png" alt="Foto de Victor Nascimento — Analista de Sistemas" loading="eager" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:#f5f6ff;display:flex;align-items:center;justify-content:center;border-radius:24px;\'><i class=\'fa-solid fa-user\' style=\'font-size:4rem;color:rgba(26,63,212,0.15);\'></i></div>'">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <section class="relative py-6 overflow-hidden w-full" aria-hidden="true">
+      <div class="neon-separator mb-6"></div>
+      <div class="marquee-wrapper">
+        <div class="marquee-track">
+          <div class="flex items-center gap-6 sm:gap-8 px-4">
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">IA & Automação</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Landing Pages</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Web Apps</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Mini-sistemas</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Consultoria de TI</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Infraestrutura</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Eventos & Videoconferência</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Next.js</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">React</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Tailwind</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Processos & QA</span><span class="text-neon/25">&#x2022;</span>
+          </div>
+          <div class="flex items-center gap-6 sm:gap-8 px-4" aria-hidden="true">
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">IA & Automação</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Landing Pages</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Web Apps</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Mini-sistemas</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Consultoria de TI</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Infraestrutura</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Eventos & Videoconferência</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Next.js</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">React</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Tailwind</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Processos & QA</span><span class="text-neon/25">&#x2022;</span>
+          </div>
+        </div>
+      </div>
+      <div class="marquee-wrapper mt-3">
+        <div class="marquee-track marquee-track-reverse" id="brandMarquee">
+          <div class="flex items-center gap-8 sm:gap-12 px-4" id="brandSet1">
+          </div>
+          <div class="flex items-center gap-8 sm:gap-12 px-4" id="brandSet2" aria-hidden="true">
+          </div>
+        </div>
+      </div>
+      <script>
+        (function() {
+          var brands = [
+            { name: 'ChatGPT', svg: '<svg fill="#000000" fill-rule="evenodd" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M9.205 8.658v-2.26c0-.19.072-.333.238-.428l4.543-2.616c.619-.357 1.356-.523 2.117-.523 2.854 0 4.662 2.212 4.662 4.566 0 .167 0 .357-.024.547l-4.71-2.759a.797.797 0 00-.856 0l-5.97 3.473zm10.609 8.8V12.06c0-.333-.143-.57-.429-.737l-5.97-3.473 1.95-1.118a.433.433 0 01.476 0l4.543 2.617c1.309.76 2.189 2.378 2.189 3.948 0 1.808-1.07 3.473-2.76 4.163zM7.802 12.703l-1.95-1.142c-.167-.095-.239-.238-.239-.428V5.899c0-2.545 1.95-4.472 4.591-4.472 1 0 1.927.333 2.712.928L8.23 5.067c-.285.166-.428.404-.428.737v6.898zM12 15.128l-2.795-1.57v-3.33L12 8.658l2.795 1.57v3.33L12 15.128zm1.796 7.23c-1 0-1.927-.332-2.712-.927l4.686-2.712c.285-.166.428-.404.428-.737v-6.898l1.974 1.142c.167.095.238.238.238.428v5.233c0 2.545-1.974 4.472-4.614 4.472zm-5.637-5.303l-4.544-2.617c-1.308-.761-2.188-2.378-2.188-3.948A4.482 4.482 0 014.21 6.327v5.423c0 .333.143.571.428.738l5.947 3.449-1.95 1.118a.432.432 0 01-.476 0zm-.262 3.9c-2.688 0-4.662-2.021-4.662-4.519 0-.19.024-.38.047-.57l4.686 2.71c.286.167.571.167.856 0l5.97-3.448v2.26c0 .19-.07.333-.237.428l-4.543 2.616c-.619.357-1.356.523-2.117.523zm5.899 2.83a5.947 5.947 0 005.827-4.756C22.287 18.339 24 15.84 24 13.296c0-1.665-.713-3.282-1.998-4.448.119-.5.19-.999.19-1.498 0-3.401-2.759-5.947-5.946-5.947-.642 0-1.26.095-1.88.31A5.962 5.962 0 0010.205 0a5.947 5.947 0 00-5.827 4.757C1.713 5.447 0 7.945 0 10.49c0 1.666.713 3.283 1.998 4.448-.119.5-.19 1-.19 1.499 0 3.401 2.759 5.946 5.946 5.946.642 0 1.26-.095 1.88-.309a5.96 5.96 0 004.162 1.713z"></path></svg>' },
+            { name: 'Claude', svg: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z" fill="#D97757" fill-rule="nonzero"></path></svg>' },
+            { name: 'Gemini', svg: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="#3186FF"></path><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="url(#mq-gemini-0)"></path><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="url(#mq-gemini-1)"></path><path d="M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z" fill="url(#mq-gemini-2)"></path><defs><linearGradient gradientUnits="userSpaceOnUse" id="mq-gemini-0" x1="7" x2="11" y1="15.5" y2="12"><stop stop-color="#08B962"></stop><stop offset="1" stop-color="#08B962" stop-opacity="0"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="mq-gemini-1" x1="8" x2="11.5" y1="5.5" y2="11"><stop stop-color="#F94543"></stop><stop offset="1" stop-color="#F94543" stop-opacity="0"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="mq-gemini-2" x1="3.5" x2="17.5" y1="13.5" y2="12"><stop stop-color="#FABC12"></stop><stop offset=".46" stop-color="#FABC12" stop-opacity="0"></stop></linearGradient></defs></svg>' },
+            { name: 'Meta AI', svg: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.547.232c.776-.086 1.543.244 2.152.712.784.598 1.375 1.434 1.757 2.347.19.444.3.92.345 1.402.01.384.024.781-.108 1.148-.126.406-.362.795-.728 1.017-.352.236-.786.3-1.199.288-.84-.073-1.613-.52-2.212-1.106-.15-.1-.236-.263-.368-.38-.801-.97-1.394-2.203-1.324-3.496.048-.698.38-1.44 1.03-1.75.206-.1.428-.164.655-.182z" fill="url(#mq-meta-0)"></path><path d="M18.595 3.077c.52-.045 1.032.186 1.4.551.402.434.625 1.006.736 1.584.096.605.09 1.233-.048 1.83a5.97 5.97 0 01-.907 2.19c-.198.25-.382.519-.633.719-.493.45-1.181.725-1.848.598-.42-.08-.819-.306-1.085-.646-.514-.591-.687-1.403-.714-2.17a6.11 6.11 0 011.03-3.285c.237-.314.49-.62.797-.867.375-.27.805-.486 1.272-.504z" fill="url(#mq-meta-1)"></path><path d="M5.038 4.172c.618-.045 1.238.067 1.832.235.871.28 1.741.78 2.182 1.624.177.383.256.826.152 1.242-.097.442-.375.816-.71 1.105-.724.59-1.664.84-2.577.887a5.356 5.356 0 01-2.881-.675c-.39-.248-.765-.539-1.025-.93a1.9 1.9 0 01-.327-1.283c.067-.507.357-.968.741-1.289.723-.62 1.684-.873 2.613-.916z" fill="url(#mq-meta-2)"></path><path d="M4.87 10.369c.69-.06 1.465.223 1.811.866.213.349.278.763.29 1.166.006.528-.136 1.046-.34 1.529-.34.793-.893 1.478-1.538 2.036-.64.538-1.42.951-2.26 1.015a2.031 2.031 0 01-1.467-.398c-.353-.281-.578-.707-.662-1.15-.156-.8.077-1.62.445-2.327.196-.377.444-.724.72-1.044.767-.886 1.814-1.608 3.001-1.693z" fill="url(#mq-meta-3)"></path><path d="M20.391 11.05c.881-.087 1.872.116 2.477.822.473.58.534 1.425.239 2.102-.118.317-.32.59-.527.852-.877.962-2.11 1.553-3.379 1.744-.818.123-1.723.036-2.406-.477-.2-.161-.386-.346-.514-.573-.277-.436-.321-.994-.216-1.492.224-.904.92-1.594 1.676-2.073a5.874 5.874 0 012.65-.905z" fill="url(#mq-meta-4)"></path><path d="M7.553 15.523c.381-.052.775.004 1.118.184.344.154.613.427.866.702.866 1.097 1.267 2.549 1.146 3.944a4.476 4.476 0 01-.497 1.61c-.273.469-.663.91-1.187 1.08-.35.103-.731.118-1.077-.005a2.53 2.53 0 01-.959-.612c-.798-.859-1.236-2.02-1.343-3.185-.055-.646-.006-1.31.21-1.923.146-.471.384-.92.738-1.265.261-.277.62-.452.985-.53z" fill="url(#mq-meta-5)"></path><path d="M13.637 16.5a4.237 4.237 0 011.82.219c.795.286 1.542.724 2.148 1.323.535.504.963 1.162 1.099 1.899.055.379.038.785-.122 1.138-.19.465-.599.807-1.051.996-.883.364-1.887.253-2.76-.082a5.568 5.568 0 01-2.343-1.685c-.347-.445-.616-.968-.697-1.534-.042-.382-.036-.788.13-1.142.194-.418.55-.76.978-.925.25-.119.525-.174.798-.207z" fill="url(#mq-meta-6)"></path><defs><linearGradient gradientUnits="userSpaceOnUse" id="mq-meta-0" x1="9.789" x2="13" y1="0" y2="7.5"><stop stop-color="#C65EFF"></stop><stop offset=".5" stop-color="#EA4FFF"></stop><stop offset="1" stop-color="#9553FF"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="mq-meta-1" x1="19" x2="17" y1="3" y2="10.5"><stop stop-color="#CF72FF"></stop><stop offset=".5" stop-color="#E541FF"></stop><stop offset="1" stop-color="#944DFF"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="mq-meta-2" x1="9" x2="2.5" y1="6.5" y2="8"><stop stop-color="#A555FF"></stop><stop offset=".5" stop-color="#DE67FF"></stop><stop offset="1" stop-color="#E581FF"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="mq-meta-3" x1="1" x2="6" y1="12" y2="16"><stop stop-color="#6C48FF"></stop><stop offset=".309" stop-color="#AA5AFF"></stop><stop offset="1" stop-color="#5145FF"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="mq-meta-4" x1="19" x2="21" y1="11.5" y2="16.5"><stop stop-color="#CA3EFF"></stop><stop offset=".5" stop-color="#AB5CFF"></stop><stop offset="1" stop-color="#5042FF"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="mq-meta-5" x1="6" x2="11" y1="20.5" y2="19"><stop stop-color="#5041FF"></stop><stop offset=".26" stop-color="#734FFF"></stop><stop offset=".75" stop-color="#6A4CFF"></stop><stop offset="1" stop-color="#483FFF"></stop></linearGradient><linearGradient gradientUnits="userSpaceOnUse" id="mq-meta-6" x1="12" x2="18.5" y1="17.5" y2="21.5"><stop stop-color="#7B51FF"></stop><stop offset=".475" stop-color="#6049FF"></stop><stop offset="1" stop-color="#8466FF"></stop></linearGradient></defs></svg>' },
+            { name: 'Copilot', svg: '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M17.533 1.829A2.528 2.528 0 0015.11 0h-.737a2.531 2.531 0 00-2.484 2.087l-1.263 6.937.314-1.08a2.528 2.528 0 012.424-1.833h4.284l1.797.706 1.731-.706h-.505a2.528 2.528 0 01-2.423-1.829l-.715-2.453z" fill="url(#mq-cp-0)" transform="translate(0 1)"></path><path d="M6.726 20.16A2.528 2.528 0 009.152 22h1.566c1.37 0 2.49-1.1 2.525-2.48l.17-6.69-.357 1.228a2.528 2.528 0 01-2.423 1.83h-4.32l-1.54-.842-1.667.843h.497c1.124 0 2.113.75 2.426 1.84l.697 2.432z" fill="url(#mq-cp-1)" transform="translate(0 1)"></path><path d="M15 0H6.252c-2.5 0-4 3.331-5 6.662-1.184 3.947-2.734 9.225 1.75 9.225H6.78c1.13 0 2.12-.753 2.43-1.847.657-2.317 1.809-6.359 2.713-9.436.46-1.563.842-2.906 1.43-3.742A1.97 1.97 0 0115 0" fill="url(#mq-cp-2)" transform="translate(0 1)"></path><path d="M15 0H6.252c-2.5 0-4 3.331-5 6.662-1.184 3.947-2.734 9.225 1.75 9.225H6.78c1.13 0 2.12-.753 2.43-1.847.657-2.317 1.809-6.359 2.713-9.436.46-1.563.842-2.906 1.43-3.742A1.97 1.97 0 0115 0" fill="url(#mq-cp-3)" transform="translate(0 1)"></path><path d="M9 22h8.749c2.5 0 4-3.332 5-6.663 1.184-3.948 2.734-9.227-1.75-9.227H17.22c-1.129 0-2.12.754-2.43 1.848a1149.2 1149.2 0 01-2.713 9.437c-.46 1.564-.842 2.907-1.43 3.743A1.97 1.97 0 019 22" fill="url(#mq-cp-4)" transform="translate(0 1)"></path><path d="M9 22h8.749c2.5 0 4-3.332 5-6.663 1.184-3.948 2.734-9.227-1.75-9.227H17.22c-1.129 0-2.12.754-2.43 1.848a1149.2 1149.2 0 01-2.713 9.437c-.46 1.564-.842 2.907-1.43 3.743A1.97 1.97 0 019 22" fill="url(#mq-cp-5)" transform="translate(0 1)"></path><defs><radialGradient cx="85.44%" cy="100.653%" fx="85.44%" fy="100.653%" gradientTransform="scale(-.8553 -1) rotate(50.927 2.041 -1.946)" id="mq-cp-0" r="105.116%"><stop offset="9.6%" stop-color="#00AEFF"></stop><stop offset="77.3%" stop-color="#2253CE"></stop><stop offset="100%" stop-color="#0736C4"></stop></radialGradient><radialGradient cx="18.143%" cy="32.928%" fx="18.143%" fy="32.928%" gradientTransform="scale(.8897 1) rotate(52.069 .193 .352)" id="mq-cp-1" r="95.612%"><stop offset="0%" stop-color="#FFB657"></stop><stop offset="63.4%" stop-color="#FF5F3D"></stop><stop offset="92.3%" stop-color="#C02B3C"></stop></radialGradient><radialGradient cx="82.987%" cy="-9.792%" fx="82.987%" fy="-9.792%" gradientTransform="scale(-1 -.9441) rotate(-70.872 .142 1.17)" id="mq-cp-4" r="140.622%"><stop offset="6.6%" stop-color="#8C48FF"></stop><stop offset="50%" stop-color="#F2598A"></stop><stop offset="89.6%" stop-color="#FFB152"></stop></radialGradient><linearGradient id="mq-cp-2" x1="39.465%" x2="46.884%" y1="12.117%" y2="103.774%"><stop offset="15.6%" stop-color="#0D91E1"></stop><stop offset="48.7%" stop-color="#52B471"></stop><stop offset="65.2%" stop-color="#98BD42"></stop><stop offset="93.7%" stop-color="#FFC800"></stop></linearGradient><linearGradient id="mq-cp-3" x1="45.949%" x2="50%" y1="0%" y2="100%"><stop offset="0%" stop-color="#3DCBFF"></stop><stop offset="24.7%" stop-color="#0588F7" stop-opacity="0"></stop></linearGradient><linearGradient id="mq-cp-5" x1="83.507%" x2="83.453%" y1="-6.106%" y2="21.131%"><stop offset="5.8%" stop-color="#F8ADFA"></stop><stop offset="70.8%" stop-color="#A86EDD" stop-opacity="0"></stop></linearGradient></defs></svg>' },
+            { name: 'YouTube', svg: '<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><title>YouTube</title><path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><path fill="#FFFFFF" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>' },
+            { name: 'CapCut', svg: '<svg fill="#000000" fill-rule="evenodd" height="24" style="flex:none;line-height:1" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><title>CapCut</title><path d="M24.189 6.442V2.671l-4.535 2.383V4.91c.002-1.505-1.078-2.411-2.638-2.411H2.64C.993 2.5 0 3.407 0 4.91V8.72L6.354 12 0 15.316v3.8C0 20.595 1 21.5 2.64 21.5h14.373c1.56 0 2.639-.907 2.639-2.382v-.197l4.536 2.409v-3.828L13.64 12 24.19 6.443zM9.982 13.873l7.797 4.083H2.157l7.825-4.083zm7.741-7.828l-7.742 4.057-7.825-4.057h15.567z"></path></svg>' }
+          ];
+          // Fisher-Yates shuffle
+          for (var i = brands.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = brands[i]; brands[i] = brands[j]; brands[j] = tmp;
+          }
+          var html = '';
+          var repeats = 6;
+          for (var r = 0; r < repeats; r++) {
+            for (var k = 0; k < brands.length; k++) {
+              html += '<div class="flex items-center gap-2.5 whitespace-nowrap">';
+              html += '<span class="brand-marquee-icon">' + brands[k].svg + '</span>';
+              html += '<span class="text-xs sm:text-sm font-semibold text-gray-300 tracking-wide">' + brands[k].name + '</span>';
+              html += '</div>';
+              html += '<span class="text-neon/20">&#x2022;</span>';
+            }
+          }
+          document.getElementById('brandSet1').innerHTML = html;
+          document.getElementById('brandSet2').innerHTML = html;
+
+          // Dynamically adjust animation duration to match the visual speed of the upper marquee
+          setTimeout(function() {
+            var topSet = document.querySelector('.marquee-track:not(.marquee-track-reverse) > div');
+            var bottomSet = document.getElementById('brandSet1');
+            var bottomTrack = document.getElementById('brandMarquee');
+            if (topSet && bottomSet && bottomTrack) {
+              var topWidth = topSet.getBoundingClientRect().width;
+              var bottomWidth = bottomSet.getBoundingClientRect().width;
+              if (topWidth > 0 && bottomWidth > 0) {
+                var topDuration = 40; // matches top marquee's 40s duration
+                var bottomDuration = topDuration * (bottomWidth / topWidth);
+                bottomTrack.style.animationDuration = bottomDuration + 's';
+              }
+            }
+          }, 100);
+        })();
+      </script>
+      <div class="neon-separator mt-6"></div>
+    </section>
+
+    <!-- SOBRE -->
+    <section id="sobre" class="relative py-20 sm:py-24 md:py-32">
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center reveal">
+          <span class="text-neon text-sm font-semibold tracking-widest uppercase mb-4 block">Sobre</span>
+          <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 sm:mb-8 tracking-tight">Tecnologia que entrega resultado</h2>
+          <p class="text-base sm:text-lg text-gray-500 leading-relaxed mb-10 sm:mb-12">Apaixonado por minha família e por tecnologia — especialmente inteligência artificial — sou formado em Análise e Desenvolvimento de Sistemas, e atualmente atuo como Analista de Sistemas focado em entregar inovação técnica que eleve a produtividade, com sólida experiência em infraestrutura de TI e suporte audiovisual. Especialista em soluções de videoconferência e eventos institucionais. Pai de três filhos, encontro na tecnologia não apenas uma carreira, mas um propósito: transformar desafios em soluções reais, com responsabilidade e impacto.</p>
+        </div>
+        <div class="grid sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
+          <div class="glass-card p-5 sm:p-7 text-center reveal reveal-delay-1">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mx-auto mb-4 sm:mb-5"><i class="fa-solid fa-bolt text-neon text-sm sm:text-lg"></i></div>
+            <h3 class="text-gray-900 font-bold text-sm sm:text-base mb-2">Produtividade com IA</h3>
+            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">Automação de fluxos, templates e rotinas que eliminam retrabalho e aceleram entregas.</p>
+          </div>
+          <div class="glass-card p-5 sm:p-7 text-center reveal reveal-delay-2">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mx-auto mb-4 sm:mb-5"><i class="fa-solid fa-shield-halved text-neon text-sm sm:text-lg"></i></div>
+            <h3 class="text-gray-900 font-bold text-sm sm:text-base mb-2">Confiabilidade Crítica</h3>
+            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">Experiência comprovada em ambientes institucionais e operações que não podem falhar.</p>
+          </div>
+          <div class="glass-card p-5 sm:p-7 text-center reveal reveal-delay-3">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mx-auto mb-4 sm:mb-5"><i class="fa-solid fa-book-open text-neon text-sm sm:text-lg"></i></div>
+            <h3 class="text-gray-900 font-bold text-sm sm:text-base mb-2">Padronização & Treinamento</h3>
+            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">Documentação, guias técnicos e multiplicação de conhecimento para equipes inteiras.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVIÇOS -->
+    <section id="servicos" class="relative py-20 sm:py-24 md:py-32">
+      <div class="glow-orb" style="width:500px;height:500px;background:rgba(26,63,212,0.04);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="max-w-3xl mx-auto text-center mb-12 sm:mb-16 reveal">
+          <span class="text-neon text-sm font-semibold tracking-widest uppercase mb-4 block">Serviços</span>
+          <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6 tracking-tight">Soluções sob medida para o seu negócio</h2>
+          <p class="text-base sm:text-lg text-gray-400">Cada serviço é pensado para resolver um problema real — com foco em performance, clareza e resultado mensurável.</p>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div class="glass-card p-6 sm:p-8 flex flex-col reveal reveal-delay-1">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mb-5 sm:mb-6 flex-shrink-0"><i class="fa-solid fa-bullseye text-neon text-sm sm:text-base"></i></div>
+            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Landing Pages de Alta Conversão</h3>
+            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 flex-1">Copy persuasiva, layout premium, performance otimizada, SEO básico e CTA estratégico. Feitas para transformar visitante em lead.</p>
+            <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: profissionais autônomos e pequenos escritórios que precisam de um cartão de visita digital que gere confiança e converta visitantes em clientes.</p>
+            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20uma%20landing%20page.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero parecer mais profissional <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
+          </div>
+          <div class="glass-card p-6 sm:p-8 flex flex-col reveal reveal-delay-2">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mb-5 sm:mb-6 flex-shrink-0"><i class="fa-solid fa-globe text-neon text-sm sm:text-base"></i></div>
+            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Websites Modernos e Rápidos</h3>
+            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 flex-1">Design responsivo e visual premium, mobile-first, carregamento otimizado. Presença digital que transmite credibilidade.</p>
+            <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: pequenas empresas que querem uma presença digital que funcione 24h — muito além de um perfil em rede social.</p>
+            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20um%20website.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero parecer mais profissional <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
+          </div>
+          <div class="glass-card p-6 sm:p-8 flex flex-col reveal reveal-delay-3">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mb-5 sm:mb-6 flex-shrink-0"><i class="fa-solid fa-cubes text-neon text-sm sm:text-base"></i></div>
+            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Sistemas Curtos (MVPs)</h3>
+            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 flex-1">Mini-sistemas para cadastro, controle, processos internos e automação simples. Entrega ágil, funcional e escalável.</p>
+            <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: escritórios e pequenas empresas que precisam digitalizar processos internos sem o custo e a complexidade de um projeto grande.</p>
+            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20um%20sistema.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero parecer mais profissional <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
+          </div>
+          <div class="glass-card p-6 sm:p-8 flex flex-col reveal reveal-delay-1">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mb-5 sm:mb-6 flex-shrink-0"><i class="fa-solid fa-microchip text-neon text-sm sm:text-base"></i></div>
+            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">IA & Automação Aplicada</h3>
+            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 flex-1">Fluxos automatizados, templates inteligentes, integração de IA em rotinas diárias. Produtividade real, não modismo.</p>
+            <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: profissionais e equipes que perdem horas com tarefas repetitivas e querem que a IA trabalhe por eles.</p>
+            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20usando%20IA%20e%20automa%C3%A7%C3%A3o.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero parecer mais profissional <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
+          </div>
+          <div class="glass-card p-6 sm:p-8 flex flex-col sm:col-span-2 lg:col-span-2 reveal reveal-delay-2">
+            <div class="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
+              <div class="flex-shrink-0"><div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center"><i class="fa-solid fa-compass-drafting text-neon text-sm sm:text-base"></i></div></div>
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Consultoria de TI</h3>
+                <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4">Diagnóstico completo da infraestrutura, organização de processos, boas práticas de TI, recomendações de ferramentas e planejamento de melhorias. Para times que precisam de clareza e direção técnica.</p>
+                <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: pequenas empresas e escritórios sem liderança técnica interna que precisam organizar processos e implantar soluções de verdade.</p>
+                <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20uma%20consultoria%20de%20TI.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg">Quero parecer mais profissional <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPETÊNCIAS -->
+    <section id="competencias" class="relative py-20 sm:py-24 md:py-32">
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center mb-12 sm:mb-16 reveal">
+          <span class="text-neon text-sm font-semibold tracking-widest uppercase mb-4 block">Competências</span>
+          <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6 tracking-tight">Stack técnico e habilidades</h2>
+          <p class="text-base sm:text-lg text-gray-400">Perfil híbrido que combina desenvolvimento, processos e infraestrutura — raro de encontrar em um único profissional.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
+          <div class="reveal reveal-delay-1">
+            <div class="flex items-center gap-3 mb-4 sm:mb-5"><div class="w-8 h-8 rounded-lg bg-neon/5 border border-neon/10 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-code text-neon text-sm"></i></div><h3 class="text-gray-900 font-bold text-sm sm:text-base">Desenvolvimento</h3></div>
+            <div class="flex flex-wrap gap-2"><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Next.js</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">React</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">PHP</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">SQL</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Tailwind CSS</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">HTML5</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">CSS3</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Git</span></div>
+          </div>
+          <div class="reveal reveal-delay-2">
+            <div class="flex items-center gap-3 mb-4 sm:mb-5"><div class="w-8 h-8 rounded-lg bg-neon/5 border border-neon/10 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-arrows-spin text-neon text-sm"></i></div><h3 class="text-gray-900 font-bold text-sm sm:text-base">Processos & QA</h3></div>
+            <div class="flex flex-wrap gap-2"><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Scrum</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Kanban</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Roadmaps</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Testes Automáticos</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Gestão de Equipes</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Documentação</span></div>
+          </div>
+          <div class="reveal reveal-delay-3">
+            <div class="flex items-center gap-3 mb-4 sm:mb-5"><div class="w-8 h-8 rounded-lg bg-neon/5 border border-neon/10 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-network-wired text-neon text-sm"></i></div><h3 class="text-gray-900 font-bold text-sm sm:text-base">TI & IA</h3></div>
+            <div class="flex flex-wrap gap-2"><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Audiovisual</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Infraestrutura</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Prompt Engineering</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Automação</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Videoconferência</span><span class="chip text-xs sm:text-sm !px-3 sm:!px-4 !py-1.5 sm:!py-2">Suporte Técnico</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIÊNCIA -->
+    <section id="experiencia" class="relative py-20 sm:py-24 md:py-32">
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center mb-12 sm:mb-16 reveal">
+          <span class="text-neon text-sm font-semibold tracking-widest uppercase mb-4 block">Experiência</span>
+          <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6 tracking-tight">Trajetória profissional</h2>
+          <p class="text-base sm:text-lg text-gray-400">Mais de uma década atuando em ambientes institucionais, com foco em operações críticas e liderança técnica.</p>
+        </div>
+        <div class="max-w-2xl mx-auto relative" id="timelineContainer">
+          <div class="timeline-line"></div>
+          <div class="timeline-line-progress" id="timelineProgress"></div>
+          <div class="relative pl-12 sm:pl-14 pb-12 sm:pb-16 timeline-item">
+            <div class="timeline-dot" id="dot1"></div>
+            <div class="glass-card p-5 sm:p-7 reveal">
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-4"><span class="text-[11px] sm:text-xs font-bold text-white bg-neon px-2.5 sm:px-3 py-1 rounded-full">Abril 2026 — Presente</span></div>
+              <h3 class="text-base sm:text-xl font-bold text-gray-900 mb-1">Analista de Sistemas</h3>
+              <p class="text-xs sm:text-sm text-neon/70 font-semibold mb-5 sm:mb-6 leading-snug">OAB/RS — Ordem dos Advogados do Brasil, Seccional Rio Grande do Sul</p>
+              <ul class="space-y-3 sm:space-y-3.5">
+                <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-sm text-gray-500 leading-relaxed"><i class="fa-solid fa-chevron-right text-neon/40 text-[10px] sm:text-xs mt-1 sm:mt-1.5 flex-shrink-0"></i><span><strong class="text-gray-700 font-medium">Análise e Engenharia de Requisitos:</strong> Levantamento, documentação e análise de viabilidade técnica para a implantação de soluções de software e sistemas institucionais.</span></li>
+                <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-sm text-gray-500 leading-relaxed"><i class="fa-solid fa-chevron-right text-neon/40 text-[10px] sm:text-xs mt-1 sm:mt-1.5 flex-shrink-0"></i><span><strong class="text-gray-700 font-medium">Ciclo de Vida de Software:</strong> Responsável pela especificação funcional e técnica, acompanhando desde o desenho da solução até a implantação e homologação.</span></li>
+                <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-sm text-gray-500 leading-relaxed"><i class="fa-solid fa-chevron-right text-neon/40 text-[10px] sm:text-xs mt-1 sm:mt-1.5 flex-shrink-0"></i><span><strong class="text-gray-700 font-medium">Mentoria Técnica:</strong> Atuação consultiva junto ao time de desenvolvimento, auxiliando na execução de tarefas complexas e garantindo o alinhamento com as regras de negócio.</span></li>
+                <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-sm text-gray-500 leading-relaxed"><i class="fa-solid fa-chevron-right text-neon/40 text-[10px] sm:text-xs mt-1 sm:mt-1.5 flex-shrink-0"></i><span><strong class="text-gray-700 font-medium">Sustentação de Sistemas:</strong> Gerenciamento de suporte especializado e melhoria contínua dos sistemas legados e novas plataformas do núcleo de TI.</span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="relative pl-12 sm:pl-14 pb-12 sm:pb-16 timeline-item">
+            <div class="timeline-dot" id="dot2"></div>
+            <div class="glass-card p-5 sm:p-7 reveal">
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-4"><span class="text-[11px] sm:text-xs font-bold text-gray-500 bg-gray-100 px-2.5 sm:px-3 py-1 rounded-full">2015 — Março 2026</span><span class="text-[11px] sm:text-xs text-gray-300">9 anos</span></div>
+              <h3 class="text-base sm:text-xl font-bold text-gray-900 mb-1">Técnico de Informática III</h3>
+              <p class="text-xs sm:text-sm text-gray-500 font-semibold mb-1">Liderança de Infraestrutura e Audiovisual</p>
+              <p class="text-xs sm:text-sm text-gray-300 font-medium mb-5 sm:mb-6">OAB/RS — Ordem dos Advogados do Brasil, Seccional Rio Grande do Sul</p>
+              <ul class="space-y-3 sm:space-y-3.5">
+                <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-sm text-gray-500 leading-relaxed"><i class="fa-solid fa-chevron-right text-neon/40 text-[10px] sm:text-xs mt-1 sm:mt-1.5 flex-shrink-0"></i><span><strong class="text-gray-700 font-medium">Gestão de Operações Críticas:</strong> Liderança da infraestrutura de videoconferência e suporte audiovisual para eventos institucionais de alta disponibilidade.</span></li>
+                <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-sm text-gray-500 leading-relaxed"><i class="fa-solid fa-chevron-right text-neon/40 text-[10px] sm:text-xs mt-1 sm:mt-1.5 flex-shrink-0"></i><span><strong class="text-gray-700 font-medium">Gestão de Pessoas e Processos:</strong> Coordenação da equipe interna, gerenciamento de escalas, fluxo de trabalho e participação ativa no recrutamento técnico.</span></li>
+                <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-sm text-gray-500 leading-relaxed"><i class="fa-solid fa-chevron-right text-neon/40 text-[10px] sm:text-xs mt-1 sm:mt-1.5 flex-shrink-0"></i><span><strong class="text-gray-700 font-medium">Multiplicação de Conhecimento:</strong> Elaboração de guias técnicos e condução de treinamentos para capacitação de usuários e equipe interna em novas ferramentas.</span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="relative pl-12 sm:pl-14 pb-4 timeline-item">
+            <div class="timeline-dot" id="dot3"></div>
+            <div class="glass-card p-5 sm:p-7 reveal">
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-4"><span class="text-[11px] sm:text-xs font-bold text-gray-500 bg-gray-100 px-2.5 sm:px-3 py-1 rounded-full">2011 — 2014</span><span class="text-[11px] sm:text-xs text-gray-300">3 anos</span></div>
+              <h3 class="text-base sm:text-xl font-bold text-gray-900 mb-1">Analista de Dados</h3>
+              <p class="text-xs sm:text-sm text-gray-300 font-semibold mb-5 sm:mb-6">Sultec Vistorias</p>
+              <ul class="space-y-2.5 sm:space-y-3">
+                <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-sm text-gray-500 leading-relaxed"><i class="fa-solid fa-chevron-right text-neon/40 text-[10px] sm:text-xs mt-1 sm:mt-1.5 flex-shrink-0"></i><span>Análise técnica de dados veiculares para garantia de conformidade</span></li>
+                <li class="flex items-start gap-2.5 sm:gap-3 text-xs sm:text-sm text-gray-500 leading-relaxed"><i class="fa-solid fa-chevron-right text-neon/40 text-[10px] sm:text-xs mt-1 sm:mt-1.5 flex-shrink-0"></i><span>Manutenção de infraestrutura computacional e suporte helpdesk</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="text-center mt-10 sm:mt-12 reveal">
+          <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon text-sm sm:text-base !py-3 sm:!py-4 !px-6 sm:!px-10"><i class="fa-brands fa-whatsapp text-base sm:text-lg"></i>Conversar sobre uma oportunidade</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CERTIFICAÇÕES -->
+    <section id="certificacoes" class="relative py-20 sm:py-24 md:py-32">
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center mb-12 sm:mb-16 reveal">
+          <span class="text-neon text-sm font-semibold tracking-widest uppercase mb-4 block">Certificações</span>
+          <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6 tracking-tight">Formação contínua</h2>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto">
+          <div class="glass-card p-5 sm:p-7 reveal reveal-delay-1">
+            <div class="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4"><div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-award text-neon text-sm sm:text-base"></i></div><div class="min-w-0"><h3 class="text-gray-900 font-bold text-xs sm:text-sm leading-snug">Liderança e Gestão de Pessoas</h3><p class="text-[11px] sm:text-xs text-gray-300 mt-0.5">Descomplica — 30h</p></div></div>
+            <div class="h-px bg-gray-100 mb-2.5 sm:mb-3"></div>
+            <p class="text-[11px] sm:text-xs text-gray-400 leading-relaxed">Gestão de equipes, liderança técnica e desenvolvimento de pessoas no contexto de TI.</p>
+          </div>
+          <div class="glass-card p-5 sm:p-7 reveal reveal-delay-2">
+            <div class="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4"><div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-vial text-neon text-sm sm:text-base"></i></div><div class="min-w-0"><h3 class="text-gray-900 font-bold text-xs sm:text-sm leading-snug">Testes de Software Automáticos</h3><p class="text-[11px] sm:text-xs text-gray-300 mt-0.5">Udemy — 5h</p></div></div>
+            <div class="h-px bg-gray-100 mb-2.5 sm:mb-3"></div>
+            <p class="text-[11px] sm:text-xs text-gray-400 leading-relaxed">Estratégias e ferramentas de testes automatizados para garantir qualidade em entregas de software.</p>
+          </div>
+        </div>
+        <div class="mt-8 sm:mt-12 max-w-2xl mx-auto reveal reveal-delay-3">
+          <div class="glass-card p-5 sm:p-7">
+            <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-5"><div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-graduation-cap text-neon text-sm sm:text-base"></i></div><h3 class="text-gray-900 font-bold text-xs sm:text-sm">Formação Acadêmica</h3></div>
+            <ul class="space-y-3 sm:space-y-4">
+              <li class="flex items-start gap-2.5 sm:gap-3"><i class="fa-solid fa-check text-neon text-[10px] sm:text-xs mt-1 sm:mt-1.5 flex-shrink-0"></i><div class="min-w-0"><p class="text-xs sm:text-sm text-gray-700 font-medium">Análise e Desenvolvimento de Sistemas</p><p class="text-[11px] sm:text-xs text-gray-300 mt-0.5">UniRitter — Concluído em 2020</p></div></li>
+              <li class="flex items-start gap-2.5 sm:gap-3"><i class="fa-solid fa-minus text-gray-200 text-[10px] sm:text-xs mt-1 sm:mt-1.5 flex-shrink-0"></i><div class="min-w-0"><p class="text-xs sm:text-sm text-gray-400 font-medium">Pós-graduação em Gestão de Pessoas</p><p class="text-[11px] sm:text-xs text-gray-200 mt-0.5">Módulos: Liderança, T&D e Recrutamento — Interrompida</p></div></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IDIOMAS -->
+    <section id="idiomas" class="relative py-16 sm:py-20 md:py-24">
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-xl mx-auto reveal">
+          <div class="text-center mb-8 sm:mb-12"><span class="text-neon text-sm font-semibold tracking-widest uppercase mb-3 sm:mb-4 block">Idiomas</span><h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Comunicação global</h2></div>
+          <div class="space-y-6 sm:space-y-8">
+            <div><div class="flex items-center justify-between mb-2.5 sm:mb-3"><div class="flex items-center gap-2.5 sm:gap-3"><span class="text-base sm:text-lg">🇺🇸</span><span class="text-gray-900 font-semibold text-sm sm:text-base">Inglês</span></div><span class="text-xs sm:text-sm text-neon/70 font-medium">Avançado</span></div><div class="lang-bar"><div class="lang-bar-fill" data-width="80%" style="width:0"></div></div></div>
+            <div><div class="flex items-center justify-between mb-2.5 sm:mb-3"><div class="flex items-center gap-2.5 sm:gap-3"><span class="text-base sm:text-lg">🇪🇸</span><span class="text-gray-900 font-semibold text-sm sm:text-base">Espanhol</span></div><span class="text-xs sm:text-sm text-gray-300 font-medium">Básico</span></div><div class="lang-bar"><div class="lang-bar-fill" data-width="30%" style="width:0"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTATO -->
+    <section id="contato" class="relative py-20 sm:py-24 md:py-32">
+      <div class="glow-orb" style="width:500px;height:350px;background:rgba(26,63,212,0.04);bottom:0;left:50%;transform:translateX(-50%);"></div>
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="max-w-3xl mx-auto text-center mb-12 sm:mb-16 reveal">
+          <span class="text-neon text-sm font-semibold tracking-widest uppercase mb-3 sm:mb-4 block">Contato</span>
+          <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6 tracking-tight">Vamos conversar?</h2>
+          <p class="text-lg sm:text-xl text-gray-400 max-w-xl mx-auto">Seu próximo cliente está te pesquisando agora. O que ele vai encontrar?</p>
+        </div>
+        <div class="glass-card p-6 sm:p-8 md:p-10 max-w-lg mx-auto reveal reveal-delay-1">
+          <div class="space-y-4 sm:space-y-5">
+            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl hover:bg-gray-50 transition-colors group">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#25D366]/10 border border-[#25D366]/20 flex items-center justify-center flex-shrink-0"><i class="fa-brands fa-whatsapp text-[#25D366] text-lg sm:text-xl"></i></div>
+              <div class="text-left min-w-0"><p class="text-gray-900 font-semibold text-xs sm:text-sm group-hover:text-neon transition-colors">WhatsApp</p><p class="text-[11px] sm:text-xs text-gray-400 truncate">+55 51 98571-0749</p></div>
+              <i class="fa-solid fa-arrow-right text-gray-200 group-hover:text-neon/50 ml-auto transition-colors text-xs sm:text-sm flex-shrink-0"></i>
+            </a>
+            <a href="mailto:victornascimento598@gmail.com" class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl hover:bg-gray-50 transition-colors group">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-envelope text-neon text-sm sm:text-lg"></i></div>
+              <div class="text-left min-w-0"><p class="text-gray-900 font-semibold text-xs sm:text-sm group-hover:text-neon transition-colors">E-mail</p><p class="text-[11px] sm:text-xs text-gray-400 truncate">victornascimento598@gmail.com</p></div>
+              <i class="fa-solid fa-arrow-right text-gray-200 group-hover:text-neon/50 ml-auto transition-colors text-xs sm:text-sm flex-shrink-0"></i>
+            </a>
+            <div class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-location-dot text-gray-400 text-sm sm:text-lg"></i></div>
+              <div class="text-left min-w-0"><p class="text-gray-900 font-semibold text-xs sm:text-sm">Localização</p><p class="text-[11px] sm:text-xs text-gray-400">Porto Alegre, RS — Brasil</p></div>
+            </div>
+          </div>
+          <div class="h-px bg-gray-100 my-6 sm:my-8"></div>
+          <div class="flex items-center justify-center gap-3 sm:gap-4">
+            <a href="https://github.com/victornasicmento598" target="_blank" rel="noopener" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center hover:border-neon/30 hover:bg-neon/5 transition-all group" aria-label="GitHub"><i class="fa-brands fa-github text-gray-400 group-hover:text-neon transition-colors text-sm sm:text-base"></i></a>
+            <a href="https://www.linkedin.com/in/victor-nascimento-25248a358/" target="_blank" rel="noopener" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center hover:border-neon/30 hover:bg-neon/5 transition-all group" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in text-gray-400 group-hover:text-neon transition-colors text-sm sm:text-base"></i></a>
+          </div>
+        </div>
+        <div class="text-center mt-10 sm:mt-12 reveal reveal-delay-2">
+          <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20uma%20presen%C3%A7a%20profissional%20que%20venda%20por%20mim.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon text-sm sm:text-base md:text-lg !py-3 sm:!py-4 !px-6 sm:!px-10"><i class="fa-brands fa-whatsapp text-base sm:text-xl"></i>Quero uma presença que venda por mim</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="site-footer-card">
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid gap-12 lg:grid-cols-[1.35fr_0.7fr_1fr]">
+        <div>
+          <div class="flex items-center gap-4 mb-8">
+            <span class="footer-logo" aria-hidden="true">
+              <img src="brand-icons-svg/vn-logo.svg" alt="" aria-hidden="true">
+            </span>
+            <div>
+              <p class="text-[color:var(--accent)] text-sm font-extrabold tracking-[0.18em] uppercase">Victor Nascimento</p>
+              <h2 class="text-2xl sm:text-3xl font-extrabold leading-tight mt-1">Analista de Sistemas</h2>
+            </div>
+          </div>
+          <p class="text-base sm:text-lg leading-relaxed text-[rgba(17,17,17,0.82)] max-w-2xl mb-8">
+            Transformando desafios em solucoes reais, com responsabilidade e impacto. Especialista em IA, automacao e desenvolvimento web de alta performance.
+          </p>
+          <div class="flex flex-col sm:flex-row flex-wrap gap-3">
+            <span class="footer-pill">Landing Pages</span>
+            <span class="footer-pill">Sistemas Web</span>
+            <span class="footer-pill">Automacao & IA</span>
+          </div>
+        </div>
+
+        <nav aria-label="Navegacao do rodape">
+          <h3 class="text-sm font-extrabold tracking-[0.18em] uppercase mb-8 text-[color:var(--accent)]">Navegacao</h3>
+          <div class="flex flex-col gap-6">
+            <a href="#sobre" class="footer-link">Sobre</a>
+            <a href="#servicos" class="footer-link">Servicos</a>
+            <a href="#competencias" class="footer-link">Competencias</a>
+            <a href="#contato" class="footer-link">Contato</a>
+          </div>
+        </nav>
+
+        <div>
+          <h3 class="text-sm font-extrabold tracking-[0.18em] uppercase mb-8 text-[color:var(--accent)]">Contato</h3>
+          <p class="text-base sm:text-lg leading-relaxed text-[rgba(17,17,17,0.82)] mb-8">
+            Quer ver como minhas solucoes podem ajudar na produtividade e crescimento do seu negocio?
+          </p>
+          <div class="space-y-4">
+            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="footer-action whatsapp">
+              <i class="fa-brands fa-whatsapp text-xl"></i> Chamar no WhatsApp
+            </a>
+            <a href="https://github.com/victornasicmento598" target="_blank" rel="noopener" class="footer-action github">
+              <i class="fa-brands fa-github text-xl"></i> Acessar GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/victor-nascimento-25248a358/" target="_blank" rel="noopener" class="footer-action linkedin">
+              <i class="fa-brands fa-linkedin-in text-xl"></i> Conectar no LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[92px] flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left text-sm font-medium">
+        <p>&copy; 2026 Victor Nascimento. Todos os direitos reservados.</p>
+        <p>Feito para empresas que querem mais organizacao, agilidade e seguranca.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WHATSAPP FLUTUANTE -->
+  <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Abrir conversa no WhatsApp">
+    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>WhatsApp</title><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+  </a>
+
+  <script>
+    (function(){const phrases=['IA para produtividade real','Landing Pages que convertem','Websites modernos e rápidos','Mini-sistemas sob medida para empresas','Consultoria de TI e infraestrutura'];const pr=window.matchMedia('(prefers-reduced-motion: reduce)').matches;function run(el){if(!el)return;if(pr){el.textContent=phrases[0];return;}let pi=0,ci=0,del=false,sp=60;function t(){const c=phrases[pi];if(del){el.textContent=c.substring(0,ci-1);ci--;sp=35;}else{el.textContent=c.substring(0,ci+1);ci++;sp=60+Math.random()*40;}if(!del&&ci===c.length){sp=2000;del=true;}else if(del&&ci===0){del=false;pi=(pi+1)%phrases.length;sp=500;}setTimeout(t,sp);}t();}run(document.getElementById('typewriter'));run(document.getElementById('typewriterDesktop'));})();
+    (function(){const pr=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(pr){document.querySelectorAll('.reveal').forEach(e=>e.classList.add('visible'));return;}const o=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){en.target.classList.add('visible');o.unobserve(en.target);}});},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});document.querySelectorAll('.reveal').forEach(e=>o.observe(e));})();
+    (function(){const pr=window.matchMedia('(prefers-reduced-motion: reduce)').matches;const c=document.getElementById('timelineContainer'),p=document.getElementById('timelineProgress');const d1=document.getElementById('dot1'),d2=document.getElementById('dot2'),d3=document.getElementById('dot3');if(!c||!p||pr)return;function u(){const r=c.getBoundingClientRect();const s=Math.min(Math.max((window.innerHeight-r.top)/(r.height+window.innerHeight*0.3),0),1);p.style.height=(s*r.height)+'px';d1.classList.toggle('active',s>0.03);d2.classList.toggle('active',s>0.38);d3.classList.toggle('active',s>0.72);}window.addEventListener('scroll',u,{passive:true});u();})();
+    (function(){const pr=window.matchMedia('(prefers-reduced-motion: reduce)').matches;const bars=document.querySelectorAll('.lang-bar-fill');if(pr){bars.forEach(b=>{b.style.width=b.dataset.width;});return;}const o=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){setTimeout(()=>{en.target.style.width=en.target.dataset.width;},200);o.unobserve(en.target);}});},{threshold:0.5});bars.forEach(b=>o.observe(b));})();
+    (function(){
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const ls = document.querySelectorAll('.parallax-layer');
+      if (!ls.length) return;
+      let targetY = window.scrollY;
+      let currentY = window.scrollY;
+      let active = false;
+      function update() {
+        currentY += (targetY - currentY) * 0.1;
+        ls.forEach(l => {
+          const speed = parseFloat(l.dataset.speed) || 0.02;
+          l.style.transform = 'translateY(' + (currentY * speed * 100) + 'px)';
+        });
+        if (Math.abs(targetY - currentY) > 0.05) {
+          requestAnimationFrame(update);
+        } else {
+          currentY = targetY;
+          ls.forEach(l => {
+            const speed = parseFloat(l.dataset.speed) || 0.02;
+            l.style.transform = 'translateY(' + (currentY * speed * 100) + 'px)';
+          });
+          active = false;
+        }
+      }
+      window.addEventListener('scroll', () => {
+        targetY = window.scrollY;
+        if (!active) {
+          active = true;
+          requestAnimationFrame(update);
+        }
+      }, { passive: true });
+    })();
+    (function(){const tg=document.getElementById('menuToggle'),cl=document.getElementById('menuClose'),m=document.getElementById('mobileMenu');function o(){m.classList.add('open');tg.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';}function c(){m.classList.remove('open');tg.setAttribute('aria-expanded','false');document.body.style.overflow='';}tg.addEventListener('click',o);cl.addEventListener('click',c);m.querySelectorAll('a').forEach(l=>l.addEventListener('click',c));document.addEventListener('keydown',e=>{if(e.key==='Escape'&&m.classList.contains('open'))c();});})();
+    (function(){document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){const h=this.getAttribute('href');if(h==='#')return;const t=document.querySelector(h);if(t){e.preventDefault();window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'});}});});})();
+  </script>
+</body>
+</html>
