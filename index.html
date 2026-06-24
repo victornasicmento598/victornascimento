@@ -184,8 +184,11 @@
     }
 
     .header-blur {
-      background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      background: linear-gradient(135deg, rgba(26,63,212,0.90) 0%, rgba(5,10,50,0.90) 100%);
+      backdrop-filter: blur(24px) saturate(160%);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      box-shadow: 0 4px 28px rgba(0,0,0,0.35);
     }
 
     main section[id]:not(#hero) {
@@ -351,15 +354,16 @@
       transition: color 0.2s ease, background 0.2s ease;
     }
     .header-blur nav a {
-      color: rgba(17,17,17,0.64) !important; border-radius: 8px !important;
+      color: rgba(255,255,255,0.75) !important; border-radius: 8px !important;
       padding: 7px 10px !important; font-size: 0.8125rem !important; font-weight: 600 !important;
       text-decoration: none; transition: color 0.2s ease, background 0.2s ease;
     }
-    .header-blur nav a:hover { color: var(--accent) !important; background: rgba(var(--accent-rgb), 0.06) !important; }
-    .header-link:hover { color: var(--accent); background: rgba(var(--accent-rgb), 0.06); }
-    .header-brand-name { color: var(--fg); }
-    .header-menu-button:hover { background: rgba(var(--accent-rgb), 0.06); }
-    .header-menu-icon { color: var(--accent); }
+    .header-blur nav a:hover { color: #ffffff !important; background: rgba(255,255,255,0.10) !important; }
+    .header-link { color: rgba(255,255,255,0.75); }
+    .header-link:hover { color: #ffffff; background: rgba(255,255,255,0.10); }
+    .header-brand-name { color: #ffffff; }
+    .header-menu-button:hover { background: rgba(255,255,255,0.10); }
+    .header-menu-icon { color: rgba(255,255,255,0.85); }
 
     @media (prefers-reduced-motion: reduce) {
       .marquee-track { animation: none !important; }
@@ -392,18 +396,21 @@
   <header class="header-blur fixed top-0 left-0 right-0 z-50 w-full">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <a href="#hero" class="flex items-center gap-2.5 no-underline flex-shrink-0" aria-label="Voltar ao topo">
-        <img src="brand-icons-svg/logo.png" alt="Logo VN" class="logo-img">
+        <span class="flex items-center justify-center w-9 h-9 rounded-xl bg-white flex-shrink-0">
+          <img src="brand-icons-svg/logo.png" alt="Logo VN" class="logo-img" style="height:24px;">
+        </span>
         <span class="header-brand-name hidden sm:inline text-sm font-semibold">Victor Nascimento</span>
       </a>
       <nav class="hidden lg:flex items-center gap-1" aria-label="Navegação principal">
         <a href="#sobre" class="header-link">Sobre</a>
         <a href="#servicos" class="header-link">Serviços</a>
+        <a href="#portfolio" class="header-link">Portfólio</a>
         <a href="#experiencia" class="header-link">Experiência</a>
         <a href="#certificacoes" class="header-link">Formação</a>
         <a href="#contato" class="header-link">Contato</a>
       </nav>
       <div class="flex items-center gap-3 flex-shrink-0">
-        <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon !py-2 !px-3.5 !text-[0.75rem] !rounded-lg hidden sm:inline-flex">
+        <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="hidden sm:inline-flex items-center gap-2 !py-2 !px-3.5 !text-[0.75rem] !rounded-lg font-bold text-neon-dark bg-white hover:bg-white/90 transition-all" style="border-radius:10px;padding:8px 14px;font-size:0.75rem;font-weight:700;text-decoration:none;white-space:nowrap;">
           <i class="fa-brands fa-whatsapp text-xs"></i> Fale no WhatsApp
         </a>
         <button id="menuToggle" class="header-menu-button lg:hidden w-10 h-10 flex items-center justify-center rounded-lg transition-colors" aria-label="Abrir menu" aria-expanded="false">
@@ -418,7 +425,7 @@
     <button id="menuClose" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100" aria-label="Fechar menu">
       <i class="fa-solid fa-xmark text-gray-600 text-xl"></i>
     </button>
-    <a href="#sobre">Sobre</a><a href="#servicos">Serviços</a><a href="#experiencia">Experiência</a><a href="#certificacoes">Formação</a><a href="#contato">Contato</a>
+    <a href="#sobre">Sobre</a><a href="#servicos">Serviços</a><a href="#portfolio">Portfólio</a><a href="#experiencia">Experiência</a><a href="#certificacoes">Formação</a><a href="#contato">Contato</a>
     <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon mt-4">
       <i class="fa-brands fa-whatsapp"></i> Fale no WhatsApp
     </a>
@@ -434,11 +441,6 @@
       <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-16 lg:py-24 relative z-10">
         <!-- MOBILE HERO -->
         <div class="flex flex-col items-center gap-8 md:hidden">
-          <div class="reveal reveal-delay-2 parallax-layer" data-speed="-0.015">
-            <div class="profile-frame mx-auto">
-              <img src="assets/hero.png" alt="Foto de Victor Nascimento — Analista de Sistemas" loading="eager" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:#f5f6ff;display:flex;align-items:center;justify-content:center;border-radius:20px;\'><i class=\'fa-solid fa-user\' style=\'font-size:3rem;color:rgba(26,63,212,0.2);\'></i></div>'">
-            </div>
-          </div>
           <div class="w-full text-center min-w-0 parallax-layer" data-speed="0.02">
             <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-neon/5 border border-neon/10 mb-5 reveal">
               <span class="w-2 h-2 rounded-full bg-neon animate-pulse flex-shrink-0"></span>
@@ -455,6 +457,11 @@
             <div class="flex flex-col gap-3 reveal reveal-delay-4">
               <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon w-full text-center"><i class="fa-brands fa-whatsapp text-lg"></i> Chamar no WhatsApp</a>
               <a href="#servicos" class="btn-outline w-full text-center">Ver serviços <i class="fa-solid fa-arrow-down text-sm"></i></a>
+            </div>
+          </div>
+          <div class="reveal reveal-delay-5 w-full flex justify-center">
+            <div class="profile-frame mx-auto" style="max-width:260px;">
+              <img src="assets/hero.png" alt="Foto de Victor Nascimento — Analista de Sistemas" loading="eager" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:#f5f6ff;display:flex;align-items:center;justify-content:center;border-radius:20px;\'><i class=\'fa-solid fa-user\' style=\'font-size:3rem;color:rgba(26,63,212,0.2);\'></i></div>'">
             </div>
           </div>
         </div>
@@ -661,6 +668,41 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- PORTFÓLIO -->
+    <section id="portfolio" class="relative py-20 sm:py-24 md:py-32">
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center mb-12 sm:mb-16 reveal">
+          <span class="text-neon text-sm font-semibold tracking-widest uppercase mb-4 block">Portfólio</span>
+          <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6 tracking-tight">Meus Projetos</h2>
+          <p class="text-base sm:text-lg text-gray-400">Conheça algumas das soluções que desenvolvi.</p>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+
+          <!-- Bater o Ponto -->
+          <a href="https://bateroponto.vercel.app/" target="_blank" rel="noopener" class="glass-card p-6 sm:p-8 flex flex-col group reveal reveal-delay-1 no-underline">
+            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3 group-hover:text-neon transition-colors">Bater o Ponto</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">Seu parceiro na jornada de trabalho.</p>
+          </a>
+
+          <!-- PortZap -->
+          <a href="https://vendaportzap.vercel.app/" target="_blank" rel="noopener" class="glass-card p-6 sm:p-8 flex flex-col group reveal reveal-delay-2 no-underline">
+            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3 group-hover:text-neon transition-colors">PortZap</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">Conectando sua portaria aos moradores via WhatsApp.</p>
+          </a>
+
+        </div>
+
+        <!-- CTA portfólio -->
+        <div class="mt-12 sm:mt-16 text-center reveal reveal-delay-3">
+          <p class="text-sm text-gray-400 mb-4">Quer fazer parte desta lista?</p>
+          <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Vi%20seu%20portf%C3%B3lio%20e%20quero%20ser%20o%20pr%C3%B3ximo%20parceiro%20de%20projeto.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon !py-3.5 !px-8 !text-base">
+            <i class="fa-brands fa-whatsapp text-lg"></i> Quero ser o próximo parceiro
+          </a>
+        </div>
+
       </div>
     </section>
 
