@@ -325,13 +325,17 @@
     .mini-card:hover { border-color: rgba(var(--accent-rgb), 0.25); background: rgba(var(--accent-rgb), 0.04); }
 
     .mobile-menu {
-      position: fixed; inset: 0; background: rgba(255,255,255,0.97); backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px); z-index: 90; display: flex; flex-direction: column;
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, rgba(26,63,212,0.97) 0%, rgba(5,10,50,0.99) 100%);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      z-index: 90; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 24px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
     }
     .mobile-menu.open { opacity: 1; pointer-events: all; }
-    .mobile-menu a { font-size: 1.5rem; font-weight: 600; color: #444; text-decoration: none; transition: color 0.2s; }
-    .mobile-menu a:hover { color: var(--accent); }
+    .mobile-menu a { font-size: 1.5rem; font-weight: 600; color: rgba(255,255,255,0.80); text-decoration: none; transition: color 0.2s; }
+    .mobile-menu a:hover { color: #ffffff; }
+    #menuClose { color: rgba(255,255,255,0.70) !important; }
+    #menuClose:hover { background: rgba(255,255,255,0.10) !important; color: #ffffff !important; }
 
     .whatsapp-float {
       position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; background: #25D366;
