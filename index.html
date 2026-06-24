@@ -10,6 +10,7 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="pt_BR">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="brand-icons-svg/logo.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -145,7 +146,7 @@
       box-shadow: none;
     }
     #hero .profile-frame img {
-      width: 130%;
+      width: 100%;
       height: auto;
       max-width: none;
       object-fit: contain;
@@ -156,6 +157,24 @@
       z-index: 0;
       left: 50%;
       transform: translateX(-50%);
+    }
+
+    /* Foto da Hero no desktop: moldura de altura fixa e object-cover.
+       Mantém o enquadramento idêntico em qualquer altura de viewport (com ou sem barra do navegador/tarefas). */
+    @media (min-width: 768px) {
+      #hero .profile-frame.is-desktop {
+        overflow: hidden;
+        border-radius: 28px;
+        box-shadow: 0 24px 60px rgba(26,63,212,0.12);
+      }
+      #hero .profile-frame.is-desktop img {
+        width: 100%;
+        height: 100%;
+        left: auto;
+        transform: none;
+        object-fit: cover;
+        object-position: center 20%;
+      }
     }
 
     .header-blur {
@@ -367,16 +386,14 @@
   <header class="header-blur fixed top-0 left-0 right-0 z-50 w-full">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <a href="#hero" class="flex items-center gap-2.5 no-underline flex-shrink-0" aria-label="Voltar ao topo">
-        <img src="brand-icons-svg/vn-logo.svg" alt="Logo VN" class="logo-img">
+        <img src="brand-icons-svg/logo.png" alt="Logo VN" class="logo-img">
         <span class="header-brand-name hidden sm:inline text-sm font-semibold">Victor Nascimento</span>
       </a>
       <nav class="hidden lg:flex items-center gap-1" aria-label="Navegação principal">
         <a href="#sobre" class="header-link">Sobre</a>
-        <a href="#servicos" class="px-3 py-2 text-sm text-gray-500 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">Serviços</a>
-        <a href="#competencias" class="px-3 py-2 text-sm text-gray-500 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">Competências</a>
-        <a href="#experiencia" class="px-3 py-2 text-sm text-gray-500 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">Experiência</a>
-        <a href="#certificacoes" class="px-3 py-2 text-sm text-gray-500 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-100">Certificações</a>
-        <a href="#idiomas" class="header-link">Idiomas</a>
+        <a href="#servicos" class="header-link">Serviços</a>
+        <a href="#experiencia" class="header-link">Experiência</a>
+        <a href="#certificacoes" class="header-link">Formação</a>
         <a href="#contato" class="header-link">Contato</a>
       </nav>
       <div class="flex items-center gap-3 flex-shrink-0">
@@ -395,8 +412,7 @@
     <button id="menuClose" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100" aria-label="Fechar menu">
       <i class="fa-solid fa-xmark text-gray-600 text-xl"></i>
     </button>
-    <a href="#sobre">Sobre</a><a href="#servicos">Serviços</a><a href="#competencias">Competências</a>
-    <a href="#experiencia">Experiência</a><a href="#certificacoes">Certificações</a><a href="#idiomas">Idiomas</a><a href="#contato">Contato</a>
+    <a href="#sobre">Sobre</a><a href="#servicos">Serviços</a><a href="#experiencia">Experiência</a><a href="#certificacoes">Formação</a><a href="#contato">Contato</a>
     <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon mt-4">
       <i class="fa-brands fa-whatsapp"></i> Fale no WhatsApp
     </a>
@@ -408,8 +424,8 @@
       <div class="glow-orb" style="width:600px;height:600px;background:rgba(26,63,212,0.05);top:-200px;right:-200px;"></div>
       <div class="glow-orb" style="width:400px;height:400px;background:rgba(26,63,212,0.035);bottom:-100px;left:-150px;"></div>
       <!-- Marca d'água VN no fundo da hero -->
-      <img src="brand-icons-svg/vn-logo.svg" alt="VN Logo Background" class="absolute pointer-events-none select-none opacity-[0.04] max-w-none w-[700px] sm:w-[900px] md:w-[1000px] lg:w-[1200px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0">
-      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24 relative z-10">
+      <img src="brand-icons-svg/logo.png" alt="" class="absolute pointer-events-none select-none opacity-[0.04] max-w-none w-[700px] sm:w-[900px] md:w-[1000px] lg:w-[1200px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0">
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-16 lg:py-24 relative z-10">
         <!-- MOBILE HERO -->
         <div class="flex flex-col items-center gap-8 md:hidden">
           <div class="reveal reveal-delay-2 parallax-layer" data-speed="-0.015">
@@ -430,47 +446,37 @@
               <span id="typewriter"></span><span class="typewriter-cursor"></span>
             </div>
             <p class="text-sm text-gray-500 leading-relaxed max-w-xl mx-auto mb-7 reveal reveal-delay-3">Soluções práticas em IA, automação e desenvolvimento web para destravar processos, melhorar atendimento e acelerar resultados.</p>
-            <div class="flex flex-col gap-3 mb-7 reveal reveal-delay-4">
+            <div class="flex flex-col gap-3 reveal reveal-delay-4">
               <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon w-full text-center"><i class="fa-brands fa-whatsapp text-lg"></i> Chamar no WhatsApp</a>
               <a href="#servicos" class="btn-outline w-full text-center">Ver serviços <i class="fa-solid fa-arrow-down text-sm"></i></a>
-            </div>
-            <div class="grid grid-cols-2 gap-2.5 w-full max-w-sm mx-auto reveal reveal-delay-5">
-              <div class="mini-card"><i class="fa-solid fa-brain text-neon text-xs mb-1"></i><p class="text-xs font-semibold text-gray-700 leading-tight">IA & Automação</p></div>
-              <div class="mini-card"><i class="fa-solid fa-rocket text-neon text-xs mb-1"></i><p class="text-xs font-semibold text-gray-700 leading-tight">Web & Landing Pages</p></div>
-              <div class="mini-card"><i class="fa-solid fa-server text-neon text-xs mb-1"></i><p class="text-xs font-semibold text-gray-700 leading-tight">Infra & Eventos Críticos</p></div>
-              <div class="mini-card"><i class="fa-solid fa-users-gear text-neon text-xs mb-1"></i><p class="text-xs font-semibold text-gray-700 leading-tight">Liderança Técnica</p></div>
             </div>
           </div>
         </div>
         <!-- DESKTOP HERO -->
-        <div class="hidden md:flex md:flex-row md:items-center md:gap-12 lg:gap-16">
-          <div class="flex-1 text-left min-w-0 parallax-layer" data-speed="0.02">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neon/5 border border-neon/10 mb-8 reveal">
+        <div class="hidden md:grid md:grid-cols-[1.1fr_0.9fr] md:items-start md:gap-10 lg:gap-14 xl:gap-16">
+          <div class="text-left min-w-0 parallax-layer" data-speed="0.02">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neon/5 border border-neon/10 mb-4 lg:mb-5 reveal">
               <span class="w-2 h-2 rounded-full bg-neon animate-pulse flex-shrink-0"></span>
-              <span class="text-sm text-neon/70 font-medium">Porto Alegre, RS — Disponível para projetos</span>
+              <span class="text-sm text-neon/70 font-medium">Porto Alegre, RS — Disponível para projetos e parcerias</span>
             </div>
-            <h1 class="text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight text-gray-900 mb-6 reveal reveal-delay-1">
+            <h1 class="text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-[1.05] tracking-tight text-gray-900 mb-3 lg:mb-4 reveal reveal-delay-1">
               Victor Nascimento
-              <span class="block text-gray-400 font-semibold text-3xl lg:text-4xl mt-2">Analista de Sistemas</span>
+              <span class="block text-gray-400 font-semibold text-2xl lg:text-3xl xl:text-4xl mt-2">Analista de Sistemas</span>
             </h1>
-            <div class="text-2xl lg:text-3xl font-bold text-neon mb-6 reveal reveal-delay-2" style="min-height:1.8em;" aria-live="polite" aria-atomic="true">
+            <div class="text-xl lg:text-2xl xl:text-3xl font-bold text-neon mb-3 lg:mb-4 reveal reveal-delay-2" style="min-height:1.6em;" aria-live="polite" aria-atomic="true">
               <span id="typewriterDesktop"></span><span class="typewriter-cursor"></span>
             </div>
-            <p class="text-lg text-gray-500 leading-relaxed max-w-xl mb-10 reveal reveal-delay-3">Soluções práticas em IA, automação e desenvolvimento web para destravar processos, melhorar atendimento e acelerar resultados.</p>
-            <div class="flex flex-row gap-4 mb-12 reveal reveal-delay-4">
+            <p class="text-base lg:text-lg text-gray-500 leading-relaxed max-w-xl mb-6 lg:mb-8 reveal reveal-delay-3">Soluções práticas em IA, automação e desenvolvimento web para destravar processos, melhorar atendimento e acelerar resultados.</p>
+            <div class="flex flex-row gap-4 reveal reveal-delay-4">
               <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon"><i class="fa-brands fa-whatsapp text-lg"></i> Chamar no WhatsApp</a>
               <a href="#servicos" class="btn-outline">Ver serviços <i class="fa-solid fa-arrow-down text-sm"></i></a>
             </div>
-            <div class="grid grid-cols-2 gap-3 max-w-md reveal reveal-delay-5">
-              <div class="mini-card"><i class="fa-solid fa-brain text-neon text-sm mb-1.5"></i><p class="text-sm font-semibold text-gray-700">IA & Automação</p></div>
-              <div class="mini-card"><i class="fa-solid fa-rocket text-neon text-sm mb-1.5"></i><p class="text-sm font-semibold text-gray-700">Web & Landing Pages</p></div>
-              <div class="mini-card"><i class="fa-solid fa-server text-neon text-sm mb-1.5"></i><p class="text-sm font-semibold text-gray-700">Infra & Eventos Críticos</p></div>
-              <div class="mini-card"><i class="fa-solid fa-users-gear text-neon text-sm mb-1.5"></i><p class="text-sm font-semibold text-gray-700">Liderança Técnica</p></div>
-            </div>
           </div>
-          <div class="flex-shrink-0 reveal reveal-delay-3 parallax-layer" data-speed="-0.015">
-            <div class="profile-frame" style="max-width:340px;">
-              <img src="assets/hero.png" alt="Foto de Victor Nascimento — Analista de Sistemas" loading="eager" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:#f5f6ff;display:flex;align-items:center;justify-content:center;border-radius:24px;\'><i class=\'fa-solid fa-user\' style=\'font-size:4rem;color:rgba(26,63,212,0.15);\'></i></div>'">
+          <div class="flex justify-center md:pt-2 reveal reveal-delay-3 parallax-layer" data-speed="-0.015">
+            <div class="w-full max-w-[300px] lg:max-w-[330px] xl:max-w-[360px] h-[400px] lg:h-[440px] xl:h-[480px]">
+              <div class="profile-frame is-desktop" style="max-width:100%;height:100%;">
+                <img src="assets/hero.png" alt="Foto de Victor Nascimento — Analista de Sistemas" loading="eager" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:#f5f6ff;display:flex;align-items:center;justify-content:center;border-radius:28px;\'><i class=\'fa-solid fa-user\' style=\'font-size:4rem;color:rgba(26,63,212,0.15);\'></i></div>'">
+              </div>
             </div>
           </div>
         </div>
@@ -483,30 +489,30 @@
       <div class="marquee-wrapper">
         <div class="marquee-track">
           <div class="flex items-center gap-6 sm:gap-8 px-4">
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">IA & Automação</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Landing Pages</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Web Apps</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Mini-sistemas</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Consultoria de TI</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Infraestrutura</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Eventos & Videoconferência</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Next.js</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">React</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Tailwind</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Processos & QA</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">IA & Automação</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Landing Pages</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Web Apps</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Mini-sistemas</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Consultoria de TI</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Infraestrutura</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Eventos & Videoconferência</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Next.js</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">React</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Tailwind</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Processos & QA</span><span class="text-neon/25">&#x2022;</span>
           </div>
           <div class="flex items-center gap-6 sm:gap-8 px-4" aria-hidden="true">
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">IA & Automação</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Landing Pages</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Web Apps</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Mini-sistemas</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Consultoria de TI</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Infraestrutura</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Eventos & Videoconferência</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Next.js</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">React</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Tailwind</span><span class="text-neon/25">&#x2022;</span>
-            <span class="text-xs sm:text-sm font-semibold text-gray-300 whitespace-nowrap tracking-wide uppercase">Processos & QA</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">IA & Automação</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Landing Pages</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Web Apps</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Mini-sistemas</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Consultoria de TI</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Infraestrutura</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Eventos & Videoconferência</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Next.js</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">React</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Tailwind</span><span class="text-neon/25">&#x2022;</span>
+            <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Processos & QA</span><span class="text-neon/25">&#x2022;</span>
           </div>
         </div>
       </div>
@@ -540,7 +546,7 @@
             for (var k = 0; k < brands.length; k++) {
               html += '<div class="flex items-center gap-2.5 whitespace-nowrap">';
               html += '<span class="brand-marquee-icon">' + brands[k].svg + '</span>';
-              html += '<span class="text-xs sm:text-sm font-semibold text-gray-300 tracking-wide">' + brands[k].name + '</span>';
+              html += '<span class="text-xs sm:text-sm font-semibold text-gray-400 tracking-wide">' + brands[k].name + '</span>';
               html += '</div>';
               html += '<span class="text-neon/20">&#x2022;</span>';
             }
@@ -569,35 +575,38 @@
     </section>
 
     <!-- SOBRE -->
-    <section id="sobre" class="relative py-20 sm:py-24 md:py-32">
-      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="sobre" class="relative py-20 sm:py-24 md:py-32 bg-neon-dark overflow-hidden">
+      <!-- Orbes de fundo para dar profundidade -->
+      <div class="glow-orb" style="width:600px;height:600px;background:rgba(255,255,255,0.03);top:-150px;right:-150px;"></div>
+      <div class="glow-orb" style="width:400px;height:400px;background:rgba(255,255,255,0.025);bottom:-100px;left:-100px;"></div>
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="max-w-3xl mx-auto text-center reveal">
-          <span class="text-neon text-sm font-semibold tracking-widest uppercase mb-4 block">Sobre</span>
-          <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 sm:mb-8 tracking-tight">Tecnologia que entrega resultado</h2>
-          <p class="text-base sm:text-lg text-gray-500 leading-relaxed mb-10 sm:mb-12">Apaixonado por minha família e por tecnologia — especialmente inteligência artificial — sou formado em Análise e Desenvolvimento de Sistemas, e atualmente atuo como Analista de Sistemas focado em entregar inovação técnica que eleve a produtividade, com sólida experiência em infraestrutura de TI e suporte audiovisual. Especialista em soluções de videoconferência e eventos institucionais. Pai de três filhos, encontro na tecnologia não apenas uma carreira, mas um propósito: transformar desafios em soluções reais, com responsabilidade e impacto.</p>
+          <span class="text-blue-300 text-sm font-semibold tracking-widest uppercase mb-4 block">Sobre</span>
+          <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-6 sm:mb-8 tracking-tight">Tecnologia que entrega resultado</h2>
+          <p class="text-base sm:text-lg text-blue-100/70 leading-relaxed mb-10 sm:mb-12">Apaixonado por minha família e por tecnologia — especialmente inteligência artificial — sou formado em Análise e Desenvolvimento de Sistemas, e atualmente atuo como Analista de Sistemas focado em entregar inovação técnica que eleve a produtividade, com sólida experiência em infraestrutura de TI e suporte audiovisual. Especialista em soluções de videoconferência e eventos institucionais. Pai de três filhos, encontro na tecnologia não apenas uma carreira, mas um propósito: transformar desafios em soluções reais, com responsabilidade e impacto.</p>
         </div>
         <div class="grid sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
-          <div class="glass-card p-5 sm:p-7 text-center reveal reveal-delay-1">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mx-auto mb-4 sm:mb-5"><i class="fa-solid fa-bolt text-neon text-sm sm:text-lg"></i></div>
-            <h3 class="text-gray-900 font-bold text-sm sm:text-base mb-2">Produtividade com IA</h3>
-            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">Automação de fluxos, templates e rotinas que eliminam retrabalho e aceleram entregas.</p>
+          <div class="p-5 sm:p-7 text-center rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm reveal reveal-delay-1 transition-all duration-300 hover:bg-white/10 hover:border-white/20">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center mx-auto mb-4 sm:mb-5"><i class="fa-solid fa-bolt text-blue-300 text-sm sm:text-lg"></i></div>
+            <h3 class="text-white font-bold text-sm sm:text-base mb-2">Produtividade com IA</h3>
+            <p class="text-xs sm:text-sm text-blue-100/60 leading-relaxed">Automação de fluxos, templates e rotinas que eliminam retrabalho e aceleram entregas.</p>
           </div>
-          <div class="glass-card p-5 sm:p-7 text-center reveal reveal-delay-2">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mx-auto mb-4 sm:mb-5"><i class="fa-solid fa-shield-halved text-neon text-sm sm:text-lg"></i></div>
-            <h3 class="text-gray-900 font-bold text-sm sm:text-base mb-2">Confiabilidade Crítica</h3>
-            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">Experiência comprovada em ambientes institucionais e operações que não podem falhar.</p>
+          <div class="p-5 sm:p-7 text-center rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm reveal reveal-delay-2 transition-all duration-300 hover:bg-white/10 hover:border-white/20">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center mx-auto mb-4 sm:mb-5"><i class="fa-solid fa-shield-halved text-blue-300 text-sm sm:text-lg"></i></div>
+            <h3 class="text-white font-bold text-sm sm:text-base mb-2">Confiabilidade Crítica</h3>
+            <p class="text-xs sm:text-sm text-blue-100/60 leading-relaxed">Experiência comprovada em ambientes institucionais e operações que não podem falhar.</p>
           </div>
-          <div class="glass-card p-5 sm:p-7 text-center reveal reveal-delay-3">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mx-auto mb-4 sm:mb-5"><i class="fa-solid fa-book-open text-neon text-sm sm:text-lg"></i></div>
-            <h3 class="text-gray-900 font-bold text-sm sm:text-base mb-2">Padronização & Treinamento</h3>
-            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">Documentação, guias técnicos e multiplicação de conhecimento para equipes inteiras.</p>
+          <div class="p-5 sm:p-7 text-center rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm reveal reveal-delay-3 transition-all duration-300 hover:bg-white/10 hover:border-white/20">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center mx-auto mb-4 sm:mb-5"><i class="fa-solid fa-book-open text-blue-300 text-sm sm:text-lg"></i></div>
+            <h3 class="text-white font-bold text-sm sm:text-base mb-2">Padronização & Treinamento</h3>
+            <p class="text-xs sm:text-sm text-blue-100/60 leading-relaxed">Documentação, guias técnicos e multiplicação de conhecimento para equipes inteiras.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- SERVIÇOS -->
-    <section id="servicos" class="relative py-20 sm:py-24 md:py-32">
+    <section id="servicos" class="relative py-20 sm:py-24 md:py-32 bg-[#f8f9ff]">
       <div class="glow-orb" style="width:500px;height:500px;background:rgba(26,63,212,0.04);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
       <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="max-w-3xl mx-auto text-center mb-12 sm:mb-16 reveal">
@@ -611,28 +620,28 @@
             <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Landing Pages de Alta Conversão</h3>
             <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 flex-1">Copy persuasiva, layout premium, performance otimizada, SEO básico e CTA estratégico. Feitas para transformar visitante em lead.</p>
             <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: profissionais autônomos e pequenos escritórios que precisam de um cartão de visita digital que gere confiança e converta visitantes em clientes.</p>
-            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20uma%20landing%20page.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero parecer mais profissional <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
+            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20uma%20landing%20page.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero minha landing page <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
           </div>
           <div class="glass-card p-6 sm:p-8 flex flex-col reveal reveal-delay-2">
             <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mb-5 sm:mb-6 flex-shrink-0"><i class="fa-solid fa-globe text-neon text-sm sm:text-base"></i></div>
             <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Websites Modernos e Rápidos</h3>
             <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 flex-1">Design responsivo e visual premium, mobile-first, carregamento otimizado. Presença digital que transmite credibilidade.</p>
             <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: pequenas empresas que querem uma presença digital que funcione 24h — muito além de um perfil em rede social.</p>
-            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20um%20website.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero parecer mais profissional <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
+            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20um%20website.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero meu website profissional <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
           </div>
           <div class="glass-card p-6 sm:p-8 flex flex-col reveal reveal-delay-3">
             <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mb-5 sm:mb-6 flex-shrink-0"><i class="fa-solid fa-cubes text-neon text-sm sm:text-base"></i></div>
             <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Sistemas Curtos (MVPs)</h3>
             <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 flex-1">Mini-sistemas para cadastro, controle, processos internos e automação simples. Entrega ágil, funcional e escalável.</p>
             <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: escritórios e pequenas empresas que precisam digitalizar processos internos sem o custo e a complexidade de um projeto grande.</p>
-            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20um%20sistema.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero parecer mais profissional <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
+            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20um%20sistema.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero digitalizar meu processo <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
           </div>
           <div class="glass-card p-6 sm:p-8 flex flex-col reveal reveal-delay-1">
             <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mb-5 sm:mb-6 flex-shrink-0"><i class="fa-solid fa-microchip text-neon text-sm sm:text-base"></i></div>
             <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">IA & Automação Aplicada</h3>
             <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 flex-1">Fluxos automatizados, templates inteligentes, integração de IA em rotinas diárias. Produtividade real, não modismo.</p>
             <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: profissionais e equipes que perdem horas com tarefas repetitivas e querem que a IA trabalhe por eles.</p>
-            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20usando%20IA%20e%20automa%C3%A7%C3%A3o.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero parecer mais profissional <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
+            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20usando%20IA%20e%20automa%C3%A7%C3%A3o.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero automatizar minha rotina <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
           </div>
           <div class="glass-card p-6 sm:p-8 flex flex-col sm:col-span-2 lg:col-span-2 reveal reveal-delay-2">
             <div class="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
@@ -641,7 +650,7 @@
                 <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Consultoria de TI</h3>
                 <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4">Diagnóstico completo da infraestrutura, organização de processos, boas práticas de TI, recomendações de ferramentas e planejamento de melhorias. Para times que precisam de clareza e direção técnica.</p>
                 <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: pequenas empresas e escritórios sem liderança técnica interna que precisam organizar processos e implantar soluções de verdade.</p>
-                <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20uma%20consultoria%20de%20TI.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg">Quero parecer mais profissional <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
+                <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20uma%20consultoria%20de%20TI.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg">Quero uma consultoria de TI <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
               </div>
             </div>
           </div>
@@ -675,7 +684,7 @@
     </section>
 
     <!-- EXPERIÊNCIA -->
-    <section id="experiencia" class="relative py-20 sm:py-24 md:py-32">
+    <section id="experiencia" class="relative py-20 sm:py-24 md:py-32 bg-[#f8f9ff]">
       <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto text-center mb-12 sm:mb-16 reveal">
           <span class="text-neon text-sm font-semibold tracking-widest uppercase mb-4 block">Experiência</span>
@@ -702,7 +711,7 @@
           <div class="relative pl-12 sm:pl-14 pb-12 sm:pb-16 timeline-item">
             <div class="timeline-dot" id="dot2"></div>
             <div class="glass-card p-5 sm:p-7 reveal">
-              <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-4"><span class="text-[11px] sm:text-xs font-bold text-gray-500 bg-gray-100 px-2.5 sm:px-3 py-1 rounded-full">2015 — Março 2026</span><span class="text-[11px] sm:text-xs text-gray-300">9 anos</span></div>
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-4"><span class="text-[11px] sm:text-xs font-bold text-gray-500 bg-gray-100 px-2.5 sm:px-3 py-1 rounded-full">2015 — Março 2026</span><span class="text-[11px] sm:text-xs text-gray-300">11 anos</span></div>
               <h3 class="text-base sm:text-xl font-bold text-gray-900 mb-1">Técnico de Informática III</h3>
               <p class="text-xs sm:text-sm text-gray-500 font-semibold mb-1">Liderança de Infraestrutura e Audiovisual</p>
               <p class="text-xs sm:text-sm text-gray-300 font-medium mb-5 sm:mb-6">OAB/RS — Ordem dos Advogados do Brasil, Seccional Rio Grande do Sul</p>
@@ -764,7 +773,7 @@
     </section>
 
     <!-- IDIOMAS -->
-    <section id="idiomas" class="relative py-16 sm:py-20 md:py-24">
+    <section id="idiomas" class="relative py-16 sm:py-20 md:py-24 bg-[#f8f9ff]">
       <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-xl mx-auto reveal">
           <div class="text-center mb-8 sm:mb-12"><span class="text-neon text-sm font-semibold tracking-widest uppercase mb-3 sm:mb-4 block">Idiomas</span><h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Comunicação global</h2></div>
@@ -822,7 +831,7 @@
         <div>
           <div class="flex items-center gap-4 mb-8">
             <span class="footer-logo" aria-hidden="true">
-              <img src="brand-icons-svg/vn-logo.svg" alt="" aria-hidden="true">
+              <img src="brand-icons-svg/logo.png" alt="" aria-hidden="true">
             </span>
             <div>
               <p class="text-[color:var(--accent)] text-sm font-extrabold tracking-[0.18em] uppercase">Victor Nascimento</p>
@@ -830,21 +839,21 @@
             </div>
           </div>
           <p class="text-base sm:text-lg leading-relaxed text-[rgba(17,17,17,0.82)] max-w-2xl mb-8">
-            Transformando desafios em solucoes reais, com responsabilidade e impacto. Especialista em IA, automacao e desenvolvimento web de alta performance.
+            Transformando desafios em soluções reais, com responsabilidade e impacto. Especialista em IA, automação e desenvolvimento web de alta performance.
           </p>
           <div class="flex flex-col sm:flex-row flex-wrap gap-3">
             <span class="footer-pill">Landing Pages</span>
             <span class="footer-pill">Sistemas Web</span>
-            <span class="footer-pill">Automacao & IA</span>
+            <span class="footer-pill">Automação & IA</span>
           </div>
         </div>
 
-        <nav aria-label="Navegacao do rodape">
-          <h3 class="text-sm font-extrabold tracking-[0.18em] uppercase mb-8 text-[color:var(--accent)]">Navegacao</h3>
+        <nav aria-label="Navegação do rodapé">
+          <h3 class="text-sm font-extrabold tracking-[0.18em] uppercase mb-8 text-[color:var(--accent)]">Navegação</h3>
           <div class="flex flex-col gap-6">
             <a href="#sobre" class="footer-link">Sobre</a>
-            <a href="#servicos" class="footer-link">Servicos</a>
-            <a href="#competencias" class="footer-link">Competencias</a>
+            <a href="#servicos" class="footer-link">Serviços</a>
+            <a href="#competencias" class="footer-link">Competências</a>
             <a href="#contato" class="footer-link">Contato</a>
           </div>
         </nav>
@@ -852,7 +861,7 @@
         <div>
           <h3 class="text-sm font-extrabold tracking-[0.18em] uppercase mb-8 text-[color:var(--accent)]">Contato</h3>
           <p class="text-base sm:text-lg leading-relaxed text-[rgba(17,17,17,0.82)] mb-8">
-            Quer ver como minhas solucoes podem ajudar na produtividade e crescimento do seu negocio?
+            Quer ver como minhas soluções podem ajudar na produtividade e crescimento do seu negócio?
           </p>
           <div class="space-y-4">
             <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="footer-action whatsapp">
@@ -871,7 +880,7 @@
     <div class="footer-bottom">
       <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[92px] flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left text-sm font-medium">
         <p>&copy; 2026 Victor Nascimento. Todos os direitos reservados.</p>
-        <p>Feito para empresas que querem mais organizacao, agilidade e seguranca.</p>
+        <p>Feito para empresas que querem mais organização, agilidade e segurança.</p>
       </div>
     </div>
   </footer>
