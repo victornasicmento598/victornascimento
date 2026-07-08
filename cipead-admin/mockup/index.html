@@ -279,6 +279,64 @@
   #tip.show{opacity:1}
   .scrim{position:fixed;inset:0;z-index:35;background:rgba(10,10,10,.45);opacity:0;pointer-events:none;transition:opacity var(--t)}
 
+  /* ---------- Login ---------- */
+  .login{position:fixed;inset:0;z-index:100;display:grid;grid-template-columns:1.05fr .95fr;background:var(--card)}
+  body.logged-in .login{display:none}
+  .login-brand{
+    position:relative;background:var(--sb-bg);color:var(--sb-ink);overflow:hidden;
+    padding:48px 56px;display:flex;flex-direction:column;justify-content:space-between;gap:40px;
+  }
+  .login-brand::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(circle at 86% 10%, rgba(255,255,255,.06), transparent 44%)}
+  .login-brand>*{position:relative;z-index:1}
+  .lb-top{display:flex;align-items:center;gap:14px}
+  .lb-top .logo-mark{width:40px;height:40px;border-radius:10px;font-size:15px}
+  .lb-name b{font-size:16px;font-weight:600;display:block;letter-spacing:.01em}
+  .lb-name span{font-size:12.5px;color:var(--sb-muted)}
+  .lb-mid{display:flex;flex-direction:column;gap:20px}
+  .lb-mid h2{font-size:30px;font-weight:600;letter-spacing:-.02em;line-height:1.22;max-width:15ch;text-wrap:balance}
+  .lb-mid p{font-size:14px;color:#B4B4B8;max-width:44ch;line-height:1.6}
+  .lb-points{display:flex;flex-direction:column;gap:13px;margin-top:2px}
+  .lb-point{display:flex;gap:11px;align-items:center;font-size:13px;color:#D4D4D8}
+  .lb-point .ic{width:16px;height:16px;flex:none;color:#8E8E93}
+  .lb-foot{font-size:12px;color:#6E6E73;letter-spacing:.02em}
+
+  .login-panel{display:flex;align-items:center;justify-content:center;padding:40px 32px}
+  .login-form{width:100%;max-width:360px}
+  .lf-logo{display:none;align-items:center;gap:12px;margin-bottom:26px}
+  .lf-logo .logo-mark{width:38px;height:38px;border-radius:10px;background:var(--ink);color:#FFF}
+  .lf-logo b{font-size:15px;font-weight:600;display:block}
+  .lf-logo span{font-size:12px;color:var(--ink-3)}
+  .login-form h1{font-size:22px;font-weight:600;letter-spacing:-.02em}
+  .login-form .sub{font-size:13.5px;color:var(--ink-3);margin:6px 0 22px}
+  .lf-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .lf-field label{font-size:12.5px;font-weight:500;color:var(--ink-2)}
+  .lf-input{position:relative}
+  .lf-input .inp{height:44px;width:100%;font-size:14px;border-radius:10px}
+  .lf-input .inp[type=password],.lf-input #lgPass{padding-right:44px}
+  .lf-input .eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:7px;display:grid;place-items:center;color:var(--ink-3);transition:background var(--t),color var(--t)}
+  .lf-input .eye:hover{background:var(--wash);color:var(--ink)}
+  .lf-input .eye .ic{width:17px;height:17px}
+  .lf-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 20px}
+  .lf-check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);cursor:pointer;user-select:none}
+  .lf-check input{width:15px;height:15px;accent-color:var(--ink)}
+  .lf-link{font-size:13px;color:var(--ink-3);text-decoration:none}
+  .lf-link:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+  .lf-submit{height:44px;border-radius:10px;font-size:14px;font-weight:600;justify-content:center;width:100%}
+  .lf-submit[disabled]{opacity:.8;cursor:default}
+  .lf-error{display:none;align-items:center;gap:8px;font-size:13px;color:var(--red-ink);background:var(--red-bg);border:1px solid var(--red-line);border-radius:9px;padding:10px 12px;margin-bottom:16px}
+  .lf-error.show{display:flex}
+  .lf-error .ic{width:15px;height:15px;flex:none}
+  .lf-hint{font-size:12px;color:var(--ink-3);text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+  .spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#FFF;border-radius:50%;animation:spin .6s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.spin{animation:none}}
+  @media (max-width:860px){
+    .login{grid-template-columns:1fr}
+    .login-brand{display:none}
+    .lf-logo{display:flex}
+  }
+
   /* ---------- Responsive ---------- */
   @media (max-width:1100px){
     .metrics{grid-template-columns:repeat(2,1fr)}
@@ -328,6 +386,72 @@
 </style>
 </head>
 <body>
+
+<div class="login" id="login" role="dialog" aria-modal="true" aria-label="Entrar no painel">
+  <div class="login-brand">
+    <div class="lb-top">
+      <div class="logo-mark" aria-hidden="true">CI</div>
+      <div class="lb-name"><b>CIPEAD</b><span>OAB/RS · Canal de Denúncias</span></div>
+    </div>
+    <div class="lb-mid">
+      <h2>Painel interno de consulta de denúncias.</h2>
+      <p>Ambiente restrito aos membros da CIPEAD. Todo acesso é autenticado e cada consulta fica registrada em auditoria.</p>
+      <div class="lb-points">
+        <div class="lb-point">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9.5 12l2 2 3.5-3.5"/></svg>
+          Identidade do denunciante isolada do relato
+        </div>
+        <div class="lb-point">
+          <svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          Dados sensíveis cifrados em repouso (AES-256)
+        </div>
+        <div class="lb-point">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+          Cada consulta de contato gera registro
+        </div>
+      </div>
+    </div>
+    <div class="lb-foot">Acesso monitorado · uso exclusivo institucional</div>
+  </div>
+
+  <div class="login-panel">
+    <form class="login-form" id="loginForm" novalidate>
+      <div class="lf-logo">
+        <div class="logo-mark" aria-hidden="true">CI</div>
+        <div><b>CIPEAD</b><span>OAB/RS · Canal de Denúncias</span></div>
+      </div>
+      <h1>Entrar no painel</h1>
+      <p class="sub">Use suas credenciais institucionais (rede / LDAP).</p>
+
+      <div class="lf-error" id="lgErr" role="alert">
+        <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        <span></span>
+      </div>
+
+      <div class="lf-field">
+        <label for="lgUser">Usuário</label>
+        <div class="lf-input">
+          <input class="inp" id="lgUser" name="usuario" autocomplete="username" placeholder="usuário de rede" value="v.nascimento">
+        </div>
+      </div>
+      <div class="lf-field">
+        <label for="lgPass">Senha</label>
+        <div class="lf-input">
+          <input class="inp" id="lgPass" type="password" name="senha" autocomplete="current-password" placeholder="••••••••">
+          <button type="button" class="eye" id="lgEye" aria-label="Mostrar senha">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="lf-row">
+        <label class="lf-check"><input type="checkbox" id="lgRemember"> Manter conectado</label>
+        <a class="lf-link" href="#" id="lgForgot">Esqueci a senha</a>
+      </div>
+      <button class="btn btn-dark lf-submit" id="lgSubmit" type="submit">Entrar</button>
+      <p class="lf-hint">Protótipo — qualquer usuário e senha concluem o acesso.</p>
+    </form>
+  </div>
+</div>
 
 <div class="scrim" id="scrim"></div>
 
@@ -774,7 +898,60 @@
   el("btnDrawer").addEventListener("click",function(){document.body.classList.add("drawer-open")});
   el("scrim").addEventListener("click",function(){document.body.classList.remove("drawer-open")});
   document.addEventListener("keydown",function(e){if(e.key==="Escape")document.body.classList.remove("drawer-open")});
-  el("btnSair").addEventListener("click",function(){toast("Sessão encerrada (simulação). No painel real, redireciona para o login.")});
+  /* ---------- login / logout ---------- */
+  var loginForm = el("loginForm"), lgUser = el("lgUser"), lgPass = el("lgPass"),
+      lgErr = el("lgErr"), lgBtn = el("lgSubmit");
+  function iniciais(u){
+    var parts = u.replace(/[^a-zA-ZÀ-ÿ.\s]/g,"").split(/[.\s]+/).filter(Boolean);
+    var s = parts.map(function(x){return x[0]}).join("").slice(0,2).toUpperCase();
+    return s || "US";
+  }
+  function showError(msg,focusEl){
+    lgErr.querySelector("span").textContent = msg;
+    lgErr.classList.add("show");
+    if(focusEl) focusEl.focus();
+  }
+  function abrirLogin(){
+    document.body.classList.remove("logged-in");
+    lgPass.value = "";
+    lgErr.classList.remove("show");
+    lgBtn.disabled = false; lgBtn.innerHTML = "Entrar";
+    window.scrollTo({top:0});
+    setTimeout(function(){lgUser.focus()},60);
+  }
+  loginForm.addEventListener("submit",function(e){
+    e.preventDefault();
+    var u = lgUser.value.trim(), p = lgPass.value;
+    if(!u || !p){ showError("Informe usuário e senha para continuar.", !u?lgUser:lgPass); return; }
+    lgErr.classList.remove("show");
+    lgBtn.disabled = true;
+    lgBtn.innerHTML = '<span class="spin" aria-hidden="true"></span> Entrando…';
+    setTimeout(function(){
+      document.querySelector(".sb-user b").textContent = u;
+      document.querySelector(".sb-user .avatar").textContent = iniciais(u);
+      document.querySelector(".sb-user").setAttribute("title", u + " — CIPEAD");
+      document.body.classList.add("logged-in");
+      lgBtn.disabled = false; lgBtn.innerHTML = "Entrar";
+      go("dashboard");
+      toast("Bem-vindo(a) ao painel, " + u + ".");
+    }, 750);
+  });
+  el("lgEye").addEventListener("click",function(){
+    var oculto = lgPass.type === "password";
+    lgPass.type = oculto ? "text" : "password";
+    this.setAttribute("aria-label", oculto ? "Ocultar senha" : "Mostrar senha");
+    lgPass.focus();
+  });
+  el("lgForgot").addEventListener("click",function(e){
+    e.preventDefault();
+    toast("No painel real, a recuperação de acesso é feita pela TI institucional.");
+  });
+  el("lgUser").addEventListener("input",function(){lgErr.classList.remove("show")});
+  el("lgPass").addEventListener("input",function(){lgErr.classList.remove("show")});
+  el("btnSair").addEventListener("click",function(){
+    abrirLogin();
+    toast("Sessão encerrada. Faça login para acessar novamente.");
+  });
 
   /* ---------- toast ---------- */
   var toastTimer;
