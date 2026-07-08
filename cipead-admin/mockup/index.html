@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CIPEAD — Painel Administrativo (Protótipo)</title>
+<title>CIPEAD · OAB/RS — Painel do Canal de Denúncias (Protótipo)</title>
 <style>
   :root{
     --sb-bg:#0A0A0A; --sb-ink:#FAFAFA; --sb-muted:#9C9C9F; --sb-line:rgba(255,255,255,.08);
@@ -128,7 +128,7 @@
   .chart-wrap{width:100%;overflow-x:auto}
   .chart-wrap svg{display:block;width:100%;height:auto}
   .sector-row{display:flex;flex-direction:column;gap:5px;padding:7px 0}
-  .sector-row .s-top{display:flex;justify-content:space-between;font-size:13px}
+  .sector-row .s-top{display:flex;justify-content:space-between;font-size:13px;gap:12px}
   .sector-row .s-top b{font-weight:500;color:var(--ink-2)}
   .sector-row .s-top span{font-variant-numeric:tabular-nums;color:var(--ink-3)}
   .sector-track{height:8px;border-radius:999px;background:var(--wash);overflow:hidden}
@@ -163,7 +163,7 @@
   .p-resolvido{color:var(--green-ink);background:var(--green-bg);border-color:var(--green-line)}
 
   /* filters */
-  .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:16px 24px}
+  .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;padding:16px 24px}
   .field{display:flex;flex-direction:column;gap:4px}
   .field label{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
   .inp,.sel{
@@ -175,7 +175,7 @@
   .inp::placeholder{color:#A1A1AA}
   .search-wrap{position:relative}
   .search-wrap .ic{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--ink-3)}
-  .search-wrap .inp{padding-left:34px;width:220px}
+  .search-wrap .inp{padding-left:34px;width:190px}
   .btn{
     display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:var(--r-sm);
     font-size:13.5px;font-weight:500;border:1px solid var(--line);background:var(--card);
@@ -207,20 +207,29 @@
   /* detalhe */
   .backlink{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-3);padding:4px 8px;margin-left:-8px;border-radius:7px;transition:color var(--t)}
   .backlink:hover{color:var(--ink)}
-  .det-head{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:22px 24px}
+  .det-head{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:22px 24px 4px}
   .det-head .proto{font-size:19px;font-weight:600;letter-spacing:-.01em}
-  .det-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line)}
+  .det-grav-desc{padding:0 24px 18px;font-size:12.5px;color:var(--ink-3)}
+  .det-meta{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
   .det-meta>div{padding:16px 24px;border-right:1px solid var(--line)}
-  .det-meta>div:last-child{border-right:0}
+  .det-meta>div:nth-child(3n){border-right:0}
+  .det-meta>div:nth-child(n+4){border-top:1px solid var(--line)}
   .det-meta .m-label{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
   .det-meta .m-val{font-size:14px;font-weight:500;margin-top:4px}
   .relato-text{font-size:14.5px;line-height:1.75;color:var(--ink-2);max-width:68ch;display:flex;flex-direction:column;gap:14px}
-  .file-row{display:flex;align-items:center;gap:14px;padding:13px 24px;border-top:1px solid var(--line)}
-  .file-row:first-of-type{border-top:0}
+  .test-text{font-size:14px;line-height:1.7;color:var(--ink-2);max-width:68ch}
+  .evid-h{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);padding:16px 24px 2px}
+  .evid-h:first-child{padding-top:6px}
+  .file-row{display:flex;align-items:center;gap:14px;padding:13px 24px}
+  .file-row + .file-row{border-top:1px solid var(--line)}
   .file-ic{flex:none;width:36px;height:36px;border-radius:8px;background:var(--wash);display:grid;place-items:center;color:var(--ink-3)}
   .file-info{flex:1;min-width:0}
   .file-info b{display:block;font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .file-info span{font-size:12px;color:var(--ink-3)}
+  .no-evid{padding:20px 24px 24px;font-size:13.5px;color:var(--ink-3)}
+  .boafe{display:flex;align-items:center;gap:12px;padding:18px 24px;font-size:13.5px;color:var(--ink-2)}
+  .boafe .ck{flex:none;width:24px;height:24px;border-radius:7px;background:var(--green-bg);color:var(--green-ink);display:grid;place-items:center;border:1px solid var(--green-line)}
+  .boafe .ck .ic{width:14px;height:14px;stroke-width:2.4}
   .notice{
     display:flex;gap:12px;align-items:flex-start;padding:14px 18px;border:1px solid var(--line);
     border-radius:var(--r-sm);background:var(--page);font-size:13px;color:var(--ink-3);
@@ -229,25 +238,26 @@
   .notice b{color:var(--ink-2);font-weight:600}
 
   /* contatos */
-  .gate{max-width:640px}
+  .gate{max-width:660px}
   .gate-head{display:flex;gap:14px;align-items:flex-start;padding:24px 24px 0}
   .gate-ic{flex:none;width:40px;height:40px;border-radius:10px;background:var(--ink);color:#FFF;display:grid;place-items:center}
   .gate-ic .ic{width:19px;height:19px}
   .gate-head h2{font-size:15px;font-weight:600}
-  .gate-head p{font-size:13px;color:var(--ink-3);margin-top:3px;max-width:52ch}
+  .gate-head p{font-size:13px;color:var(--ink-3);margin-top:3px;max-width:54ch}
   .gate-form{display:flex;gap:10px;align-items:flex-end;padding:20px 24px 24px;flex-wrap:wrap}
   .audit-banner{
     display:flex;gap:10px;align-items:center;padding:11px 16px;border-radius:var(--r-sm);
     background:var(--red-bg);border:1px solid var(--red-line);color:var(--red-ink);font-size:12.5px;font-weight:500;
   }
   .audit-banner .ic{flex:none;width:15px;height:15px}
-  .contato-fields{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--line)}
+  .contato-fields{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
   .contato-fields>div{padding:16px 24px;border-bottom:1px solid var(--line)}
   .contato-fields>div:nth-child(odd){border-right:1px solid var(--line)}
   .contato-fields>div:nth-last-child(-n+2){border-bottom:0}
   .cf-label{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
   .cf-val{font-size:14.5px;font-weight:500;margin-top:4px}
-  .cf-tag{font-size:11px;color:var(--ink-3);margin-top:3px;display:flex;align-items:center;gap:5px}
+  .cf-val.empty-val{color:var(--ink-3);font-weight:400;font-style:italic}
+  .cf-tag{font-size:11px;color:var(--ink-3);margin-top:5px;display:flex;align-items:center;gap:5px}
   .cf-tag .ic{width:12px;height:12px}
 
   /* auditoria */
@@ -296,11 +306,11 @@
     .content{padding:22px 18px 48px}
     .metrics{grid-template-columns:1fr 1fr;gap:12px}
     .det-meta{grid-template-columns:1fr}
-    .det-meta>div{border-right:0;border-bottom:1px solid var(--line)}
+    .det-meta>div{border-right:0;border-top:0;border-bottom:1px solid var(--line)}
     .det-meta>div:last-child{border-bottom:0}
     .contato-fields{grid-template-columns:1fr}
     .contato-fields>div:nth-child(odd){border-right:0}
-    .contato-fields>div:nth-last-child(-n+2){border-bottom:1px solid var(--line)}
+    .contato-fields>div{border-bottom:1px solid var(--line)}
     .contato-fields>div:last-child{border-bottom:0}
     /* tabelas viram cards */
     .tbl-cards thead{display:none}
@@ -324,7 +334,7 @@
 <aside class="sidebar" id="sidebar" aria-label="Menu principal">
   <div class="sb-head">
     <div class="logo-mark" aria-hidden="true">CI</div>
-    <div class="logo-text"><b>CIPEAD</b><span>Canal de Denúncias</span></div>
+    <div class="logo-text"><b>CIPEAD</b><span>OAB/RS · Canal de Denúncias</span></div>
     <button class="sb-collapse" id="btnCollapse" title="Recolher menu" aria-label="Recolher menu">
       <svg class="ic" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
     </button>
@@ -377,7 +387,7 @@
         <div class="metric">
           <div class="m-label">Total de ocorrências</div>
           <div class="m-value">128</div>
-          <div class="m-sub">desde ago/2025</div>
+          <div class="m-sub">desde a abertura do canal</div>
         </div>
         <div class="metric">
           <div class="m-label">Pendentes</div>
@@ -436,6 +446,10 @@
             </div>
           </div>
           <div class="field">
+            <label for="fSetor">Setor</label>
+            <select class="sel" id="fSetor"><option value="">Todos</option></select>
+          </div>
+          <div class="field">
             <label for="fGrav">Gravidade</label>
             <select class="sel" id="fGrav">
               <option value="">Todas</option><option>Baixa</option><option>Média</option><option>Alta</option><option>Crítica</option>
@@ -455,7 +469,7 @@
             <label for="fAte">Até</label>
             <input class="inp" id="fAte" type="date" value="2026-07-08">
           </div>
-          <button class="btn btn-ghost" id="btnLimpar" style="align-self:flex-end">Limpar</button>
+          <button class="btn btn-ghost" id="btnLimpar">Limpar</button>
         </div>
         <div style="overflow-x:auto;border-top:1px solid var(--line)">
           <table class="tbl tbl-cards" id="tblOcorrencias">
@@ -494,45 +508,39 @@
 
       <div class="card">
         <div class="det-head">
-          <span class="proto">DN-2026-000126</span>
-          <span class="pill p-alta"><span class="dot"></span>Alta</span>
-          <span class="pill p-analise">Em análise</span>
+          <span class="proto" id="dProto">—</span>
+          <span id="dGravPill"></span>
+          <span id="dStatusPill"></span>
         </div>
-        <div class="det-meta">
-          <div><div class="m-label">Setor</div><div class="m-val">Polo Camaçari</div></div>
-          <div><div class="m-label">Recebida em</div><div class="m-val">05/07/2026 · 14:32</div></div>
-          <div><div class="m-label">Evidências</div><div class="m-val">2 arquivos</div></div>
-        </div>
+        <div class="det-grav-desc" id="dGravDesc"></div>
+        <div class="det-meta" id="dMeta"></div>
       </div>
 
       <div class="card">
-        <div class="card-head"><h2>Relato</h2></div>
-        <div class="card-body relato-text">
-          <p>Durante o período de aplicação das avaliações presenciais no polo, presenciei condutas incompatíveis com as normas da instituição por parte de um dos aplicadores, incluindo tratamento desrespeitoso dirigido a estudantes e insinuações constrangedoras repetidas em mais de uma ocasião.</p>
-          <p>Os episódios ocorreram nos dias 27 e 28 de junho, na sala 3 do polo, na presença de outros estudantes. Há registros que anexo a este relato. Outras pessoas presenciaram os fatos e podem confirmá-los, caso a comissão julgue necessário.</p>
-          <p>Solicito que a situação seja apurada com discrição, considerando que os envolvidos seguem em contato direto com estudantes do polo.</p>
+        <div class="card-head"><h2>Relato dos fatos</h2></div>
+        <div class="card-body relato-text" id="dRelato"></div>
+      </div>
+
+      <div class="card" id="dTestCard">
+        <div class="card-head"><h2>Testemunhas indicadas</h2><span>informado no relato</span></div>
+        <div class="card-body" style="padding-top:14px">
+          <p class="test-text" id="dTest"></p>
+          <p class="cf-tag" style="margin-top:12px">
+            <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>
+            Pode conter nomes de terceiros — tratar com a mesma discrição do relato.
+          </p>
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" id="dEvidCard">
         <div class="card-head"><h2>Evidências</h2><span>download via token temporário</span></div>
-        <div style="padding-top:8px">
-          <div class="file-row">
-            <div class="file-ic"><svg class="ic" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></div>
-            <div class="file-info"><b>registro-sala3-27jun.pdf</b><span>PDF · 1,2 MB</span></div>
-            <button class="btn" data-toast="Link temporário gerado — expira em 15 minutos. Acesso registrado em auditoria.">
-              <svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
-              Gerar link
-            </button>
-          </div>
-          <div class="file-row">
-            <div class="file-ic"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 15l-5-4-9 7"/></svg></div>
-            <div class="file-info"><b>foto-quadro-avisos.jpg</b><span>JPEG · 640 KB</span></div>
-            <button class="btn" data-toast="Link temporário gerado — expira em 15 minutos. Acesso registrado em auditoria.">
-              <svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
-              Gerar link
-            </button>
-          </div>
+        <div id="dEvid"></div>
+      </div>
+
+      <div class="card">
+        <div class="boafe">
+          <span class="ck"><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <span><b style="font-weight:600;color:var(--ink)">Declaração de boa-fé aceita.</b> O denunciante confirmou a veracidade das informações no envio <span id="dBoafeQuando" class="num"></span>.</span>
         </div>
       </div>
 
@@ -549,7 +557,7 @@
           <div class="gate-ic"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
           <div>
             <h2>Acesso restrito — dados de identidade</h2>
-            <p>Consulta disponível apenas para membros da CIPEAD. Cada consulta é registrada em auditoria com usuário, data/hora e protocolo, e os campos são decifrados sob demanda.</p>
+            <p>Consulta disponível apenas para membros da CIPEAD. Cada consulta é registrada em auditoria com usuário, data/hora e protocolo, e os campos são decifrados sob demanda. Os dados de contato são opcionais — muitas denúncias são anônimas.</p>
           </div>
         </div>
         <div class="gate-form">
@@ -562,33 +570,13 @@
       </div>
 
       <div class="card gate" id="contatoResult" hidden>
-        <div style="padding:20px 24px 16px;display:flex;flex-direction:column;gap:14px">
+        <div style="padding:20px 24px 16px">
           <div class="audit-banner">
             <svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/></svg>
-            Acesso registrado em auditoria — v.nascimento · 08/07/2026 09:41 · DN-2026-000126
+            <span id="cBannerText"></span>
           </div>
         </div>
-        <div class="contato-fields">
-          <div>
-            <div class="cf-label">Nome</div>
-            <div class="cf-val">Maria Exemplo dos Santos</div>
-            <div class="cf-tag"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>decifrado sob demanda · AES-256</div>
-          </div>
-          <div>
-            <div class="cf-label">Vínculo</div>
-            <div class="cf-val">Estudante</div>
-          </div>
-          <div>
-            <div class="cf-label">E-mail</div>
-            <div class="cf-val">maria.exemplo@exemplo.edu.br</div>
-            <div class="cf-tag"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>decifrado sob demanda · AES-256</div>
-          </div>
-          <div>
-            <div class="cf-label">Telefone</div>
-            <div class="cf-val">(71) 9 8765-0000</div>
-            <div class="cf-tag"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>decifrado sob demanda · AES-256</div>
-          </div>
-        </div>
+        <div id="cFields"></div>
       </div>
     </section>
 
@@ -638,24 +626,102 @@
 (function(){
   "use strict";
 
-  /* ---------- dados fictícios ---------- */
-  var GRAV_PILL = {Baixa:"p-baixa",Media:"p-media","Média":"p-media",Alta:"p-alta","Crítica":"p-critica"};
-  var STAT_PILL = {Pendente:"p-pendente","Em análise":"p-analise",Resolvido:"p-resolvido"};
-
-  var ocorrencias = [
-    {p:"DN-2026-000128",s:"Tutoria",g:"Crítica",st:"Pendente",a:1,d:"07/07/2026"},
-    {p:"DN-2026-000127",s:"Secretaria Acadêmica",g:"Baixa",st:"Pendente",a:0,d:"06/07/2026"},
-    {p:"DN-2026-000126",s:"Polo Camaçari",g:"Alta",st:"Em análise",a:2,d:"05/07/2026"},
-    {p:"DN-2026-000125",s:"Coordenação de Curso",g:"Média",st:"Em análise",a:1,d:"03/07/2026"},
-    {p:"DN-2026-000124",s:"TI / AVA",g:"Baixa",st:"Resolvido",a:0,d:"01/07/2026"},
-    {p:"DN-2026-000123",s:"Tutoria",g:"Média",st:"Resolvido",a:3,d:"29/06/2026"},
-    {p:"DN-2026-000122",s:"Polo Salvador",g:"Baixa",st:"Pendente",a:0,d:"27/06/2026"},
-    {p:"DN-2026-000121",s:"Coordenação de Curso",g:"Crítica",st:"Em análise",a:2,d:"25/06/2026"},
-    {p:"DN-2026-000120",s:"Secretaria Acadêmica",g:"Média",st:"Resolvido",a:1,d:"22/06/2026"},
-    {p:"DN-2026-000119",s:"Tutoria",g:"Alta",st:"Resolvido",a:1,d:"20/06/2026"},
-    {p:"DN-2026-000118",s:"TI / AVA",g:"Baixa",st:"Em análise",a:0,d:"18/06/2026"},
-    {p:"DN-2026-000117",s:"Polo Camaçari",g:"Média",st:"Pendente",a:1,d:"15/06/2026"}
+  /* ---------- domínios / rótulos (espelham o formulário público) ---------- */
+  var SETORES = [
+    "Coordenação de Sistemas / TI","Financeiro / Contabilidade","Jurídico / Advocacia",
+    "Recursos Humanos","Diretoria / Presidência","Atendimento / Secretaria",
+    "Licitações / Contratos","Subseção / Regional","Não sei informar"
   ];
+  var FREQ = {1:"Ocorreu uma vez",2:"Ocorre repetidamente",3:"Ocorre há mais de 6 meses",0:"Não sei informar"};
+  var TENTOU = {
+    1:"Não — primeira vez que reporto",
+    2:"Sim — reportei à chefia imediata, sem resposta",
+    3:"Sim — reportei ao RH, sem resolução",
+    4:"Não — receio de retaliação"
+  };
+  var VINCULO = {
+    1:"Colaborador / funcionário direto",2:"Estagiário",
+    3:"Prestador de serviço / terceirizado",4:"Advogado inscrito",5:"Prefiro não informar"
+  };
+  var GRAV_DESC = {
+    "Crítica":"Risco imediato à saúde, segurança ou integridade",
+    "Alta":"Situação em andamento sem resposta da gestão",
+    "Média":"Fato ocorreu, sem risco imediato atual",
+    "Baixa":"Suspeita ou histórico sem evidência concreta"
+  };
+  var GRAV_PILL = {"Baixa":"p-baixa","Média":"p-media","Alta":"p-alta","Crítica":"p-critica"};
+  var STAT_PILL = {"Pendente":"p-pendente","Em análise":"p-analise","Resolvido":"p-resolvido"};
+
+  /* nomes fictícios de arquivos por categoria (para o mock de evidências) */
+  var EVID = {
+    doc:[["relato-detalhado.pdf","PDF · 1,2 MB"],["planilha-registros.xlsx","XLSX · 340 KB"],["comunicado-interno.docx","DOCX · 88 KB"]],
+    img:[["print-conversa.png","PNG · 512 KB"],["foto-documento.jpg","JPEG · 1,1 MB"],["captura-tela.webp","WebP · 240 KB"]],
+    av:[["gravacao-audio.m4a","M4A · 8,4 MB"],["video-ocorrencia.mp4","MP4 · 64 MB"]]
+  };
+
+  /* ---------- ocorrências (relato — SEM identidade) ---------- */
+  var ocorrencias = [
+    {p:"DN-2026-000128",s:"Coordenação de Sistemas / TI",g:"Crítica",st:"Pendente",
+     quando:"julho/2026",freq:2,tentou:4,test:"Dois colegas do setor presenciaram os acessos fora de hora; posso indicá-los se necessário.",
+     docs:1,imgs:1,av:0,d:"07/07/2026",hm:"08:14",
+     rel:"Acessos indevidos a sistemas internos vêm ocorrendo fora do horário de expediente, com credenciais que não deveriam ter esse nível de permissão. Notei registros de exportação de bases que não correspondem a nenhuma rotina autorizada. Há risco de exposição de dados sensíveis se nada for feito com urgência."},
+    {p:"DN-2026-000127",s:"Financeiro / Contabilidade",g:"Baixa",st:"Pendente",
+     quando:"não sei precisar",freq:0,tentou:1,test:null,
+     docs:0,imgs:0,av:0,d:"06/07/2026",hm:"17:52",
+     rel:"Tenho a suspeita de que notas de reembolso vêm sendo aprovadas sem a devida conferência de comprovantes, mas não tenho acesso aos documentos para confirmar. Registro como histórico para que a comissão avalie se procede."},
+    {p:"DN-2026-000126",s:"Jurídico / Advocacia",g:"Alta",st:"Em análise",
+     quando:"junho/2026",freq:2,tentou:2,test:"Colegas que dividem a mesma sala podem confirmar os episódios.",
+     docs:1,imgs:1,av:0,d:"05/07/2026",hm:"14:32",
+     rel:"Presenciei condutas incompatíveis com as normas da instituição por parte de um responsável de setor, incluindo tratamento desrespeitoso e insinuações constrangedoras repetidas em mais de uma ocasião, na presença de outros colegas. Reportei à chefia imediata e não obtive resposta. Solicito que a situação seja apurada com discrição, pois os envolvidos seguem em contato direto no dia a dia."},
+    {p:"DN-2026-000125",s:"Recursos Humanos",g:"Média",st:"Em análise",
+     quando:"maio/2025",freq:3,tentou:3,test:null,
+     docs:2,imgs:0,av:0,d:"03/07/2026",hm:"11:05",
+     rel:"Há mais de seis meses observo distribuição desigual de tarefas e cobranças seletivas dentro da equipe, o que tem gerado sobrecarga em alguns colaboradores. Levei o assunto ao RH, sem resolução efetiva até o momento."},
+    {p:"DN-2026-000124",s:"Coordenação de Sistemas / TI",g:"Baixa",st:"Resolvido",
+     quando:"abril/2026",freq:1,tentou:1,test:null,
+     docs:0,imgs:0,av:0,d:"01/07/2026",hm:"09:40",
+     rel:"Reporto que um equipamento de rede ficou exposto em área de acesso comum por alguns dias. Situação pontual, sem indício de dano, mas registro para conhecimento."},
+    {p:"DN-2026-000123",s:"Licitações / Contratos",g:"Média",st:"Resolvido",
+     quando:"março/2026",freq:2,tentou:1,test:"O setor de compras acompanhou os processos citados.",
+     docs:2,imgs:1,av:0,d:"29/06/2026",hm:"16:20",
+     rel:"Identifiquei que um mesmo fornecedor foi contratado em processos seguidos sem a devida rotação ou justificativa formal. Anexo os documentos que consegui reunir para avaliação da comissão."},
+    {p:"DN-2026-000122",s:"Atendimento / Secretaria",g:"Baixa",st:"Pendente",
+     quando:"semana passada",freq:1,tentou:1,test:null,
+     docs:0,imgs:0,av:0,d:"27/06/2026",hm:"10:11",
+     rel:"O atendimento ao público tem sido feito, em alguns momentos, sem o cuidado adequado com informações pessoais de terceiros deixadas à vista no balcão."},
+    {p:"DN-2026-000121",s:"Diretoria / Presidência",g:"Crítica",st:"Em análise",
+     quando:"junho/2026",freq:2,tentou:4,test:"Prefiro não expor os nomes neste momento.",
+     docs:1,imgs:0,av:1,d:"25/06/2026",hm:"17:03",
+     rel:"Situação em andamento envolvendo decisão que expõe colaboradores a risco, tomada sem observar as normas internas. Tenho receio de retaliação por reportar, mas entendo a gravidade. Anexo uma gravação que ajuda a esclarecer o contexto."},
+    {p:"DN-2026-000120",s:"Financeiro / Contabilidade",g:"Média",st:"Resolvido",
+     quando:"fevereiro/2026",freq:1,tentou:3,test:null,
+     docs:1,imgs:0,av:0,d:"22/06/2026",hm:"13:47",
+     rel:"Notei divergência entre valores lançados e comprovantes em um processo específico. Levei ao RH e ao financeiro; foi corrigido, mas registro para histórico."},
+    {p:"DN-2026-000119",s:"Jurídico / Advocacia",g:"Alta",st:"Resolvido",
+     quando:"janeiro/2026",freq:2,tentou:2,test:"Dois colegas presenciaram o uso recorrente.",
+     docs:0,imgs:1,av:0,d:"20/06/2026",hm:"09:22",
+     rel:"Uso de estrutura do setor para finalidade particular, de forma recorrente. Reportei à chefia sem resposta à época; a situação foi posteriormente regularizada."},
+    {p:"DN-2026-000118",s:"Subseção / Regional",g:"Baixa",st:"Em análise",
+     quando:"não sei informar",freq:0,tentou:1,test:null,
+     docs:0,imgs:0,av:0,d:"18/06/2026",hm:"15:35",
+     rel:"Relato de possível irregularidade em uma subseção quanto ao controle de horários, sem confirmação. Registro para avaliação da comissão."},
+    {p:"DN-2026-000117",s:"Recursos Humanos",g:"Média",st:"Pendente",
+     quando:"junho/2026",freq:1,tentou:1,test:null,
+     docs:1,imgs:0,av:0,d:"15/06/2026",hm:"11:58",
+     rel:"Processo seletivo interno com critérios que não ficaram claros para os participantes. Anexo o comunicado recebido."}
+  ];
+
+  /* contato (identidade) — mapeado por protocolo; ausência = denúncia anônima */
+  var contatos = {
+    "DN-2026-000126":{nome:"João Exemplo de Souza",email:"joao.exemplo@exemplo.adv.br",tel:"(51) 9 9876-0000",vinculo:4},
+    "DN-2026-000125":{nome:"Ana Exemplo Lima",email:"ana.exemplo@exemplo.com.br",tel:"(51) 9 9765-0000",vinculo:1},
+    "DN-2026-000123":{nome:"Carlos Exemplo",email:"",tel:"(51) 9 9654-0000",vinculo:3},
+    "DN-2026-000121":{nome:"",email:"denunciante.exemplo@exemplo.com.br",tel:"",vinculo:1},
+    "DN-2026-000120":{nome:"Bruna Exemplo",email:"bruna.exemplo@exemplo.com.br",tel:"",vinculo:2},
+    "DN-2026-000119":{nome:"Diego Exemplo",email:"diego.exemplo@exemplo.adv.br",tel:"(51) 9 9543-0000",vinculo:4},
+    "DN-2026-000127":{nome:"",email:"anon.exemplo@exemplo.com.br",tel:"",vinculo:5},
+    "DN-2026-000117":{nome:"",email:"",tel:"",vinculo:5}
+  };
 
   var auditoria = [
     {t:"08/07/2026 09:41",u:"v.nascimento",a:"VIEW_CONTATO",p:"DN-2026-000126",ip:"200.128.44.17"},
@@ -672,12 +738,15 @@
 
   /* ---------- helpers ---------- */
   function el(id){return document.getElementById(id)}
-  function pill(cls,txt,dot){return '<span class="pill '+cls+'">'+(dot?'<span class="dot"></span>':'')+txt+'</span>'}
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function pill(cls,txt,dot){return '<span class="pill '+cls+'">'+(dot?'<span class="dot"></span>':'')+esc(txt)+'</span>'}
+  function gravDot(g){return g==="Alta"||g==="Crítica"}
+  function totEvid(o){return o.docs+o.imgs+o.av}
 
   /* ---------- navegação ---------- */
   var titles = {dashboard:"Dashboard",ocorrencias:"Ocorrências",detalhe:"Detalhe da ocorrência",contatos:"Contatos",auditoria:"Auditoria"};
   var navItems = document.querySelectorAll(".nav-item[data-view]");
+  var currentProto = "DN-2026-000126";
   function go(view){
     document.querySelectorAll(".view").forEach(function(v){v.hidden = (v.id !== "view-"+view)});
     navItems.forEach(function(n){
@@ -689,9 +758,15 @@
     window.scrollTo({top:0});
   }
   navItems.forEach(function(n){n.addEventListener("click",function(){go(n.dataset.view)})});
+
   document.addEventListener("click",function(e){
     var g = e.target.closest("[data-goto]");
-    if(g){go(g.dataset.goto)}
+    if(!g) return;
+    if(g.dataset.goto==="contatos" && currentProto){
+      el("cProto").value = currentProto;
+      el("contatoResult").hidden = true;
+    }
+    go(g.dataset.goto);
   });
 
   /* sidebar colapsável + drawer */
@@ -722,45 +797,111 @@
   }
   function hideTip(){tip.classList.remove("show")}
 
-  /* ---------- tabelas ---------- */
+  /* ---------- tabelas de ocorrências ---------- */
+  var byProto = {};
+  ocorrencias.forEach(function(o){byProto[o.p]=o});
+
   function rowHtml(o, withFiles){
-    return '<tr class="rowlink" tabindex="0" role="link" aria-label="Abrir '+o.p+'">'
+    var t = totEvid(o);
+    return '<tr class="rowlink" tabindex="0" role="link" data-proto="'+o.p+'" aria-label="Abrir '+o.p+'">'
       +'<td data-l="Protocolo" class="proto">'+o.p+'</td>'
       +'<td data-l="Setor">'+esc(o.s)+'</td>'
-      +'<td data-l="Gravidade">'+pill(GRAV_PILL[o.g],o.g,o.g==="Alta")+'</td>'
+      +'<td data-l="Gravidade">'+pill(GRAV_PILL[o.g],o.g,gravDot(o.g))+'</td>'
       +'<td data-l="Status">'+pill(STAT_PILL[o.st],o.st)+'</td>'
-      +(withFiles?'<td data-l="Evidências" class="num td-muted">'+(o.a? o.a+" arquivo"+(o.a>1?"s":"") : "—")+'</td>':'')
+      +(withFiles?'<td data-l="Evidências" class="num td-muted">'+(t? t+" arquivo"+(t>1?"s":"") : "—")+'</td>':'')
       +'<td data-l="Recebida" class="num td-muted">'+o.d+'</td></tr>';
   }
   el("tblRecentes").querySelector("tbody").innerHTML =
     ocorrencias.slice(0,6).map(function(o){return rowHtml(o,false)}).join("");
 
+  /* preencher filtro de setor */
+  el("fSetor").innerHTML = '<option value="">Todos</option>' +
+    SETORES.map(function(s){return '<option>'+esc(s)+'</option>'}).join("");
+
   function renderOcorrencias(){
-    var g = el("fGrav").value, st = el("fStatus").value, q = el("fBusca").value.trim().toUpperCase();
+    var g = el("fGrav").value, st = el("fStatus").value, se = el("fSetor").value,
+        q = el("fBusca").value.trim().toUpperCase();
     var rows = ocorrencias.filter(function(o){
-      return (!g || o.g===g) && (!st || o.st===st) && (!q || o.p.indexOf(q)>=0);
+      return (!g || o.g===g) && (!st || o.st===st) && (!se || o.s===se) && (!q || o.p.indexOf(q)>=0);
     });
     el("tblOcorrencias").querySelector("tbody").innerHTML = rows.map(function(o){return rowHtml(o,true)}).join("");
     el("emptyOco").classList.toggle("show", rows.length===0);
+    var filtered = (g||st||se||q);
     el("pagInfo").textContent = rows.length
-      ? "Mostrando 1–"+rows.length+" de "+(g||st||q ? rows.length : 128)+" ocorrências" : "";
+      ? "Mostrando 1–"+rows.length+" de "+(filtered ? rows.length : 128)+" ocorrências" : "";
   }
-  ["fGrav","fStatus","fBusca"].forEach(function(id){el(id).addEventListener("input",renderOcorrencias)});
-  function limpar(){el("fGrav").value="";el("fStatus").value="";el("fBusca").value="";renderOcorrencias()}
+  ["fGrav","fStatus","fSetor","fBusca"].forEach(function(id){el(id).addEventListener("input",renderOcorrencias)});
+  function limpar(){el("fGrav").value="";el("fStatus").value="";el("fSetor").value="";el("fBusca").value="";renderOcorrencias()}
   el("btnLimpar").addEventListener("click",limpar);
   el("btnLimpar2").addEventListener("click",limpar);
   renderOcorrencias();
 
-  /* clique em linha -> detalhe */
+  /* clique/enter em linha -> detalhe */
   document.addEventListener("click",function(e){
     var tr = e.target.closest("tr.rowlink");
-    if(tr) go("detalhe");
+    if(tr) openDetail(byProto[tr.dataset.proto]);
   });
   document.addEventListener("keydown",function(e){
-    if(e.key==="Enter" && e.target.matches("tr.rowlink")) go("detalhe");
+    if(e.key==="Enter" && e.target.matches("tr.rowlink")) openDetail(byProto[e.target.dataset.proto]);
   });
 
-  /* auditoria */
+  /* ---------- detalhe ---------- */
+  function metaCell(l,v){return '<div><div class="m-label">'+l+'</div><div class="m-val">'+esc(v)+'</div></div>'}
+
+  function fileRow(name,meta,type){
+    var icon = type==="img"
+      ? '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 15l-5-4-9 7"/>'
+      : type==="av"
+      ? '<circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3z"/>'
+      : '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>';
+    return '<div class="file-row">'
+      +'<div class="file-ic"><svg class="ic" viewBox="0 0 24 24">'+icon+'</svg></div>'
+      +'<div class="file-info"><b>'+esc(name)+'</b><span>'+esc(meta)+'</span></div>'
+      +'<button class="btn" data-toast="Link temporário gerado — expira em 15 minutos, uso único. Acesso registrado em auditoria.">'
+      +'<svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>Gerar link</button></div>';
+  }
+  function evidGroup(title,list,count,type){
+    if(!count) return "";
+    var rows = "";
+    for(var i=0;i<count;i++){var f=list[i%list.length];rows+=fileRow(f[0],f[1],type)}
+    return '<div class="evid-h">'+title+' · '+count+'</div>'+rows;
+  }
+
+  function openDetail(o){
+    currentProto = o.p;
+    el("dProto").textContent = o.p;
+    el("dGravPill").innerHTML = pill(GRAV_PILL[o.g],o.g,gravDot(o.g));
+    el("dStatusPill").innerHTML = pill(STAT_PILL[o.st],o.st);
+    el("dGravDesc").textContent = o.g+" — "+GRAV_DESC[o.g];
+
+    var t = totEvid(o);
+    el("dMeta").innerHTML =
+      metaCell("Setor envolvido", o.s)
+      + metaCell("Quando ocorreu", o.quando || "Não informado")
+      + metaCell("Frequência", FREQ[o.freq])
+      + metaCell("Tentou resolver antes", TENTOU[o.tentou])
+      + metaCell("Recebida em", o.d+" · "+o.hm)
+      + metaCell("Evidências", t ? t+" arquivo"+(t>1?"s":"") : "Nenhuma");
+
+    el("dRelato").innerHTML = "<p>"+esc(o.rel)+"</p>";
+
+    if(o.test){ el("dTestCard").hidden=false; el("dTest").textContent=o.test; }
+    else { el("dTestCard").hidden=true; }
+
+    if(t){
+      el("dEvid").innerHTML =
+        evidGroup("Documentos", EVID.doc, o.docs, "doc")
+        + evidGroup("Imagens e prints", EVID.img, o.imgs, "img")
+        + evidGroup("Áudio ou vídeo", EVID.av, o.av, "av");
+    } else {
+      el("dEvid").innerHTML = '<p class="no-evid">Nenhuma evidência anexada a esta ocorrência.</p>';
+    }
+
+    el("dBoafeQuando").textContent = "("+o.d+" · "+o.hm+")";
+    go("detalhe");
+  }
+
+  /* ---------- auditoria ---------- */
   var ACAO_PILL = {VIEW_CONTATO:"a-viewcontato",LOGIN:"a-outline",LIST_RELATOS:"a-outline",VIEW_RELATO:"a-neutral",DOWNLOAD_ARQUIVO:"a-neutral"};
   function renderAudit(){
     var f = el("aAcao").value;
@@ -776,16 +917,47 @@
   el("aAcao").addEventListener("input",renderAudit);
   renderAudit();
 
-  /* contatos */
-  el("btnConsultar").addEventListener("click",function(){
+  /* ---------- contatos ---------- */
+  function encField(label,val){
+    var has = val && val.length;
+    return '<div><div class="cf-label">'+label+'</div>'
+      +'<div class="cf-val'+(has?'':' empty-val')+'">'+(has?esc(val):"— não informado")+'</div>'
+      +(has?'<div class="cf-tag"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>decifrado sob demanda · AES-256</div>':'')
+      +'</div>';
+  }
+  function plainField(label,val){
+    var has = val && val.length;
+    return '<div><div class="cf-label">'+label+'</div>'
+      +'<div class="cf-val'+(has?'':' empty-val')+'">'+(has?esc(val):"— não informado")+'</div></div>';
+  }
+  function renderContato(){
+    var proto = el("cProto").value.trim().toUpperCase();
+    var c = contatos[proto];
     el("contatoResult").hidden = false;
+    el("cBannerText").textContent = "Acesso registrado em auditoria — v.nascimento · 08/07/2026 09:41 · "+(proto||"—");
+    if(!c){
+      el("cFields").innerHTML =
+        '<div style="padding:22px 24px 26px"><p class="notice" style="border:0;background:transparent;padding:0">'
+        +'<svg class="ic" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7.5" r="3.5"/><path d="M17 11l4 4M21 11l-4 4"/></svg>'
+        +'<span><b>Sem dados de contato.</b> Este protocolo foi enviado de forma anônima ou não teve contato informado — os campos de identidade são opcionais no formulário.</span></p></div>';
+      return;
+    }
+    el("cFields").innerHTML = '<div class="contato-fields">'
+      + encField("Nome ou apelido", c.nome)
+      + plainField("Vínculo com a OAB/RS", VINCULO[c.vinculo])
+      + encField("E-mail pessoal", c.email)
+      + encField("Telefone pessoal", c.tel)
+      + '</div>';
+  }
+  el("btnConsultar").addEventListener("click",function(){
+    renderContato();
     toast("Acesso a dados de contato registrado em auditoria.");
   });
 
   /* ---------- gráficos (SVG estático — no painel real: recharts) ---------- */
   var INK="#18181B", GRID="#F0F0F1", AXIS="#A1A1AA", LABEL="#71717A";
 
-  /* barras — gravidade (ordinal: rampa de cinza claro->escuro) */
+  /* barras — gravidade (rampa de cinza claro->escuro) */
   (function(){
     var data=[{l:"Baixa",v:52,c:"#D4D4D8"},{l:"Média",v:41,c:"#A1A1AA"},{l:"Alta",v:21,c:"#52525B"},{l:"Crítica",v:14,c:"#18181B"}];
     var W=480,H=232,mL=34,mR=10,mT=22,mB=30,max=60;
@@ -798,7 +970,7 @@
     });
     data.forEach(function(d,i){
       var h=(d.v/max)*ih, x=mL+step*i+(step-bw)/2, y=mT+ih-h, r=4;
-      s+='<path class="bar" data-v="'+d.l+': <b>'+d.v+'</b>" d="M'+x+','+(mT+ih)+' L'+x+','+(y+r)+' Q'+x+','+y+' '+(x+r)+','+y
+      s+='<path data-v="'+d.l+': <b>'+d.v+'</b>" d="M'+x+','+(mT+ih)+' L'+x+','+(y+r)+' Q'+x+','+y+' '+(x+r)+','+y
         +' L'+(x+bw-r)+','+y+' Q'+(x+bw)+','+y+' '+(x+bw)+','+(y+r)+' L'+(x+bw)+','+(mT+ih)+' Z" fill="'+d.c+'"/>';
       s+='<text x="'+(x+bw/2)+'" y="'+(y-7)+'" text-anchor="middle" font-size="12" font-weight="600" fill="'+INK+'">'+d.v+'</text>';
       s+='<text x="'+(x+bw/2)+'" y="'+(H-9)+'" text-anchor="middle" font-size="11.5" fill="'+LABEL+'">'+d.l+'</text>';
@@ -828,7 +1000,7 @@
       if(labels[i]!==undefined){
         s+='<text x="'+X(i)+'" y="'+(H-9)+'" text-anchor="middle" font-size="11" fill="'+LABEL+'">'+labels[i]+'</text>';
       }
-      s+='<rect class="pt" data-v="Semana de '+(labels[i]||"")+' <b>'+val+'</b> ocorrências" x="'+(X(i)-iw/(v.length-1)/2)+'" y="'+mT+'" width="'+(iw/(v.length-1))+'" height="'+ih+'" fill="transparent" data-cx="'+X(i)+'" data-cy="'+Y(val)+'"/>';
+      s+='<rect data-v="Semana '+(i+1)+': <b>'+val+'</b> ocorrências" x="'+(X(i)-iw/(v.length-1)/2)+'" y="'+mT+'" width="'+(iw/(v.length-1))+'" height="'+ih+'" fill="transparent"/>';
     });
     var lx=X(v.length-1), ly=Y(v[v.length-1]);
     s+='<circle cx="'+lx+'" cy="'+ly+'" r="4" fill="'+INK+'" stroke="#FFF" stroke-width="2"/>';
@@ -839,10 +1011,11 @@
 
   /* setores — barras horizontais HTML */
   (function(){
-    var data=[["Coordenação de Curso",34],["Secretaria Acadêmica",27],["Tutoria",22],["Polos de apoio",19],["TI / AVA",15],["Outros",11]];
-    var max=34;
+    var data=[["Jurídico / Advocacia",31],["Financeiro / Contabilidade",26],["Recursos Humanos",22],
+              ["Coordenação de Sistemas / TI",18],["Licitações / Contratos",16],["Atendimento / Secretaria",15]];
+    var max=31;
     el("chartSetor").innerHTML = data.map(function(d){
-      return '<div class="sector-row"><div class="s-top"><b>'+d[0]+'</b><span>'+d[1]+'</span></div>'
+      return '<div class="sector-row"><div class="s-top"><b>'+esc(d[0])+'</b><span>'+d[1]+'</span></div>'
         +'<div class="sector-track"><div class="sector-fill" style="width:'+(d[1]/max*100).toFixed(1)+'%"></div></div></div>';
     }).join("");
   })();
@@ -853,6 +1026,10 @@
     if(m){showTip(e.clientX,e.clientY,m.dataset.v)} else {hideTip()}
   });
   document.addEventListener("pointerleave",hideTip,true);
+
+  /* estado inicial do detalhe (caso aberto direto) */
+  openDetail(byProto["DN-2026-000126"]);
+  go("dashboard");
 })();
 </script>
 </body>

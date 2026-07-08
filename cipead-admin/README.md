@@ -11,6 +11,30 @@ backend foi iniciada (conforme combinado).
 | `docs/schema.sql` | Proposta de schema SQL Server: relato, arquivos, contato (sem FK, ligação por HMAC), auditoria append-only, contas de serviço com privilégio mínimo e Row-Level Security. |
 | `docs/seguranca.md` | Estratégia de hash do protocolo (HMAC-SHA256 + pepper) e criptografia dos campos de identidade (AES-256-GCM com versionamento de chave), tokens temporários de download, autenticação. |
 
+## Campos recebidos do formulário público (OAB/RS)
+
+O painel foi modelado para receber **exatamente** os campos do canal de
+denúncias já aprovado. Mapeamento formulário → painel:
+
+| Campo do formulário | Onde vive | Onde aparece no painel |
+|---|---|---|
+| Relato dos fatos *(obrigatório)* | `relato.relato` | Detalhe |
+| Setor envolvido | `relato.setor` | Listagem, filtro, detalhe, gráfico |
+| Quando ocorreu | `relato.quando_ocorreu` | Detalhe |
+| Frequência | `relato.frequencia` | Detalhe |
+| Gravidade *(obrigatório)* | `relato.gravidade` | Listagem, filtro, dashboard, detalhe |
+| Tentou resolver antes | `relato.tentou_resolver` | Detalhe |
+| Testemunhas | `relato.testemunhas` | Detalhe (com aviso de terceiros) |
+| Documentos / Imagens / Áudio-vídeo | `arquivo` (categoria 1–4) | Detalhe (download por token) |
+| Nome ou apelido | `contato.nome_enc` 🔒 | Tela Contatos |
+| E-mail pessoal | `contato.email_enc` 🔒 | Tela Contatos |
+| Telefone pessoal | `contato.telefone_enc` 🔒 | Tela Contatos |
+| Vínculo com a OAB/RS | `contato.vinculo` | Tela Contatos |
+| Declaração de boa-fé *(obrigatório)* | `relato.declaracao_boafe` | Detalhe (confirmação) |
+
+Campos de contato são opcionais — denúncias anônimas simplesmente não geram
+linha em `db_denuncia_contato`, e o painel mostra "sem dados de contato".
+
 ## Dúvidas em aberto (decisão jurídica/organizacional)
 
 1. **Retenção de dados (LGPD):** por quanto tempo relato, contato, arquivos e
@@ -30,6 +54,9 @@ backend foi iniciada (conforme combinado).
    irrecuperáveis — isso precisa estar formalizado.
 5. **Denúncia anônima:** o formulário permite envio sem contato? (O modelo já
    suporta: simplesmente não há linha na tabela de contato.)
+5a. **Campo "testemunhas":** por conter possíveis nomes de terceiros, deve ser
+   cifrado em repouso como os dados de contato, ou basta a proteção de acesso
+   do relato? (Hoje modelado em texto no relato, exibido só sob autenticação.)
 6. **E-mail de notificação:** qual endereço institucional da CIPEAD recebe o
    aviso de nova denúncia, e o servidor tem SMTP autorizado para enviá-lo?
 7. **Backups:** os backups do banco herdam a criptografia de coluna (sim, os

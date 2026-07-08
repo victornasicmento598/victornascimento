@@ -75,12 +75,32 @@ aleatório por campo, por escrita.
 4. **Sem FK entre contato e relato:** o isolamento é estrutural, não só de
    permissão.
 
+## 3b. Campo "testemunhas" — cuidado de privacidade
+
+O formulário coleta um campo livre de **testemunhas** (cargo/nome de quem
+presenciou) dentro do passo de Relato. Ele **não é dado de contato do
+denunciante** e por isso vive em `db_denuncia_relato`, não na tabela cifrada de
+contato. Mas pode conter nomes de terceiros. Tratamento adotado:
+
+- Exibido **apenas** na tela de detalhe do relato, sob autenticação e papel
+  `CIPEAD` (mesma proteção do restante do relato).
+- Sinalizado na interface com aviso de que pode conter identidade de terceiros.
+- Não entra em listagem, dashboard nem em exportações.
+- Decisão em aberto (ver README): avaliar se, juridicamente, esse campo deve
+  também ser cifrado em repouso como os dados de contato.
+
 ## 4. Arquivos de evidência
 
 - Gravados fora do webroot (ex.: `/var/uploads/AAAA/MM/<uuid>.bin`), nome
   aleatório, sem extensão original, permissão `0640` para o usuário do PHP.
-- Validação **no backend**: allowlist de MIME (verificado por `finfo`, não
-  pela extensão), tamanho máximo, contagem máxima por denúncia.
+- Validação **no backend**, por categoria (o form separa documento, imagem,
+  áudio e vídeo): allowlist de MIME verificada por `finfo` (não pela extensão)
+  e **limite de tamanho por categoria** — documento/imagem 20 MB, áudio 50 MB,
+  vídeo 200 MB — além de contagem máxima por denúncia. Nunca confiar no
+  `accept`/tamanho informado pelo frontend.
+  - Documentos: PDF, DOC, DOCX, XLS, XLSX, TXT, CSV
+  - Imagens: JPG, PNG, WebP, GIF
+  - Áudio: MP3, WAV, M4A · Vídeo: MP4, MOV
 - Download somente por token temporário: o painel pede um link → backend
   registra auditoria e emite token aleatório (32 bytes) com validade curta
   (ex.: 15 min), single-use, associado ao arquivo e ao usuário → endpoint de

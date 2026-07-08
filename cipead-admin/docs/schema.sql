@@ -21,24 +21,46 @@ CREATE SEQUENCE dbo.seq_denuncia_protocolo
 ------------------------------------------------------------------------------
 -- 1. RELATO — conteúdo da denúncia, SEM identidade
 ------------------------------------------------------------------------------
+-- Campos espelham exatamente o formulário público (passos 1 e 4).
+-- Só relato e gravidade são obrigatórios no envio; os demais podem ser NULL.
 CREATE TABLE dbo.db_denuncia_relato (
-    id            BIGINT IDENTITY(1,1) NOT NULL,
-    protocolo     CHAR(14)      NOT NULL,          -- DN-YYYY-XXXXXX
-    relato        NVARCHAR(MAX) NOT NULL,
-    setor         NVARCHAR(120) NOT NULL,
-    gravidade     TINYINT       NOT NULL,          -- 1 baixa · 2 média · 3 alta · 4 crítica
-    status        TINYINT       NOT NULL
+    id                BIGINT IDENTITY(1,1) NOT NULL,
+    protocolo         CHAR(14)      NOT NULL,      -- DN-YYYY-XXXXXX
+    relato            NVARCHAR(4000) NOT NULL,     -- limite de 4.000 caracteres no form
+    setor             TINYINT       NULL,          -- FK lógica p/ domínio de setores (opcional)
+    quando_ocorreu    NVARCHAR(120) NULL,          -- texto livre: "março/2025", "semana passada"
+    frequencia        TINYINT       NULL,          -- 1 uma vez · 2 repetidamente · 3 +6 meses · 0 não sei
+    gravidade         TINYINT       NOT NULL,      -- 1 baixa · 2 média · 3 alta · 4 crítica
+    tentou_resolver   TINYINT       NULL,          -- 1 não/1ª vez · 2 chefia s/ resp · 3 RH s/ resol · 4 receio retaliação
+    testemunhas       NVARCHAR(MAX) NULL,          -- texto livre; ATENÇÃO: pode conter nomes de terceiros
+    declaracao_boafe  BIT           NOT NULL       -- checkbox obrigatório p/ envio (sempre 1)
+        CONSTRAINT DF_relato_boafe DEFAULT (1),
+    status            TINYINT       NOT NULL
         CONSTRAINT DF_relato_status DEFAULT (1),   -- 1 pendente · 2 em análise · 3 resolvido
-    criado_em     DATETIME2(0)  NOT NULL
+    criado_em         DATETIME2(0)  NOT NULL
         CONSTRAINT DF_relato_criado DEFAULT (SYSUTCDATETIME()),
 
     CONSTRAINT PK_relato            PRIMARY KEY CLUSTERED (id),
     CONSTRAINT UQ_relato_protocolo  UNIQUE (protocolo),
     CONSTRAINT CK_relato_gravidade  CHECK (gravidade BETWEEN 1 AND 4),
     CONSTRAINT CK_relato_status     CHECK (status BETWEEN 1 AND 3),
+    CONSTRAINT CK_relato_freq       CHECK (frequencia IS NULL OR frequencia BETWEEN 0 AND 3),
+    CONSTRAINT CK_relato_tentou     CHECK (tentou_resolver IS NULL OR tentou_resolver BETWEEN 1 AND 4),
+    CONSTRAINT CK_relato_setor      CHECK (setor IS NULL OR setor BETWEEN 1 AND 9),
+    CONSTRAINT CK_relato_boafe      CHECK (declaracao_boafe = 1),  -- sem aceite, não há registro
     CONSTRAINT CK_relato_protocolo  CHECK (protocolo LIKE
         'DN-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9][0-9][0-9]')
 );
+
+-- Domínio de setores (espelha o select do formulário):
+--   1 Coordenação de Sistemas / TI   2 Financeiro / Contabilidade
+--   3 Jurídico / Advocacia           4 Recursos Humanos
+--   5 Diretoria / Presidência        6 Atendimento / Secretaria
+--   7 Licitações / Contratos         8 Subseção / Regional
+--   9 Não sei informar
+-- ATENÇÃO (privacidade): `testemunhas` faz parte do RELATO, mas pode conter
+-- nomes/cargos de terceiros. Não é dado de contato do denunciante, porém deve
+-- receber a mesma discrição no painel (exibido só no detalhe, sob autenticação).
 
 CREATE INDEX IX_relato_gravidade_data ON dbo.db_denuncia_relato (gravidade, criado_em DESC);
 CREATE INDEX IX_relato_data           ON dbo.db_denuncia_relato (criado_em DESC);
@@ -47,18 +69,25 @@ CREATE INDEX IX_relato_data           ON dbo.db_denuncia_relato (criado_em DESC)
 -- 1b. ARQUIVOS de evidência (1:N com o relato; binário fica FORA do banco
 --     e fora do webroot — aqui só metadados e o caminho interno)
 ------------------------------------------------------------------------------
+-- 3 categorias no formulário, com limites distintos validados no BACKEND:
+--   1 documento  (PDF/DOC/DOCX/XLS/XLSX/TXT/CSV)            até  20 MB
+--   2 imagem     (JPG/PNG/WebP/GIF)                          até  20 MB
+--   3 audio      (MP3/WAV/M4A)                               até  50 MB
+--   4 video      (MP4/MOV)                                   até 200 MB
 CREATE TABLE dbo.db_denuncia_arquivo (
     id              BIGINT IDENTITY(1,1) NOT NULL,
     relato_id       BIGINT        NOT NULL,
+    categoria       TINYINT       NOT NULL,        -- 1 doc · 2 imagem · 3 áudio · 4 vídeo
     nome_original   NVARCHAR(255) NOT NULL,
-    mime_type       VARCHAR(100)  NOT NULL,        -- validado no backend (allowlist)
-    tamanho_bytes   BIGINT        NOT NULL,
-    caminho_storage VARCHAR(400)  NOT NULL,        -- ex.: /var/uploads/2026/07/<uuid>.bin
+    mime_type       VARCHAR(100)  NOT NULL,        -- validado por finfo (allowlist), não pela extensão
+    tamanho_bytes   BIGINT        NOT NULL,        -- limite conferido por categoria no backend
+    caminho_storage VARCHAR(400)  NOT NULL,        -- ex.: /var/uploads/2026/07/<uuid>.bin (fora do webroot)
     sha256_conteudo CHAR(64)      NOT NULL,        -- integridade do arquivo
     criado_em       DATETIME2(0)  NOT NULL
         CONSTRAINT DF_arquivo_criado DEFAULT (SYSUTCDATETIME()),
 
     CONSTRAINT PK_arquivo PRIMARY KEY CLUSTERED (id),
+    CONSTRAINT CK_arquivo_categoria CHECK (categoria BETWEEN 1 AND 4),
     CONSTRAINT FK_arquivo_relato FOREIGN KEY (relato_id)
         REFERENCES dbo.db_denuncia_relato (id)
 );
@@ -78,7 +107,9 @@ CREATE TABLE dbo.db_denuncia_contato (
     nome_enc       VARBINARY(560) NULL,
     email_enc      VARBINARY(560) NULL,
     telefone_enc   VARBINARY(280) NULL,
-    vinculo        TINYINT        NULL,            -- 1 estudante · 2 servidor · 3 terceirizado · 4 externo
+    vinculo        TINYINT        NULL,            -- 1 colaborador/func. direto · 2 estagiário
+                                                   -- 3 prestador/terceirizado · 4 advogado inscrito
+                                                   -- 5 prefiro não informar (vínculo não é cifrado: é código)
     key_version    SMALLINT       NOT NULL
         CONSTRAINT DF_contato_keyver DEFAULT (1),  -- suporta rotação de chave
     criado_em      DATETIME2(0)   NOT NULL
@@ -86,7 +117,7 @@ CREATE TABLE dbo.db_denuncia_contato (
 
     CONSTRAINT PK_contato         PRIMARY KEY CLUSTERED (id),
     CONSTRAINT UQ_contato_hash    UNIQUE (hash_protocolo),
-    CONSTRAINT CK_contato_vinculo CHECK (vinculo BETWEEN 1 AND 4)
+    CONSTRAINT CK_contato_vinculo CHECK (vinculo IS NULL OR vinculo BETWEEN 1 AND 5)
 );
 -- Denúncia anônima: simplesmente não há linha em db_denuncia_contato.
 
