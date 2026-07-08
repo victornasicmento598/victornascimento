@@ -99,9 +99,33 @@
   .hamburger:hover{background:var(--wash)}
   .topbar h1{font-size:15px;font-weight:600;letter-spacing:-.01em}
   .proto-badge{
-    margin-left:auto;font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
+    margin-left:14px;font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
     color:var(--ink-3);border:1px dashed var(--line-2);border-radius:999px;padding:3px 10px;
   }
+  .bell{position:relative;margin-left:auto;flex:none;width:38px;height:38px;border-radius:9px;display:grid;place-items:center;color:var(--ink-2);transition:background var(--t),color var(--t)}
+  .bell:hover{background:var(--wash);color:var(--ink)}
+  .bell .ic{width:19px;height:19px}
+  .bell-badge{position:absolute;top:4px;right:4px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--red-ink);color:#FFF;font-size:10px;font-weight:600;line-height:16px;text-align:center;font-variant-numeric:tabular-nums;border:2px solid var(--page)}
+  .bell-badge[hidden]{display:none}
+  .bell.pulse{animation:bellpulse .5s ease}
+  @keyframes bellpulse{0%,100%{transform:none}25%{transform:rotate(-13deg)}55%{transform:rotate(10deg)}80%{transform:rotate(-4deg)}}
+  @media (prefers-reduced-motion:reduce){.bell.pulse{animation:none}}
+
+  .newbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 24px;border-top:1px solid var(--line);background:var(--wash)}
+  .newbar[hidden]{display:none}
+  .newbar .nb-left{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2)}
+  .newbar .nb-dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--green-ink);box-shadow:0 0 0 3px var(--green-bg)}
+  .newbar b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+  .newbar .btn{height:32px;flex:none}
+
+  .th-sort{display:inline-flex;align-items:center;gap:5px;font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;cursor:pointer;padding:0;background:none;transition:color var(--t)}
+  .th-sort:hover{color:var(--ink-2)}
+  th[aria-sort] .th-sort{color:var(--ink)}
+  .sar{display:inline-flex;width:12px;height:12px;color:var(--ink-3);opacity:0;transition:opacity var(--t)}
+  .th-sort:hover .sar{opacity:.6}
+  th[aria-sort] .sar{opacity:1;color:var(--ink)}
+  .sar svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .sort-mobile{display:none}
   .content{max-width:1180px;margin:0 auto;padding:32px 40px 64px;display:flex;flex-direction:column;gap:20px}
   .view[hidden]{display:none}
   .view{display:flex;flex-direction:column;gap:20px}
@@ -379,6 +403,8 @@
     .tbl-cards td[data-l]::before{content:attr(data-l);display:block;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
     .search-wrap .inp{width:100%}
     .filters .field{flex:1 1 140px}
+    .sort-mobile{display:flex;flex:1 1 100%}
+    .newbar{flex-wrap:wrap}
   }
   @media (max-width:480px){
     .metrics{grid-template-columns:1fr}
@@ -500,6 +526,10 @@
       <svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
     <h1 id="viewTitle">Dashboard</h1>
+    <button class="bell" id="btnBell" aria-label="Novas ocorrências recebidas" title="Novas ocorrências">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      <span class="bell-badge" id="bellBadge" hidden>0</span>
+    </button>
     <span class="proto-badge">Protótipo estático · dados fictícios</span>
   </header>
 
@@ -510,17 +540,17 @@
       <div class="metrics">
         <div class="metric">
           <div class="m-label">Total de ocorrências</div>
-          <div class="m-value">128</div>
+          <div class="m-value" id="mTotal">128</div>
           <div class="m-sub">desde a abertura do canal</div>
         </div>
         <div class="metric">
           <div class="m-label">Pendentes</div>
-          <div class="m-value">23</div>
+          <div class="m-value" id="mPend">23</div>
           <div class="m-sub">aguardando análise</div>
         </div>
         <div class="metric">
           <div class="m-label">Últimos 7 dias</div>
-          <div class="m-value">9</div>
+          <div class="m-value" id="m7">9</div>
           <div class="m-sub">+3 vs. semana anterior</div>
         </div>
         <div class="metric alert">
@@ -593,11 +623,38 @@
             <label for="fAte">Até</label>
             <input class="inp" id="fAte" type="date" value="2026-07-08">
           </div>
+          <div class="field sort-mobile">
+            <label for="sortMobile">Ordenar por</label>
+            <select class="sel" id="sortMobile">
+              <option value="data:desc">Mais recentes</option>
+              <option value="data:asc">Mais antigas</option>
+              <option value="grav:desc">Gravidade (maior)</option>
+              <option value="grav:asc">Gravidade (menor)</option>
+              <option value="status:asc">Status</option>
+              <option value="setor:asc">Setor (A–Z)</option>
+              <option value="proto:desc">Protocolo (maior)</option>
+              <option value="evid:desc">Mais evidências</option>
+            </select>
+          </div>
           <button class="btn btn-ghost" id="btnLimpar">Limpar</button>
+        </div>
+        <div class="newbar" id="newbar" hidden>
+          <span class="nb-left"><span class="nb-dot" aria-hidden="true"></span><span><b id="newbarN">0</b> nova(s) ocorrência(s) recebida(s) desde que você abriu a lista.</span></span>
+          <button class="btn" id="btnAtualizar">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 4v5h-5"/></svg>
+            Atualizar lista
+          </button>
         </div>
         <div style="overflow-x:auto;border-top:1px solid var(--line)">
           <table class="tbl tbl-cards" id="tblOcorrencias">
-            <thead><tr><th>Protocolo</th><th>Setor</th><th>Gravidade</th><th>Status</th><th>Evidências</th><th>Recebida</th></tr></thead>
+            <thead><tr>
+              <th data-col="proto"><button class="th-sort" data-sort="proto" type="button">Protocolo<span class="sar"></span></button></th>
+              <th data-col="setor"><button class="th-sort" data-sort="setor" type="button">Setor<span class="sar"></span></button></th>
+              <th data-col="grav"><button class="th-sort" data-sort="grav" type="button">Gravidade<span class="sar"></span></button></th>
+              <th data-col="status"><button class="th-sort" data-sort="status" type="button">Status<span class="sar"></span></button></th>
+              <th data-col="evid"><button class="th-sort" data-sort="evid" type="button">Evidências<span class="sar"></span></button></th>
+              <th data-col="data"><button class="th-sort" data-sort="data" type="button">Recebida<span class="sar"></span></button></th>
+            </tr></thead>
             <tbody></tbody>
           </table>
           <div class="empty" id="emptyOco">
@@ -934,6 +991,7 @@
       lgBtn.disabled = false; lgBtn.innerHTML = "Entrar";
       go("dashboard");
       toast("Bem-vindo(a) ao painel, " + u + ".");
+      startArrivals();
     }, 750);
   });
   el("lgEye").addEventListener("click",function(){
@@ -995,19 +1053,66 @@
   el("fSetor").innerHTML = '<option value="">Todos</option>' +
     SETORES.map(function(s){return '<option>'+esc(s)+'</option>'}).join("");
 
+  /* ---- ordenação ---- */
+  var GRAV_ORD = {"Baixa":1,"Média":2,"Alta":3,"Crítica":4};
+  var STAT_ORD = {"Pendente":1,"Em análise":2,"Resolvido":3};
+  function tsOf(o){var d=o.d.split("/"),t=(o.hm||"00:00").split(":");
+    return new Date(+d[2],+d[1]-1,+d[0],+t[0],+t[1]).getTime();}
+  var sortKey = "data", sortDir = "desc";
+  function cmp(a,b){
+    var r;
+    switch(sortKey){
+      case "proto": r=a.p.localeCompare(b.p); break;
+      case "setor": r=a.s.localeCompare(b.s,"pt"); break;
+      case "grav":  r=GRAV_ORD[a.g]-GRAV_ORD[b.g]; break;
+      case "status":r=STAT_ORD[a.st]-STAT_ORD[b.st]; break;
+      case "evid":  r=totEvid(a)-totEvid(b); break;
+      default:      r=tsOf(a)-tsOf(b);
+    }
+    if(r===0) r=tsOf(a)-tsOf(b);
+    return sortDir==="asc" ? r : -r;
+  }
+  var CH_UP='<svg viewBox="0 0 24 24"><path d="M6 14l6-6 6 6"/></svg>';
+  var CH_DOWN='<svg viewBox="0 0 24 24"><path d="M6 10l6 6 6-6"/></svg>';
+  var CH_NEUTRAL='<svg viewBox="0 0 24 24"><path d="M8 10l4-4 4 4M8 14l4 4 4-4"/></svg>';
+  function updateSortIndicators(){
+    var ths = document.querySelectorAll("#tblOcorrencias thead th[data-col]");
+    Array.prototype.forEach.call(ths,function(th){
+      var sar = th.querySelector(".sar");
+      if(th.dataset.col===sortKey){
+        th.setAttribute("aria-sort", sortDir==="asc"?"ascending":"descending");
+        sar.innerHTML = sortDir==="asc"?CH_UP:CH_DOWN;
+      } else { th.removeAttribute("aria-sort"); sar.innerHTML = CH_NEUTRAL; }
+    });
+  }
+
   function renderOcorrencias(){
     var g = el("fGrav").value, st = el("fStatus").value, se = el("fSetor").value,
         q = el("fBusca").value.trim().toUpperCase();
     var rows = ocorrencias.filter(function(o){
       return (!g || o.g===g) && (!st || o.st===st) && (!se || o.s===se) && (!q || o.p.indexOf(q)>=0);
     });
+    rows.sort(cmp);
     el("tblOcorrencias").querySelector("tbody").innerHTML = rows.map(function(o){return rowHtml(o,true)}).join("");
     el("emptyOco").classList.toggle("show", rows.length===0);
     var filtered = (g||st||se||q);
     el("pagInfo").textContent = rows.length
-      ? "Mostrando 1–"+rows.length+" de "+(filtered ? rows.length : 128)+" ocorrências" : "";
+      ? "Mostrando 1–"+rows.length+" de "+(filtered ? rows.length : ocorrencias.length)+" ocorrências" : "";
+    updateSortIndicators();
   }
   ["fGrav","fStatus","fSetor","fBusca"].forEach(function(id){el(id).addEventListener("input",renderOcorrencias)});
+
+  function applySort(k,dir){ sortKey=k; sortDir=dir; el("sortMobile").value=k+":"+dir; renderOcorrencias(); }
+  Array.prototype.forEach.call(document.querySelectorAll("#tblOcorrencias .th-sort"),function(btn){
+    btn.addEventListener("click",function(){
+      var k = btn.dataset.sort;
+      if(sortKey===k) applySort(k, sortDir==="asc"?"desc":"asc");
+      else applySort(k, (k==="data"||k==="grav"||k==="evid") ? "desc" : "asc");
+    });
+  });
+  el("sortMobile").addEventListener("change",function(){
+    var v=this.value.split(":"); sortKey=v[0]; sortDir=v[1]; renderOcorrencias();
+  });
   function limpar(){el("fGrav").value="";el("fStatus").value="";el("fSetor").value="";el("fBusca").value="";renderOcorrencias()}
   el("btnLimpar").addEventListener("click",limpar);
   el("btnLimpar2").addEventListener("click",limpar);
@@ -1077,6 +1182,61 @@
     el("dBoafeQuando").textContent = "("+o.d+" · "+o.hm+")";
     go("detalhe");
   }
+
+  /* ---------- recebimento de novas ocorrências (tempo real simulado) ---------- */
+  /* No painel real: polling leve (ex.: a cada 30s) ou Server-Sent Events/WebSocket
+     disparado pela mesma rotina que envia o e-mail à CIPEAD (item 3 do escopo). */
+  var pendingNew = [], seqNext = 129, arrivals = 0, arrivalsStarted = false;
+  var MAX_ARRIVALS = 4;
+
+  function fakeOco(){
+    var setores = SETORES.slice(0,8);
+    var gravs = ["Baixa","Média","Alta","Crítica"];
+    var s = setores[Math.floor(Math.random()*setores.length)];
+    var g = gravs[Math.floor(Math.random()*gravs.length)];
+    var n = seqNext++;
+    var now = new Date();
+    var hm = ("0"+now.getHours()).slice(-2)+":"+("0"+now.getMinutes()).slice(-2);
+    return {p:"DN-2026-"+("000000"+n).slice(-6),s:s,g:g,st:"Pendente",
+      quando:"agora",freq:1,tentou:1,test:null,
+      docs:Math.random()<0.5?1:0,imgs:0,av:0,d:"08/07/2026",hm:hm,
+      rel:"Nova denúncia recebida pelo canal e ainda não analisada. O relato completo fica disponível nesta tela de detalhe assim que a ocorrência é aberta."};
+  }
+  function bellPulse(){var b=el("btnBell");b.classList.remove("pulse");void b.offsetWidth;b.classList.add("pulse");}
+  function updateNewIndicators(){
+    var n = pendingNew.length, badge = el("bellBadge"), nb = el("newbar");
+    if(n>0){ badge.hidden=false; badge.textContent=n; nb.hidden=false; el("newbarN").textContent=n; }
+    else { badge.hidden=true; nb.hidden=true; }
+  }
+  function bumpMetric(id,k){var e=el(id); if(e){ e.textContent = (parseInt(e.textContent,10)||0)+k; }}
+  function mergeNew(){
+    if(!pendingNew.length) return;
+    var k = pendingNew.length;
+    pendingNew.forEach(function(o){ ocorrencias.unshift(o); byProto[o.p]=o; });
+    pendingNew = [];
+    updateNewIndicators();
+    bumpMetric("mTotal",k); bumpMetric("mPend",k); bumpMetric("m7",k);
+    el("tblRecentes").querySelector("tbody").innerHTML =
+      ocorrencias.slice(0,6).map(function(o){return rowHtml(o,false)}).join("");
+    renderOcorrencias();
+    toast(k+" nova(s) ocorrência(s) adicionada(s) à lista.");
+  }
+  function pushArrival(){
+    if(arrivals>=MAX_ARRIVALS) return;
+    arrivals++;
+    var o = fakeOco();
+    pendingNew.unshift(o);
+    updateNewIndicators();
+    bellPulse();
+    toast("Nova ocorrência recebida — "+o.p+" ("+o.g+").");
+  }
+  function startArrivals(){
+    if(arrivalsStarted) return;
+    arrivalsStarted = true;
+    (function tick(){ setTimeout(function(){ pushArrival(); if(arrivals<MAX_ARRIVALS) tick(); }, 8000); })();
+  }
+  el("btnBell").addEventListener("click",function(){ go("ocorrencias"); });
+  el("btnAtualizar").addEventListener("click",mergeNew);
 
   /* ---------- auditoria ---------- */
   var ACAO_PILL = {VIEW_CONTATO:"a-viewcontato",LOGIN:"a-outline",LIST_RELATOS:"a-outline",VIEW_RELATO:"a-neutral",DOWNLOAD_ARQUIVO:"a-neutral"};

@@ -11,6 +11,21 @@ backend foi iniciada (conforme combinado).
 | `docs/schema.sql` | Proposta de schema SQL Server: relato, arquivos, contato (sem FK, ligação por HMAC), auditoria append-only, contas de serviço com privilégio mínimo e Row-Level Security. |
 | `docs/seguranca.md` | Estratégia de hash do protocolo (HMAC-SHA256 + pepper) e criptografia dos campos de identidade (AES-256-GCM com versionamento de chave), tokens temporários de download, autenticação. |
 
+## Atualização em tempo real e ordenação (listagem)
+
+- **Aviso de nova denúncia:** sino no topo com contador, um toast ao chegar e
+  uma barra "N nova(s) ocorrência(s) recebida(s) · Atualizar lista" acima da
+  tabela. As novas ficam num buffer e só entram na lista quando o operador
+  clica em Atualizar (evita a tabela "pular" enquanto se lê). Ao atualizar, os
+  cards de métrica do dashboard também sobem. No protótipo isso é simulado; no
+  painel real, a mesma rotina que dispara o e-mail à CIPEAD (item 3 do escopo)
+  alimenta um **polling leve (~30s)** ou **Server-Sent Events/WebSocket**.
+- **Ordenação no topo da coluna:** os cabeçalhos da tabela de ocorrências são
+  clicáveis (Protocolo, Setor, Gravidade, Status, Evidências, Recebida), com
+  indicador de direção (▲/▼) e `aria-sort`. Gravidade e Status ordenam pela
+  ordem lógica (não alfabética) e Recebida por data/hora. No mobile, onde o
+  cabeçalho vira card, há um seletor "Ordenar por" que reflete o mesmo estado.
+
 ## Campos recebidos do formulário público (OAB/RS)
 
 O painel foi modelado para receber **exatamente** os campos do canal de
