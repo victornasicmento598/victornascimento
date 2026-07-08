@@ -26,6 +26,16 @@ backend foi iniciada (conforme combinado).
   ordem lógica (não alfabética) e Recebida por data/hora. No mobile, onde o
   cabeçalho vira card, há um seletor "Ordenar por" que reflete o mesmo estado.
 
+## "Marcar como vista"
+
+Ao abrir uma ocorrência **Pendente**, qualquer membro da CIPEAD pode clicar em
+"Marcar como vista". Isso **não cria um novo status** — o status continua
+Pendente/Em análise/Resolvido como já era. É só um metadado (`vista_por`,
+`vista_em`) que mostra quem foi o primeiro a olhar e quando, resolvendo o
+problema de uma denúncia crítica ficar dias sem ninguém confirmar que a viu.
+Pendentes ainda não vistas ganham um indicador (ponto vermelho) ao lado do
+protocolo na listagem. A marcação também gera entrada em auditoria.
+
 ## Campos recebidos do formulário público (OAB/RS)
 
 O painel foi modelado para receber **exatamente** os campos do canal de

@@ -234,6 +234,12 @@
   .det-head{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:22px 24px 4px}
   .det-head .proto{font-size:19px;font-weight:600;letter-spacing:-.01em}
   .det-grav-desc{padding:0 24px 18px;font-size:12.5px;color:var(--ink-3)}
+  .visto-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 14px;padding:13px 24px;border-top:1px solid var(--line);background:var(--page)}
+  .visto-bar[hidden]{display:none}
+  .visto-bar .vb-text{font-size:13px;color:var(--ink-3);display:flex;align-items:center;gap:8px}
+  .visto-bar .vb-text .ic{width:15px;height:15px;color:var(--green-ink);flex:none}
+  .visto-bar .vb-text b{color:var(--ink-2);font-weight:600}
+  .unseen-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red-ink);margin-right:8px;vertical-align:middle}
   .det-meta{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
   .det-meta>div{padding:16px 24px;border-right:1px solid var(--line)}
   .det-meta>div:nth-child(3n){border-right:0}
@@ -695,6 +701,7 @@
         </div>
         <div class="det-grav-desc" id="dGravDesc"></div>
         <div class="det-meta" id="dMeta"></div>
+        <div class="visto-bar" id="dVisto" hidden></div>
       </div>
 
       <div class="card">
@@ -941,6 +948,20 @@
   navItems.forEach(function(n){n.addEventListener("click",function(){go(n.dataset.view)})});
 
   document.addEventListener("click",function(e){
+    if(e.target.closest("#btnMarcarVista")){
+      var o = byProto[currentProto];
+      var quem = (document.querySelector(".sb-user b").textContent || "").trim() || "membro CIPEAD";
+      var now = new Date();
+      o.vistoPor = quem;
+      o.vistoEm = ("0"+now.getDate()).slice(-2)+"/"+("0"+(now.getMonth()+1)).slice(-2)+"/"+now.getFullYear()
+        +" · "+("0"+now.getHours()).slice(-2)+":"+("0"+now.getMinutes()).slice(-2);
+      openDetail(o);
+      renderOcorrencias();
+      el("tblRecentes").querySelector("tbody").innerHTML =
+        ocorrencias.slice(0,6).map(function(x){return rowHtml(x,false)}).join("");
+      toast("Ocorrência marcada como vista — registrado em auditoria.");
+      return;
+    }
     var g = e.target.closest("[data-goto]");
     if(!g) return;
     if(g.dataset.goto==="contatos" && currentProto){
@@ -1039,7 +1060,7 @@
   function rowHtml(o, withFiles){
     var t = totEvid(o);
     return '<tr class="rowlink" tabindex="0" role="link" data-proto="'+o.p+'" aria-label="Abrir '+o.p+'">'
-      +'<td data-l="Protocolo" class="proto">'+o.p+'</td>'
+      +'<td data-l="Protocolo" class="proto">'+(o.st==="Pendente"&&!o.vistoPor?'<span class="unseen-dot" title="Ainda não vista por nenhum membro"></span>':'')+o.p+'</td>'
       +'<td data-l="Setor">'+esc(o.s)+'</td>'
       +'<td data-l="Gravidade">'+pill(GRAV_PILL[o.g],o.g,gravDot(o.g))+'</td>'
       +'<td data-l="Status">'+pill(STAT_PILL[o.st],o.st)+'</td>'
@@ -1164,6 +1185,17 @@
       + metaCell("Tentou resolver antes", TENTOU[o.tentou])
       + metaCell("Recebida em", o.d+" · "+o.hm)
       + metaCell("Evidências", t ? t+" arquivo"+(t>1?"s":"") : "Nenhuma");
+
+    var vb = el("dVisto");
+    if(o.st==="Pendente"){
+      vb.hidden = false;
+      vb.innerHTML = o.vistoPor
+        ? '<span class="vb-text"><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Vista por <b>'+esc(o.vistoPor)+'</b> em '+o.vistoEm+'</span>'
+        : '<span class="vb-text">Ainda não vista por nenhum membro da CIPEAD.</span>'
+          +'<button class="btn btn-dark" id="btnMarcarVista" style="height:32px">Marcar como vista</button>';
+    } else {
+      vb.hidden = true;
+    }
 
     el("dRelato").innerHTML = "<p>"+esc(o.rel)+"</p>";
 

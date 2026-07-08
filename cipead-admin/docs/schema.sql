@@ -37,6 +37,11 @@ CREATE TABLE dbo.db_denuncia_relato (
         CONSTRAINT DF_relato_boafe DEFAULT (1),
     status            TINYINT       NOT NULL
         CONSTRAINT DF_relato_status DEFAULT (1),   -- 1 pendente · 2 em análise · 3 resolvido
+    vista_por         NVARCHAR(120) NULL,          -- login do 1º membro CIPEAD que abriu o relato
+    vista_em          DATETIME2(0)  NULL,          -- NÃO é um status novo: é metadado sobre o Pendente.
+                                                   -- Setado uma única vez (o 1º a marcar "vence");
+                                                   -- qualquer membro pode marcar. Também gravado em
+                                                   -- auditoria (ação MARCAR_VISTA) para histórico completo.
     criado_em         DATETIME2(0)  NOT NULL
         CONSTRAINT DF_relato_criado DEFAULT (SYSUTCDATETIME()),
 
