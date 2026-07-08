@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CIPEAD — Painel Administrativo (Protótipo)</title>
+<style>
+  :root{
+    --sb-bg:#0A0A0A; --sb-ink:#FAFAFA; --sb-muted:#9C9C9F; --sb-line:rgba(255,255,255,.08);
+    --sb-hover:rgba(255,255,255,.05); --sb-active:rgba(255,255,255,.08);
+    --page:#FAFAFA; --card:#FFFFFF; --ink:#18181B; --ink-2:#3F3F46; --ink-3:#71717A;
+    --line:#E4E4E7; --line-2:#D4D4D8; --wash:#F4F4F5;
+    --red-ink:#B42318; --red-bg:#FEF3F2; --red-line:#F0C7C2;
+    --green-ink:#067647; --green-bg:#ECFDF3; --green-line:#B7E5CB;
+    --r:12px; --r-sm:8px;
+    --sbw:248px; --sbw-c:72px;
+    --t:150ms cubic-bezier(.4,0,.2,1);
+    --focus:0 0 0 2px #FFFFFF, 0 0 0 4px #18181B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Inter","Geist",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--page); color:var(--ink); font-size:14px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  input,select{font:inherit;color:var(--ink)}
+  :focus{outline:none}
+  :focus-visible{box-shadow:var(--focus);border-radius:6px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    position:fixed; inset:0 auto 0 0; width:var(--sbw); z-index:40;
+    background:var(--sb-bg); color:var(--sb-ink);
+    display:flex; flex-direction:column;
+    transition:width var(--t), transform var(--t);
+  }
+  .sb-head{display:flex;align-items:center;gap:12px;padding:20px 16px 18px 20px;border-bottom:1px solid var(--sb-line)}
+  .logo-mark{
+    flex:none;width:34px;height:34px;border-radius:9px;background:#FFF;color:#0A0A0A;
+    display:grid;place-items:center;font-weight:700;font-size:13px;letter-spacing:.02em;
+  }
+  .logo-text{min-width:0}
+  .logo-text b{display:block;font-size:14px;font-weight:600;letter-spacing:.01em;white-space:nowrap}
+  .logo-text span{display:block;font-size:11.5px;color:var(--sb-muted);white-space:nowrap}
+  .sb-collapse{
+    margin-left:auto;flex:none;width:28px;height:28px;border-radius:7px;color:var(--sb-muted);
+    display:grid;place-items:center;transition:background var(--t),color var(--t);
+  }
+  .sb-collapse:hover{background:var(--sb-hover);color:var(--sb-ink)}
+  .sb-nav{flex:1;padding:14px 12px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+  .nav-sect{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#6E6E73;padding:10px 12px 6px}
+  .nav-item{
+    position:relative;display:flex;align-items:center;gap:12px;width:100%;
+    padding:9px 12px;border-radius:8px;color:var(--sb-muted);text-align:left;
+    transition:background var(--t),color var(--t);white-space:nowrap;
+  }
+  .nav-item:hover{background:var(--sb-hover);color:var(--sb-ink)}
+  .nav-item.active{background:var(--sb-active);color:var(--sb-ink)}
+  .nav-item.active::before{
+    content:"";position:absolute;left:-12px;top:8px;bottom:8px;width:2px;border-radius:2px;background:#FFF;
+  }
+  .nav-item .ic{flex:none}
+  .nav-item .lock{margin-left:auto;color:#6E6E73}
+  .sb-foot{border-top:1px solid var(--sb-line);padding:14px 12px;display:flex;flex-direction:column;gap:2px}
+  .sb-user{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:8px}
+  .avatar{
+    flex:none;width:30px;height:30px;border-radius:50%;background:#27272A;color:#E4E4E7;
+    display:grid;place-items:center;font-size:11px;font-weight:600;
+  }
+  .sb-user div{min-width:0}
+  .sb-user b{display:block;font-size:13px;font-weight:500;color:var(--sb-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sb-user span{display:block;font-size:11.5px;color:var(--sb-muted)}
+  .ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+  /* collapsed (desktop) */
+  body.sb-collapsed .sidebar{width:var(--sbw-c)}
+  body.sb-collapsed .logo-text,
+  body.sb-collapsed .nav-label,
+  body.sb-collapsed .nav-sect,
+  body.sb-collapsed .nav-item .lock,
+  body.sb-collapsed .sb-user div{display:none}
+  body.sb-collapsed .sb-head{padding:20px 0 18px;justify-content:center}
+  body.sb-collapsed .sb-collapse{margin:0;position:absolute;right:-14px;top:24px;background:#0A0A0A;border:1px solid var(--sb-line)}
+  body.sb-collapsed .nav-item{justify-content:center;padding:10px 0}
+  body.sb-collapsed .sb-user{justify-content:center;padding:8px 0}
+  body.sb-collapsed .main{margin-left:var(--sbw-c)}
+
+  /* ---------- Main ---------- */
+  .main{margin-left:var(--sbw);min-height:100vh;transition:margin var(--t)}
+  .topbar{
+    position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;
+    padding:14px 40px;background:rgba(250,250,250,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .hamburger{display:none;width:36px;height:36px;border-radius:8px;place-items:center}
+  .hamburger:hover{background:var(--wash)}
+  .topbar h1{font-size:15px;font-weight:600;letter-spacing:-.01em}
+  .proto-badge{
+    margin-left:auto;font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink-3);border:1px dashed var(--line-2);border-radius:999px;padding:3px 10px;
+  }
+  .content{max-width:1180px;margin:0 auto;padding:32px 40px 64px;display:flex;flex-direction:column;gap:20px}
+  .view[hidden]{display:none}
+  .view{display:flex;flex-direction:column;gap:20px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+  .card-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:20px 24px 0}
+  .card-head h2{font-size:14px;font-weight:600;letter-spacing:-.01em}
+  .card-head span{font-size:12.5px;color:var(--ink-3)}
+  .card-body{padding:16px 24px 22px}
+
+  /* metrics */
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .metric{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;transition:border-color var(--t)}
+  .metric:hover{border-color:var(--line-2)}
+  .metric .m-label{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+  .metric .m-value{font-size:32px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:8px;line-height:1.1}
+  .metric .m-sub{font-size:12.5px;color:var(--ink-3);margin-top:6px}
+  .metric.alert .m-value{color:var(--red-ink)}
+
+  .grid-2a{display:grid;grid-template-columns:1fr 1.25fr;gap:16px}
+  .grid-2b{display:grid;grid-template-columns:1fr 1.45fr;gap:16px}
+
+  /* charts */
+  .chart-wrap{width:100%;overflow-x:auto}
+  .chart-wrap svg{display:block;width:100%;height:auto}
+  .sector-row{display:flex;flex-direction:column;gap:5px;padding:7px 0}
+  .sector-row .s-top{display:flex;justify-content:space-between;font-size:13px}
+  .sector-row .s-top b{font-weight:500;color:var(--ink-2)}
+  .sector-row .s-top span{font-variant-numeric:tabular-nums;color:var(--ink-3)}
+  .sector-track{height:8px;border-radius:999px;background:var(--wash);overflow:hidden}
+  .sector-fill{height:100%;border-radius:999px;background:var(--ink-2)}
+
+  /* tables */
+  .tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+  .tbl th{
+    font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);
+    text-align:left;padding:12px 24px;border-bottom:1px solid var(--line);white-space:nowrap;
+  }
+  .tbl td{padding:13px 24px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .tbl tbody tr:last-child td{border-bottom:0}
+  .tbl tbody tr{transition:background var(--t)}
+  .tbl tbody tr.rowlink{cursor:pointer}
+  .tbl tbody tr.rowlink:hover{background:var(--page)}
+  .tbl .num{font-variant-numeric:tabular-nums}
+  .proto{font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:.01em;white-space:nowrap}
+  .td-muted{color:var(--ink-3)}
+
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;
+    padding:2px 10px;border-radius:999px;border:1px solid transparent;white-space:nowrap;
+  }
+  .pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+  .p-baixa{color:var(--ink-3);border-color:var(--line-2)}
+  .p-media{color:var(--ink-2);background:var(--wash)}
+  .p-alta{color:var(--red-ink);background:var(--red-bg);border-color:var(--red-line)}
+  .p-critica{color:#FFF;background:var(--red-ink)}
+  .p-pendente{color:var(--ink-2);background:var(--wash)}
+  .p-analise{color:var(--ink-2);border-color:var(--line-2)}
+  .p-resolvido{color:var(--green-ink);background:var(--green-bg);border-color:var(--green-line)}
+
+  /* filters */
+  .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:16px 24px}
+  .field{display:flex;flex-direction:column;gap:4px}
+  .field label{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+  .inp,.sel{
+    height:36px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-sm);
+    background:var(--card);font-size:13.5px;transition:border-color var(--t);
+  }
+  .inp:hover,.sel:hover{border-color:var(--line-2)}
+  .inp:focus-visible,.sel:focus-visible{box-shadow:none;border-color:var(--ink);outline:none}
+  .inp::placeholder{color:#A1A1AA}
+  .search-wrap{position:relative}
+  .search-wrap .ic{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--ink-3)}
+  .search-wrap .inp{padding-left:34px;width:220px}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:var(--r-sm);
+    font-size:13.5px;font-weight:500;border:1px solid var(--line);background:var(--card);
+    transition:background var(--t),border-color var(--t);
+  }
+  .btn:hover{background:var(--wash);border-color:var(--line-2)}
+  .btn-dark{background:var(--ink);color:#FFF;border-color:var(--ink)}
+  .btn-dark:hover{background:#333;border-color:#333}
+  .btn-ghost{border-color:transparent;color:var(--ink-3)}
+  .btn-ghost:hover{color:var(--ink)}
+  .btn .ic{width:15px;height:15px}
+
+  .tbl-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 24px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
+  .pager{display:flex;gap:4px}
+  .pager button{
+    min-width:30px;height:30px;padding:0 8px;border-radius:7px;font-size:13px;color:var(--ink-2);
+    display:grid;place-items:center;transition:background var(--t);
+    font-variant-numeric:tabular-nums;
+  }
+  .pager button:hover{background:var(--wash)}
+  .pager button[aria-current="page"]{background:var(--ink);color:#FFF}
+
+  .empty{display:none;flex-direction:column;align-items:center;gap:10px;padding:56px 24px;text-align:center}
+  .empty.show{display:flex}
+  .empty .ic{width:26px;height:26px;color:var(--line-2)}
+  .empty b{font-size:14.5px;font-weight:600}
+  .empty p{font-size:13px;color:var(--ink-3);max-width:320px}
+
+  /* detalhe */
+  .backlink{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-3);padding:4px 8px;margin-left:-8px;border-radius:7px;transition:color var(--t)}
+  .backlink:hover{color:var(--ink)}
+  .det-head{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:22px 24px}
+  .det-head .proto{font-size:19px;font-weight:600;letter-spacing:-.01em}
+  .det-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line)}
+  .det-meta>div{padding:16px 24px;border-right:1px solid var(--line)}
+  .det-meta>div:last-child{border-right:0}
+  .det-meta .m-label{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+  .det-meta .m-val{font-size:14px;font-weight:500;margin-top:4px}
+  .relato-text{font-size:14.5px;line-height:1.75;color:var(--ink-2);max-width:68ch;display:flex;flex-direction:column;gap:14px}
+  .file-row{display:flex;align-items:center;gap:14px;padding:13px 24px;border-top:1px solid var(--line)}
+  .file-row:first-of-type{border-top:0}
+  .file-ic{flex:none;width:36px;height:36px;border-radius:8px;background:var(--wash);display:grid;place-items:center;color:var(--ink-3)}
+  .file-info{flex:1;min-width:0}
+  .file-info b{display:block;font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .file-info span{font-size:12px;color:var(--ink-3)}
+  .notice{
+    display:flex;gap:12px;align-items:flex-start;padding:14px 18px;border:1px solid var(--line);
+    border-radius:var(--r-sm);background:var(--page);font-size:13px;color:var(--ink-3);
+  }
+  .notice .ic{flex:none;width:16px;height:16px;margin-top:2px}
+  .notice b{color:var(--ink-2);font-weight:600}
+
+  /* contatos */
+  .gate{max-width:640px}
+  .gate-head{display:flex;gap:14px;align-items:flex-start;padding:24px 24px 0}
+  .gate-ic{flex:none;width:40px;height:40px;border-radius:10px;background:var(--ink);color:#FFF;display:grid;place-items:center}
+  .gate-ic .ic{width:19px;height:19px}
+  .gate-head h2{font-size:15px;font-weight:600}
+  .gate-head p{font-size:13px;color:var(--ink-3);margin-top:3px;max-width:52ch}
+  .gate-form{display:flex;gap:10px;align-items:flex-end;padding:20px 24px 24px;flex-wrap:wrap}
+  .audit-banner{
+    display:flex;gap:10px;align-items:center;padding:11px 16px;border-radius:var(--r-sm);
+    background:var(--red-bg);border:1px solid var(--red-line);color:var(--red-ink);font-size:12.5px;font-weight:500;
+  }
+  .audit-banner .ic{flex:none;width:15px;height:15px}
+  .contato-fields{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--line)}
+  .contato-fields>div{padding:16px 24px;border-bottom:1px solid var(--line)}
+  .contato-fields>div:nth-child(odd){border-right:1px solid var(--line)}
+  .contato-fields>div:nth-last-child(-n+2){border-bottom:0}
+  .cf-label{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+  .cf-val{font-size:14.5px;font-weight:500;margin-top:4px}
+  .cf-tag{font-size:11px;color:var(--ink-3);margin-top:3px;display:flex;align-items:center;gap:5px}
+  .cf-tag .ic{width:12px;height:12px}
+
+  /* auditoria */
+  .a-viewcontato{color:var(--red-ink);background:var(--red-bg);border-color:var(--red-line)}
+  .a-neutral{color:var(--ink-2);background:var(--wash)}
+  .a-outline{color:var(--ink-3);border-color:var(--line-2)}
+
+  /* toast + tooltip */
+  #toast{
+    position:fixed;right:24px;bottom:24px;z-index:80;background:var(--ink);color:#FFF;
+    font-size:13px;padding:11px 16px;border-radius:10px;max-width:340px;
+    opacity:0;transform:translateY(8px);transition:opacity var(--t),transform var(--t);pointer-events:none;
+  }
+  #toast.show{opacity:1;transform:none}
+  #tip{
+    position:fixed;z-index:70;background:var(--ink);color:#FFF;font-size:12px;font-variant-numeric:tabular-nums;
+    padding:5px 9px;border-radius:7px;pointer-events:none;opacity:0;transition:opacity 100ms;white-space:nowrap;
+  }
+  #tip.show{opacity:1}
+  .scrim{position:fixed;inset:0;z-index:35;background:rgba(10,10,10,.45);opacity:0;pointer-events:none;transition:opacity var(--t)}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:1100px){
+    .metrics{grid-template-columns:repeat(2,1fr)}
+    .grid-2a,.grid-2b{grid-template-columns:1fr}
+    .content{padding:28px 28px 56px}
+    .topbar{padding:14px 28px}
+  }
+  @media (min-width:769px) and (max-width:1024px){
+    .sidebar{width:var(--sbw-c)}
+    .main{margin-left:var(--sbw-c)}
+    .sidebar .logo-text,.sidebar .nav-label,.sidebar .nav-sect,.sidebar .nav-item .lock,.sidebar .sb-user div{display:none}
+    .sidebar .sb-head{padding:20px 0 18px;justify-content:center}
+    .sidebar .nav-item{justify-content:center;padding:10px 0}
+    .sidebar .sb-user{justify-content:center;padding:8px 0}
+    .sb-collapse{display:none}
+  }
+  @media (max-width:768px){
+    .sidebar{width:272px;transform:translateX(-102%)}
+    body.drawer-open .sidebar{transform:none}
+    body.drawer-open .scrim{opacity:1;pointer-events:auto}
+    .main{margin-left:0}
+    .sb-collapse{display:none}
+    .hamburger{display:grid}
+    .topbar{padding:12px 18px}
+    .content{padding:22px 18px 48px}
+    .metrics{grid-template-columns:1fr 1fr;gap:12px}
+    .det-meta{grid-template-columns:1fr}
+    .det-meta>div{border-right:0;border-bottom:1px solid var(--line)}
+    .det-meta>div:last-child{border-bottom:0}
+    .contato-fields{grid-template-columns:1fr}
+    .contato-fields>div:nth-child(odd){border-right:0}
+    .contato-fields>div:nth-last-child(-n+2){border-bottom:1px solid var(--line)}
+    .contato-fields>div:last-child{border-bottom:0}
+    /* tabelas viram cards */
+    .tbl-cards thead{display:none}
+    .tbl-cards, .tbl-cards tbody, .tbl-cards tr, .tbl-cards td{display:block;width:100%}
+    .tbl-cards tr{border-bottom:1px solid var(--line);padding:14px 20px;display:grid;grid-template-columns:1fr auto;gap:4px 12px}
+    .tbl-cards tr:last-child{border-bottom:0}
+    .tbl-cards td{padding:0;border:0}
+    .tbl-cards td[data-l]::before{content:attr(data-l);display:block;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin-bottom:2px}
+    .search-wrap .inp{width:100%}
+    .filters .field{flex:1 1 140px}
+  }
+  @media (max-width:480px){
+    .metrics{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="scrim" id="scrim"></div>
+
+<aside class="sidebar" id="sidebar" aria-label="Menu principal">
+  <div class="sb-head">
+    <div class="logo-mark" aria-hidden="true">CI</div>
+    <div class="logo-text"><b>CIPEAD</b><span>Canal de Denúncias</span></div>
+    <button class="sb-collapse" id="btnCollapse" title="Recolher menu" aria-label="Recolher menu">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+  </div>
+  <nav class="sb-nav" aria-label="Seções">
+    <button class="nav-item active" data-view="dashboard" title="Dashboard">
+      <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg>
+      <span class="nav-label">Dashboard</span>
+    </button>
+    <button class="nav-item" data-view="ocorrencias" title="Ocorrências">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+      <span class="nav-label">Ocorrências</span>
+    </button>
+    <button class="nav-item" data-view="contatos" title="Contatos (acesso restrito)">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7.5" r="3.5"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/><path d="M15.5 4.13a3.5 3.5 0 0 1 0 6.74"/></svg>
+      <span class="nav-label">Contatos</span>
+      <svg class="ic lock" viewBox="0 0 24 24" style="width:13px;height:13px"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    </button>
+    <button class="nav-item" data-view="auditoria" title="Auditoria">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9.5 12l2 2 3.5-3.5"/></svg>
+      <span class="nav-label">Auditoria</span>
+    </button>
+  </nav>
+  <div class="sb-foot">
+    <div class="sb-user" title="v.nascimento — CIPEAD">
+      <div class="avatar" aria-hidden="true">VN</div>
+      <div><b>v.nascimento</b><span>Membro CIPEAD</span></div>
+    </div>
+    <button class="nav-item" id="btnSair" title="Sair">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+      <span class="nav-label">Sair</span>
+    </button>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <button class="hamburger" id="btnDrawer" aria-label="Abrir menu">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <h1 id="viewTitle">Dashboard</h1>
+    <span class="proto-badge">Protótipo estático · dados fictícios</span>
+  </header>
+
+  <div class="content">
+
+    <!-- ================= DASHBOARD ================= -->
+    <section class="view" id="view-dashboard">
+      <div class="metrics">
+        <div class="metric">
+          <div class="m-label">Total de ocorrências</div>
+          <div class="m-value">128</div>
+          <div class="m-sub">desde ago/2025</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Pendentes</div>
+          <div class="m-value">23</div>
+          <div class="m-sub">aguardando análise</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Últimos 7 dias</div>
+          <div class="m-value">9</div>
+          <div class="m-sub">+3 vs. semana anterior</div>
+        </div>
+        <div class="metric alert">
+          <div class="m-label">Ocorrências graves</div>
+          <div class="m-value">35</div>
+          <div class="m-sub">gravidade alta ou crítica</div>
+        </div>
+      </div>
+
+      <div class="grid-2a">
+        <div class="card">
+          <div class="card-head"><h2>Ocorrências por gravidade</h2><span>total acumulado</span></div>
+          <div class="card-body chart-wrap" id="chartGrav"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Evolução no tempo</h2><span>novas por semana · últimas 12 semanas</span></div>
+          <div class="card-body chart-wrap" id="chartLine"></div>
+        </div>
+      </div>
+
+      <div class="grid-2b">
+        <div class="card">
+          <div class="card-head"><h2>Distribuição por setor</h2><span>top 6</span></div>
+          <div class="card-body" id="chartSetor"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Ocorrências recentes</h2><button class="btn-ghost btn" data-goto="ocorrencias" style="height:28px;font-size:12.5px">Ver todas</button></div>
+          <div style="overflow-x:auto">
+            <table class="tbl tbl-cards" id="tblRecentes">
+              <thead><tr><th>Protocolo</th><th>Setor</th><th>Gravidade</th><th>Status</th><th>Recebida</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= OCORRÊNCIAS ================= -->
+    <section class="view" id="view-ocorrencias" hidden>
+      <div class="card">
+        <div class="filters">
+          <div class="field">
+            <label for="fBusca">Protocolo</label>
+            <div class="search-wrap">
+              <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input class="inp" id="fBusca" type="search" placeholder="DN-2026-000000">
+            </div>
+          </div>
+          <div class="field">
+            <label for="fGrav">Gravidade</label>
+            <select class="sel" id="fGrav">
+              <option value="">Todas</option><option>Baixa</option><option>Média</option><option>Alta</option><option>Crítica</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fStatus">Status</label>
+            <select class="sel" id="fStatus">
+              <option value="">Todos</option><option>Pendente</option><option>Em análise</option><option>Resolvido</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fDe">De</label>
+            <input class="inp" id="fDe" type="date" value="2026-06-01">
+          </div>
+          <div class="field">
+            <label for="fAte">Até</label>
+            <input class="inp" id="fAte" type="date" value="2026-07-08">
+          </div>
+          <button class="btn btn-ghost" id="btnLimpar" style="align-self:flex-end">Limpar</button>
+        </div>
+        <div style="overflow-x:auto;border-top:1px solid var(--line)">
+          <table class="tbl tbl-cards" id="tblOcorrencias">
+            <thead><tr><th>Protocolo</th><th>Setor</th><th>Gravidade</th><th>Status</th><th>Evidências</th><th>Recebida</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <div class="empty" id="emptyOco">
+            <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M8.5 11h5"/></svg>
+            <b>Nenhuma ocorrência encontrada</b>
+            <p>Nenhum registro corresponde aos filtros aplicados. Ajuste os filtros e tente novamente.</p>
+            <button class="btn" id="btnLimpar2">Limpar filtros</button>
+          </div>
+        </div>
+        <div class="tbl-foot">
+          <span id="pagInfo">Mostrando 1–12 de 128 ocorrências</span>
+          <div class="pager" aria-label="Paginação">
+            <button aria-label="Página anterior">‹</button>
+            <button aria-current="page">1</button><button>2</button><button>3</button>
+            <button disabled style="cursor:default">…</button><button>11</button>
+            <button aria-label="Próxima página">›</button>
+          </div>
+        </div>
+      </div>
+      <p class="notice">
+        <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>
+        <span><b>Sem dados de identidade.</b> Esta listagem e a tela de detalhe exibem apenas o relato. Dados de contato ficam em tela separada, com acesso registrado em auditoria.</span>
+      </p>
+    </section>
+
+    <!-- ================= DETALHE ================= -->
+    <section class="view" id="view-detalhe" hidden>
+      <div><button class="backlink" data-goto="ocorrencias">
+        <svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        Voltar para ocorrências
+      </button></div>
+
+      <div class="card">
+        <div class="det-head">
+          <span class="proto">DN-2026-000126</span>
+          <span class="pill p-alta"><span class="dot"></span>Alta</span>
+          <span class="pill p-analise">Em análise</span>
+        </div>
+        <div class="det-meta">
+          <div><div class="m-label">Setor</div><div class="m-val">Polo Camaçari</div></div>
+          <div><div class="m-label">Recebida em</div><div class="m-val">05/07/2026 · 14:32</div></div>
+          <div><div class="m-label">Evidências</div><div class="m-val">2 arquivos</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Relato</h2></div>
+        <div class="card-body relato-text">
+          <p>Durante o período de aplicação das avaliações presenciais no polo, presenciei condutas incompatíveis com as normas da instituição por parte de um dos aplicadores, incluindo tratamento desrespeitoso dirigido a estudantes e insinuações constrangedoras repetidas em mais de uma ocasião.</p>
+          <p>Os episódios ocorreram nos dias 27 e 28 de junho, na sala 3 do polo, na presença de outros estudantes. Há registros que anexo a este relato. Outras pessoas presenciaram os fatos e podem confirmá-los, caso a comissão julgue necessário.</p>
+          <p>Solicito que a situação seja apurada com discrição, considerando que os envolvidos seguem em contato direto com estudantes do polo.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Evidências</h2><span>download via token temporário</span></div>
+        <div style="padding-top:8px">
+          <div class="file-row">
+            <div class="file-ic"><svg class="ic" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></div>
+            <div class="file-info"><b>registro-sala3-27jun.pdf</b><span>PDF · 1,2 MB</span></div>
+            <button class="btn" data-toast="Link temporário gerado — expira em 15 minutos. Acesso registrado em auditoria.">
+              <svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+              Gerar link
+            </button>
+          </div>
+          <div class="file-row">
+            <div class="file-ic"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 15l-5-4-9 7"/></svg></div>
+            <div class="file-info"><b>foto-quadro-avisos.jpg</b><span>JPEG · 640 KB</span></div>
+            <button class="btn" data-toast="Link temporário gerado — expira em 15 minutos. Acesso registrado em auditoria.">
+              <svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+              Gerar link
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p class="notice">
+        <svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <span><b>Identidade protegida.</b> Os dados de contato desta ocorrência não são exibidos aqui. Se necessário, consulte na tela <button class="btn-ghost" data-goto="contatos" style="padding:0;font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px">Contatos</button> — o acesso será registrado.</span>
+      </p>
+    </section>
+
+    <!-- ================= CONTATOS ================= -->
+    <section class="view" id="view-contatos" hidden>
+      <div class="card gate">
+        <div class="gate-head">
+          <div class="gate-ic"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+          <div>
+            <h2>Acesso restrito — dados de identidade</h2>
+            <p>Consulta disponível apenas para membros da CIPEAD. Cada consulta é registrada em auditoria com usuário, data/hora e protocolo, e os campos são decifrados sob demanda.</p>
+          </div>
+        </div>
+        <div class="gate-form">
+          <div class="field">
+            <label for="cProto">Protocolo da ocorrência</label>
+            <input class="inp" id="cProto" placeholder="DN-2026-000000" style="width:220px" value="DN-2026-000126">
+          </div>
+          <button class="btn btn-dark" id="btnConsultar">Consultar contato</button>
+        </div>
+      </div>
+
+      <div class="card gate" id="contatoResult" hidden>
+        <div style="padding:20px 24px 16px;display:flex;flex-direction:column;gap:14px">
+          <div class="audit-banner">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/></svg>
+            Acesso registrado em auditoria — v.nascimento · 08/07/2026 09:41 · DN-2026-000126
+          </div>
+        </div>
+        <div class="contato-fields">
+          <div>
+            <div class="cf-label">Nome</div>
+            <div class="cf-val">Maria Exemplo dos Santos</div>
+            <div class="cf-tag"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>decifrado sob demanda · AES-256</div>
+          </div>
+          <div>
+            <div class="cf-label">Vínculo</div>
+            <div class="cf-val">Estudante</div>
+          </div>
+          <div>
+            <div class="cf-label">E-mail</div>
+            <div class="cf-val">maria.exemplo@exemplo.edu.br</div>
+            <div class="cf-tag"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>decifrado sob demanda · AES-256</div>
+          </div>
+          <div>
+            <div class="cf-label">Telefone</div>
+            <div class="cf-val">(71) 9 8765-0000</div>
+            <div class="cf-tag"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>decifrado sob demanda · AES-256</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= AUDITORIA ================= -->
+    <section class="view" id="view-auditoria" hidden>
+      <div class="card">
+        <div class="filters">
+          <div class="field">
+            <label for="aAcao">Ação</label>
+            <select class="sel" id="aAcao">
+              <option value="">Todas</option><option>LOGIN</option><option>LIST_RELATOS</option>
+              <option>VIEW_RELATO</option><option>DOWNLOAD_ARQUIVO</option><option>VIEW_CONTATO</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="aDe">De</label>
+            <input class="inp" id="aDe" type="date" value="2026-07-01">
+          </div>
+          <div class="field">
+            <label for="aAte">Até</label>
+            <input class="inp" id="aAte" type="date" value="2026-07-08">
+          </div>
+        </div>
+        <div style="overflow-x:auto;border-top:1px solid var(--line)">
+          <table class="tbl tbl-cards" id="tblAudit">
+            <thead><tr><th>Data / hora</th><th>Usuário</th><th>Ação</th><th>Protocolo</th><th>Origem</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="tbl-foot"><span>Mostrando 10 de 1.284 registros</span>
+          <div class="pager"><button aria-label="Página anterior">‹</button><button aria-current="page">1</button><button>2</button><button>3</button><button disabled style="cursor:default">…</button><button>129</button><button aria-label="Próxima página">›</button></div>
+        </div>
+      </div>
+      <p class="notice">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/></svg>
+        <span><b>Registro imutável.</b> A trilha de auditoria é append-only: registros não podem ser editados nem excluídos pela aplicação. Acessos a dados de contato aparecem destacados.</span>
+      </p>
+    </section>
+
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="tip" aria-hidden="true"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- dados fictícios ---------- */
+  var GRAV_PILL = {Baixa:"p-baixa",Media:"p-media","Média":"p-media",Alta:"p-alta","Crítica":"p-critica"};
+  var STAT_PILL = {Pendente:"p-pendente","Em análise":"p-analise",Resolvido:"p-resolvido"};
+
+  var ocorrencias = [
+    {p:"DN-2026-000128",s:"Tutoria",g:"Crítica",st:"Pendente",a:1,d:"07/07/2026"},
+    {p:"DN-2026-000127",s:"Secretaria Acadêmica",g:"Baixa",st:"Pendente",a:0,d:"06/07/2026"},
+    {p:"DN-2026-000126",s:"Polo Camaçari",g:"Alta",st:"Em análise",a:2,d:"05/07/2026"},
+    {p:"DN-2026-000125",s:"Coordenação de Curso",g:"Média",st:"Em análise",a:1,d:"03/07/2026"},
+    {p:"DN-2026-000124",s:"TI / AVA",g:"Baixa",st:"Resolvido",a:0,d:"01/07/2026"},
+    {p:"DN-2026-000123",s:"Tutoria",g:"Média",st:"Resolvido",a:3,d:"29/06/2026"},
+    {p:"DN-2026-000122",s:"Polo Salvador",g:"Baixa",st:"Pendente",a:0,d:"27/06/2026"},
+    {p:"DN-2026-000121",s:"Coordenação de Curso",g:"Crítica",st:"Em análise",a:2,d:"25/06/2026"},
+    {p:"DN-2026-000120",s:"Secretaria Acadêmica",g:"Média",st:"Resolvido",a:1,d:"22/06/2026"},
+    {p:"DN-2026-000119",s:"Tutoria",g:"Alta",st:"Resolvido",a:1,d:"20/06/2026"},
+    {p:"DN-2026-000118",s:"TI / AVA",g:"Baixa",st:"Em análise",a:0,d:"18/06/2026"},
+    {p:"DN-2026-000117",s:"Polo Camaçari",g:"Média",st:"Pendente",a:1,d:"15/06/2026"}
+  ];
+
+  var auditoria = [
+    {t:"08/07/2026 09:41",u:"v.nascimento",a:"VIEW_CONTATO",p:"DN-2026-000126",ip:"200.128.44.17"},
+    {t:"08/07/2026 09:38",u:"v.nascimento",a:"VIEW_RELATO",p:"DN-2026-000126",ip:"200.128.44.17"},
+    {t:"08/07/2026 09:12",u:"m.silva",a:"DOWNLOAD_ARQUIVO",p:"DN-2026-000128",ip:"200.128.44.31"},
+    {t:"08/07/2026 09:10",u:"m.silva",a:"VIEW_RELATO",p:"DN-2026-000128",ip:"200.128.44.31"},
+    {t:"08/07/2026 08:57",u:"m.silva",a:"LIST_RELATOS",p:"—",ip:"200.128.44.31"},
+    {t:"08/07/2026 08:56",u:"m.silva",a:"LOGIN",p:"—",ip:"200.128.44.31"},
+    {t:"07/07/2026 17:20",u:"a.costa",a:"VIEW_CONTATO",p:"DN-2026-000121",ip:"200.128.45.02"},
+    {t:"07/07/2026 17:14",u:"a.costa",a:"VIEW_RELATO",p:"DN-2026-000121",ip:"200.128.45.02"},
+    {t:"07/07/2026 16:40",u:"v.nascimento",a:"LIST_RELATOS",p:"—",ip:"200.128.44.17"},
+    {t:"07/07/2026 16:39",u:"v.nascimento",a:"LOGIN",p:"—",ip:"200.128.44.17"}
+  ];
+
+  /* ---------- helpers ---------- */
+  function el(id){return document.getElementById(id)}
+  function pill(cls,txt,dot){return '<span class="pill '+cls+'">'+(dot?'<span class="dot"></span>':'')+txt+'</span>'}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+  /* ---------- navegação ---------- */
+  var titles = {dashboard:"Dashboard",ocorrencias:"Ocorrências",detalhe:"Detalhe da ocorrência",contatos:"Contatos",auditoria:"Auditoria"};
+  var navItems = document.querySelectorAll(".nav-item[data-view]");
+  function go(view){
+    document.querySelectorAll(".view").forEach(function(v){v.hidden = (v.id !== "view-"+view)});
+    navItems.forEach(function(n){
+      var active = n.dataset.view === view || (view==="detalhe" && n.dataset.view==="ocorrencias");
+      n.classList.toggle("active", active);
+    });
+    el("viewTitle").textContent = titles[view] || "";
+    document.body.classList.remove("drawer-open");
+    window.scrollTo({top:0});
+  }
+  navItems.forEach(function(n){n.addEventListener("click",function(){go(n.dataset.view)})});
+  document.addEventListener("click",function(e){
+    var g = e.target.closest("[data-goto]");
+    if(g){go(g.dataset.goto)}
+  });
+
+  /* sidebar colapsável + drawer */
+  el("btnCollapse").addEventListener("click",function(){document.body.classList.toggle("sb-collapsed")});
+  el("btnDrawer").addEventListener("click",function(){document.body.classList.add("drawer-open")});
+  el("scrim").addEventListener("click",function(){document.body.classList.remove("drawer-open")});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")document.body.classList.remove("drawer-open")});
+  el("btnSair").addEventListener("click",function(){toast("Sessão encerrada (simulação). No painel real, redireciona para o login.")});
+
+  /* ---------- toast ---------- */
+  var toastTimer;
+  function toast(msg){
+    var t = el("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(function(){t.classList.remove("show")},3600);
+  }
+  document.addEventListener("click",function(e){
+    var b = e.target.closest("[data-toast]");
+    if(b) toast(b.dataset.toast);
+  });
+
+  /* ---------- tooltip ---------- */
+  var tip = el("tip");
+  function showTip(x,y,html){tip.innerHTML = html; tip.classList.add("show"); moveTip(x,y)}
+  function moveTip(x,y){
+    var r = tip.getBoundingClientRect();
+    tip.style.left = Math.min(x+12, window.innerWidth - r.width - 8)+"px";
+    tip.style.top = Math.max(8, y - r.height - 10)+"px";
+  }
+  function hideTip(){tip.classList.remove("show")}
+
+  /* ---------- tabelas ---------- */
+  function rowHtml(o, withFiles){
+    return '<tr class="rowlink" tabindex="0" role="link" aria-label="Abrir '+o.p+'">'
+      +'<td data-l="Protocolo" class="proto">'+o.p+'</td>'
+      +'<td data-l="Setor">'+esc(o.s)+'</td>'
+      +'<td data-l="Gravidade">'+pill(GRAV_PILL[o.g],o.g,o.g==="Alta")+'</td>'
+      +'<td data-l="Status">'+pill(STAT_PILL[o.st],o.st)+'</td>'
+      +(withFiles?'<td data-l="Evidências" class="num td-muted">'+(o.a? o.a+" arquivo"+(o.a>1?"s":"") : "—")+'</td>':'')
+      +'<td data-l="Recebida" class="num td-muted">'+o.d+'</td></tr>';
+  }
+  el("tblRecentes").querySelector("tbody").innerHTML =
+    ocorrencias.slice(0,6).map(function(o){return rowHtml(o,false)}).join("");
+
+  function renderOcorrencias(){
+    var g = el("fGrav").value, st = el("fStatus").value, q = el("fBusca").value.trim().toUpperCase();
+    var rows = ocorrencias.filter(function(o){
+      return (!g || o.g===g) && (!st || o.st===st) && (!q || o.p.indexOf(q)>=0);
+    });
+    el("tblOcorrencias").querySelector("tbody").innerHTML = rows.map(function(o){return rowHtml(o,true)}).join("");
+    el("emptyOco").classList.toggle("show", rows.length===0);
+    el("pagInfo").textContent = rows.length
+      ? "Mostrando 1–"+rows.length+" de "+(g||st||q ? rows.length : 128)+" ocorrências" : "";
+  }
+  ["fGrav","fStatus","fBusca"].forEach(function(id){el(id).addEventListener("input",renderOcorrencias)});
+  function limpar(){el("fGrav").value="";el("fStatus").value="";el("fBusca").value="";renderOcorrencias()}
+  el("btnLimpar").addEventListener("click",limpar);
+  el("btnLimpar2").addEventListener("click",limpar);
+  renderOcorrencias();
+
+  /* clique em linha -> detalhe */
+  document.addEventListener("click",function(e){
+    var tr = e.target.closest("tr.rowlink");
+    if(tr) go("detalhe");
+  });
+  document.addEventListener("keydown",function(e){
+    if(e.key==="Enter" && e.target.matches("tr.rowlink")) go("detalhe");
+  });
+
+  /* auditoria */
+  var ACAO_PILL = {VIEW_CONTATO:"a-viewcontato",LOGIN:"a-outline",LIST_RELATOS:"a-outline",VIEW_RELATO:"a-neutral",DOWNLOAD_ARQUIVO:"a-neutral"};
+  function renderAudit(){
+    var f = el("aAcao").value;
+    var rows = auditoria.filter(function(r){return !f || r.a===f});
+    el("tblAudit").querySelector("tbody").innerHTML = rows.map(function(r){
+      return '<tr><td data-l="Data / hora" class="num td-muted">'+r.t+'</td>'
+        +'<td data-l="Usuário" style="font-weight:500">'+r.u+'</td>'
+        +'<td data-l="Ação">'+pill(ACAO_PILL[r.a],r.a)+'</td>'
+        +'<td data-l="Protocolo" class="proto">'+r.p+'</td>'
+        +'<td data-l="Origem" class="num td-muted">'+r.ip+'</td></tr>';
+    }).join("");
+  }
+  el("aAcao").addEventListener("input",renderAudit);
+  renderAudit();
+
+  /* contatos */
+  el("btnConsultar").addEventListener("click",function(){
+    el("contatoResult").hidden = false;
+    toast("Acesso a dados de contato registrado em auditoria.");
+  });
+
+  /* ---------- gráficos (SVG estático — no painel real: recharts) ---------- */
+  var INK="#18181B", GRID="#F0F0F1", AXIS="#A1A1AA", LABEL="#71717A";
+
+  /* barras — gravidade (ordinal: rampa de cinza claro->escuro) */
+  (function(){
+    var data=[{l:"Baixa",v:52,c:"#D4D4D8"},{l:"Média",v:41,c:"#A1A1AA"},{l:"Alta",v:21,c:"#52525B"},{l:"Crítica",v:14,c:"#18181B"}];
+    var W=480,H=232,mL=34,mR=10,mT=22,mB=30,max=60;
+    var iw=W-mL-mR, ih=H-mT-mB, bw=44, step=iw/data.length;
+    var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Ocorrências por gravidade: Baixa 52, Média 41, Alta 21, Crítica 14">';
+    [0,20,40,60].forEach(function(v){
+      var y=mT+ih-(v/max)*ih;
+      s+='<line x1="'+mL+'" x2="'+(W-mR)+'" y1="'+y+'" y2="'+y+'" stroke="'+GRID+'"/>';
+      s+='<text x="'+(mL-8)+'" y="'+(y+3.5)+'" text-anchor="end" font-size="10.5" fill="'+AXIS+'">'+v+'</text>';
+    });
+    data.forEach(function(d,i){
+      var h=(d.v/max)*ih, x=mL+step*i+(step-bw)/2, y=mT+ih-h, r=4;
+      s+='<path class="bar" data-v="'+d.l+': <b>'+d.v+'</b>" d="M'+x+','+(mT+ih)+' L'+x+','+(y+r)+' Q'+x+','+y+' '+(x+r)+','+y
+        +' L'+(x+bw-r)+','+y+' Q'+(x+bw)+','+y+' '+(x+bw)+','+(y+r)+' L'+(x+bw)+','+(mT+ih)+' Z" fill="'+d.c+'"/>';
+      s+='<text x="'+(x+bw/2)+'" y="'+(y-7)+'" text-anchor="middle" font-size="12" font-weight="600" fill="'+INK+'">'+d.v+'</text>';
+      s+='<text x="'+(x+bw/2)+'" y="'+(H-9)+'" text-anchor="middle" font-size="11.5" fill="'+LABEL+'">'+d.l+'</text>';
+    });
+    s+='<line x1="'+mL+'" x2="'+(W-mR)+'" y1="'+(mT+ih)+'" y2="'+(mT+ih)+'" stroke="#E4E4E7"/></svg>';
+    el("chartGrav").innerHTML=s;
+  })();
+
+  /* linha — evolução semanal */
+  (function(){
+    var v=[6,4,7,5,8,6,9,11,8,10,9,12];
+    var labels={0:"20/04",3:"11/05",6:"01/06",9:"22/06"};
+    var W=560,H=232,mL=30,mR=18,mT=22,mB=30,max=15;
+    var iw=W-mL-mR, ih=H-mT-mB;
+    function X(i){return mL+(i/(v.length-1))*iw}
+    function Y(val){return mT+ih-(val/max)*ih}
+    var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Novas ocorrências por semana, últimas 12 semanas, de 4 a 12 por semana">';
+    [0,5,10,15].forEach(function(g){
+      var y=Y(g);
+      s+='<line x1="'+mL+'" x2="'+(W-mR)+'" y1="'+y+'" y2="'+y+'" stroke="'+GRID+'"/>';
+      s+='<text x="'+(mL-8)+'" y="'+(y+3.5)+'" text-anchor="end" font-size="10.5" fill="'+AXIS+'">'+g+'</text>';
+    });
+    var line=v.map(function(val,i){return (i?"L":"M")+X(i)+","+Y(val)}).join(" ");
+    s+='<path d="'+line+' L'+X(v.length-1)+','+(mT+ih)+' L'+mL+','+(mT+ih)+' Z" fill="rgba(24,24,27,.05)"/>';
+    s+='<path d="'+line+'" fill="none" stroke="'+INK+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+    v.forEach(function(val,i){
+      if(labels[i]!==undefined){
+        s+='<text x="'+X(i)+'" y="'+(H-9)+'" text-anchor="middle" font-size="11" fill="'+LABEL+'">'+labels[i]+'</text>';
+      }
+      s+='<rect class="pt" data-v="Semana de '+(labels[i]||"")+' <b>'+val+'</b> ocorrências" x="'+(X(i)-iw/(v.length-1)/2)+'" y="'+mT+'" width="'+(iw/(v.length-1))+'" height="'+ih+'" fill="transparent" data-cx="'+X(i)+'" data-cy="'+Y(val)+'"/>';
+    });
+    var lx=X(v.length-1), ly=Y(v[v.length-1]);
+    s+='<circle cx="'+lx+'" cy="'+ly+'" r="4" fill="'+INK+'" stroke="#FFF" stroke-width="2"/>';
+    s+='<text x="'+(lx-2)+'" y="'+(ly-10)+'" text-anchor="end" font-size="12" font-weight="600" fill="'+INK+'">12</text>';
+    s+='<line x1="'+mL+'" x2="'+(W-mR)+'" y1="'+(mT+ih)+'" y2="'+(mT+ih)+'" stroke="#E4E4E7"/></svg>';
+    el("chartLine").innerHTML=s;
+  })();
+
+  /* setores — barras horizontais HTML */
+  (function(){
+    var data=[["Coordenação de Curso",34],["Secretaria Acadêmica",27],["Tutoria",22],["Polos de apoio",19],["TI / AVA",15],["Outros",11]];
+    var max=34;
+    el("chartSetor").innerHTML = data.map(function(d){
+      return '<div class="sector-row"><div class="s-top"><b>'+d[0]+'</b><span>'+d[1]+'</span></div>'
+        +'<div class="sector-track"><div class="sector-fill" style="width:'+(d[1]/max*100).toFixed(1)+'%"></div></div></div>';
+    }).join("");
+  })();
+
+  /* hover dos gráficos */
+  document.addEventListener("pointermove",function(e){
+    var m = e.target.closest("[data-v]");
+    if(m){showTip(e.clientX,e.clientY,m.dataset.v)} else {hideTip()}
+  });
+  document.addEventListener("pointerleave",hideTip,true);
+})();
+</script>
+</body>
+</html>
