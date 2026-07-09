@@ -37,20 +37,31 @@ backend foi iniciada (conforme combinado).
   motivo. Tudo vai para `DOWNLOAD_ARQUIVO` (com o motivo e se houve
   reautenticação). No protótipo há um botão para simular sessão fria/quente.
 
-## Alteração de status e saída automática
+## Alteração de status, confirmação e remoção de resolvidos
 
 Na tela de detalhe, o membro da CIPEAD pode alterar o status da ocorrência
 (Pendente → Em análise → Resolvido) via um seletor no cabeçalho. Toda mudança
-gera entrada de auditoria (`ALTERAR_STATUS`). Quando o status é alterado para
-**Resolvido**, o painel retorna automaticamente à listagem de ocorrências após
-600 ms, sinalizando que a ocorrência está encerrada.
+gera entrada de auditoria (`ALTERAR_STATUS`).
+
+- **Confirmação para Resolvido:** ao selecionar "Resolvido", o painel exibe um
+  diálogo de confirmação ("Encerrar DN-YYYY-XXXXXX?") explicando que a
+  ocorrência deixará de aparecer nas listagens. Só após confirmação o status é
+  alterado. Se o diálogo for cancelado (botão, X, backdrop), o seletor volta ao
+  valor anterior.
+- **Remoção das listagens:** ocorrências com status Resolvido **não aparecem**
+  na tabela de ocorrências nem na tabela "Ocorrências recentes" do dashboard.
+  Isso impede acesso casual a denúncias já encerradas. O filtro de status na
+  listagem não oferece mais a opção "Resolvido".
+- **Saída automática:** após confirmar, o painel retorna à listagem após 600 ms.
 
 ## Seções colapsáveis (toggle de olho)
 
-Na tela de detalhe, cada seção (Relato, Testemunhas, Evidências, Anotações) tem
-um botão com ícone de olho que permite ocultar/exibir o conteúdo. Útil para
-focar na seção de interesse sem precisar rolar a página toda. Ao abrir uma
-nova ocorrência, todas as seções voltam ao estado expandido.
+- **Dashboard — botão único:** um único ícone de olho no canto superior direito
+  do dashboard colapsa/expande **todas** as seções (Indicadores, Gráficos,
+  Detalhamento) de uma só vez.
+- **Detalhe da ocorrência:** cada seção (Relato, Testemunhas, Evidências,
+  Comunicação) tem seu próprio botão de olho para ocultar/exibir. Ao abrir uma
+  nova ocorrência, todas as seções voltam ao estado expandido.
 
 ## Comunicação com o denunciante
 

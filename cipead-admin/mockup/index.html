@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CIPEAD · OAB/RS — Painel do Canal de Denúncias (Protótipo)</title>
 <style>
   :root{
@@ -518,6 +516,7 @@
   .dash-sect-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .dash-sect-head h3{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
   .dash-sect.sec-collapsed > *:not(.dash-sect-head){display:none}
+  .dash-toggle-bar{display:flex;justify-content:flex-end}
 
   /* communication thread (CIPEAD ↔ denunciante) */
   .msg-badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:500;letter-spacing:.03em;text-transform:uppercase;padding:2px 8px;border-radius:5px;margin-bottom:4px}
@@ -653,10 +652,12 @@
 
     <!-- ================= DASHBOARD ================= -->
     <section class="view" id="view-dashboard">
+      <div class="dash-toggle-bar">
+        <button class="sec-toggle" id="dashToggleAll" aria-label="Ocultar informações"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
       <div class="dash-sect">
         <div class="dash-sect-head">
           <h3>Indicadores</h3>
-          <button class="sec-toggle" data-sec-toggle aria-label="Ocultar indicadores"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
         <div class="metrics">
           <div class="metric">
@@ -685,7 +686,6 @@
       <div class="dash-sect">
         <div class="dash-sect-head">
           <h3>Gráficos</h3>
-          <button class="sec-toggle" data-sec-toggle aria-label="Ocultar gráficos"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
         <div class="grid-2a">
           <div class="card">
@@ -702,7 +702,6 @@
       <div class="dash-sect">
         <div class="dash-sect-head">
           <h3>Detalhamento</h3>
-          <button class="sec-toggle" data-sec-toggle aria-label="Ocultar detalhamento"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
         <div class="grid-2b">
           <div class="card">
@@ -746,7 +745,7 @@
           <div class="field">
             <label for="fStatus">Status</label>
             <select class="sel" id="fStatus">
-              <option value="">Todos</option><option>Pendente</option><option>Em análise</option><option>Resolvido</option>
+              <option value="">Todos</option><option>Pendente</option><option>Em análise</option>
             </select>
           </div>
           <div class="field">
@@ -1122,8 +1121,7 @@
         +" · "+("0"+now.getHours()).slice(-2)+":"+("0"+now.getMinutes()).slice(-2);
       openDetail(o);
       renderOcorrencias();
-      el("tblRecentes").querySelector("tbody").innerHTML =
-        ocorrencias.slice(0,6).map(function(x){return rowHtml(x,false)}).join("");
+      renderRecentes();
       logAudit("MARCAR_VISTA", currentProto, "vista por "+quem);
       toast("Ocorrência marcada como vista — registrado em auditoria.");
       return;
@@ -1234,8 +1232,11 @@
       +(withFiles?'<td data-l="Evidências" class="num td-muted">'+(t? t+" arquivo"+(t>1?"s":"") : "—")+'</td>':'')
       +'<td data-l="Recebida" class="num td-muted">'+o.d+'</td></tr>';
   }
-  el("tblRecentes").querySelector("tbody").innerHTML =
-    ocorrencias.slice(0,6).map(function(o){return rowHtml(o,false)}).join("");
+  function renderRecentes(){
+    el("tblRecentes").querySelector("tbody").innerHTML =
+      ocorrencias.filter(function(o){return o.st!=="Resolvido"}).slice(0,6).map(function(o){return rowHtml(o,false)}).join("");
+  }
+  renderRecentes();
 
   /* preencher filtro de setor */
   el("fSetor").innerHTML = '<option value="">Todos</option>' +
@@ -1278,6 +1279,7 @@
     var g = el("fGrav").value, st = el("fStatus").value, se = el("fSetor").value,
         q = el("fBusca").value.trim().toUpperCase();
     var rows = ocorrencias.filter(function(o){
+      if(o.st==="Resolvido") return false;
       return (!g || o.g===g) && (!st || o.st===st) && (!se || o.s===se) && (!q || o.p.indexOf(q)>=0);
     });
     rows.sort(cmp);
@@ -1428,8 +1430,7 @@
     pendingNew = [];
     updateNewIndicators();
     bumpMetric("mTotal",k); bumpMetric("mPend",k); bumpMetric("m7",k);
-    el("tblRecentes").querySelector("tbody").innerHTML =
-      ocorrencias.slice(0,6).map(function(o){return rowHtml(o,false)}).join("");
+    renderRecentes();
     renderOcorrencias();
     toast(k+" nova(s) ocorrência(s) adicionada(s) à lista.");
   }
@@ -1489,8 +1490,9 @@
   }
 
   /* modal genérico */
+  var onModalClose = null;
   function openModal(){ el("mscrim").hidden=false; document.body.style.overflow="hidden"; }
-  function closeModal(){ el("mscrim").hidden=true; document.body.style.overflow=""; }
+  function closeModal(){ el("mscrim").hidden=true; document.body.style.overflow=""; if(onModalClose){onModalClose();onModalClose=null;} }
   el("mClose").addEventListener("click",closeModal);
   el("mscrim").addEventListener("click",function(e){ if(e.target===el("mscrim")) closeModal(); });
   document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !el("mscrim").hidden) closeModal(); });
@@ -1754,17 +1756,14 @@
   });
 
   /* ---------- alteração de status ---------- */
-  el("dStatusSel").addEventListener("change",function(){
-    var o = byProto[currentProto]; if(!o) return;
-    var newSt = this.value, oldSt = o.st;
+  function applyStatusChange(o, newSt, oldSt){
     o.st = newSt;
     el("dStatusPill").innerHTML = pill(STAT_PILL[newSt], newSt);
     logAudit("ALTERAR_STATUS", currentProto, oldSt+" → "+newSt);
     renderOcorrencias();
-    el("tblRecentes").querySelector("tbody").innerHTML =
-      ocorrencias.slice(0,6).map(function(x){return rowHtml(x,false)}).join("");
+    renderRecentes();
     if(newSt==="Resolvido"){
-      toast("Status alterado para Resolvido — ocorrência encerrada.");
+      toast("Status alterado para Resolvido — ocorrência encerrada e removida das listagens.");
       setTimeout(function(){ go("ocorrencias"); }, 600);
     } else {
       toast("Status alterado para "+newSt+".");
@@ -1777,6 +1776,29 @@
             +'<button class="btn btn-dark" id="btnMarcarVista" style="height:32px">Marcar como vista</button>';
       } else { vb.hidden = true; }
     }
+  }
+  el("dStatusSel").addEventListener("change",function(){
+    var o = byProto[currentProto]; if(!o) return;
+    var newSt = this.value, oldSt = o.st;
+    if(newSt==="Resolvido"){
+      onModalClose = function(){ el("dStatusSel").value = oldSt; };
+      el("mEyebrow").textContent = "Confirmação de encerramento";
+      el("mTitle").textContent = "Encerrar "+currentProto+"?";
+      el("mBody").innerHTML = '<div class="notice" style="margin:0"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>'
+        +'<span>Ao marcar como <b>Resolvido</b>, a ocorrência será encerrada e <b>não aparecerá mais nas listagens</b> do painel. A ação é registrada em auditoria.</span></div>';
+      el("mFoot").innerHTML = '<span class="mfoot-note"></span><div class="mfoot-actions">'
+        +'<button class="btn" id="mCancelStatus">Cancelar</button>'
+        +'<button class="btn btn-dark" id="mConfirmStatus">Confirmar encerramento</button></div>';
+      el("mCancelStatus").addEventListener("click",closeModal);
+      el("mConfirmStatus").addEventListener("click",function(){
+        onModalClose = null;
+        closeModal();
+        applyStatusChange(o, newSt, oldSt);
+      });
+      openModal();
+      return;
+    }
+    applyStatusChange(o, newSt, oldSt);
   });
 
   /* ---------- toggle olho (mostrar/ocultar seções) ---------- */
@@ -1784,10 +1806,20 @@
   var EYE_CLOSED = '<path d="M17.9 17.9A10.1 10.1 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.1-5.9M9.9 4.2A8.5 8.5 0 0 1 12 5c6.5 0 10 7 10 7-.7 1-1.2 1.8-1.8 2.5"/><line x1="2" y1="2" x2="22" y2="22"/>';
   document.addEventListener("click",function(e){
     var btn = e.target.closest("[data-sec-toggle]"); if(!btn) return;
-    var card = btn.closest(".card") || btn.closest(".dash-sect");
+    var card = btn.closest(".card");
+    if(!card) return;
     var collapsed = card.classList.toggle("sec-collapsed");
     btn.setAttribute("aria-label", collapsed ? "Mostrar seção" : "Ocultar seção");
     btn.querySelector(".ic").innerHTML = collapsed ? EYE_CLOSED : EYE_OPEN;
+  });
+  el("dashToggleAll").addEventListener("click",function(){
+    var sects = document.querySelectorAll("#view-dashboard .dash-sect");
+    var anyOpen = false;
+    sects.forEach(function(s){ if(!s.classList.contains("sec-collapsed")) anyOpen = true; });
+    sects.forEach(function(s){ s.classList.toggle("sec-collapsed", anyOpen); });
+    var ic = this.querySelector(".ic");
+    ic.innerHTML = anyOpen ? EYE_CLOSED : EYE_OPEN;
+    this.setAttribute("aria-label", anyOpen ? "Mostrar informações" : "Ocultar informações");
   });
 
   /* estado inicial do detalhe (caso aberto direto) */
