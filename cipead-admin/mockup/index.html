@@ -531,11 +531,14 @@
   .dash-sect-head h3{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
   .dash-sect.sec-collapsed > *:not(.dash-sect-head){display:none}
   .dash-toggle-bar{display:flex;justify-content:flex-end}
-  #view-dashboard.dash-data-hidden .m-value,
-  #view-dashboard.dash-data-hidden .m-sub,
+  #view-dashboard.dash-data-hidden .m-value{font-size:0;line-height:0}
+  #view-dashboard.dash-data-hidden .m-value::after{content:"•••";font-size:28px;line-height:1.1;color:var(--line-2);letter-spacing:3px}
+  #view-dashboard.dash-data-hidden .metric.alert .m-value::after{color:var(--line-2)}
+  #view-dashboard.dash-data-hidden .m-sub{font-size:0;background:var(--wash);border-radius:4px;height:12px;max-width:110px;margin-top:10px}
   #view-dashboard.dash-data-hidden .card-body,
-  #view-dashboard.dash-data-hidden .sector-row,
-  #view-dashboard.dash-data-hidden #tblRecentes tbody{filter:blur(6px);pointer-events:none;user-select:none}
+  #view-dashboard.dash-data-hidden .chart-wrap{visibility:hidden;max-height:60px;overflow:hidden}
+  #view-dashboard.dash-data-hidden #tblRecentes tbody{visibility:hidden}
+  #view-dashboard.dash-data-hidden .sector-row{visibility:hidden;height:0;padding:0;overflow:hidden}
 
   /* communication thread (CIPEAD ↔ denunciante) */
   .msg-badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:500;letter-spacing:.03em;text-transform:uppercase;padding:2px 8px;border-radius:5px;margin-bottom:4px}
