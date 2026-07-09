@@ -100,11 +100,25 @@
     margin-left:14px;font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
     color:var(--ink-3);border:1px dashed var(--line-2);border-radius:999px;padding:3px 10px;
   }
-  .bell{position:relative;margin-left:auto;flex:none;width:38px;height:38px;border-radius:9px;display:grid;place-items:center;color:var(--ink-2);transition:background var(--t),color var(--t)}
+  .bell-wrap{position:relative;margin-left:auto;flex:none}
+  .bell{position:relative;flex:none;width:38px;height:38px;border-radius:9px;display:grid;place-items:center;color:var(--ink-2);transition:background var(--t),color var(--t)}
   .bell:hover{background:var(--wash);color:var(--ink)}
   .bell .ic{width:19px;height:19px}
   .bell-badge{position:absolute;top:4px;right:4px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--red-ink);color:#FFF;font-size:10px;font-weight:600;line-height:16px;text-align:center;font-variant-numeric:tabular-nums;border:2px solid var(--page)}
   .bell-badge[hidden]{display:none}
+  .bell-drop{position:absolute;top:calc(100% + 8px);right:0;width:360px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 12px 40px rgba(0,0,0,.15);z-index:50;overflow:hidden}
+  .bell-drop[hidden]{display:none}
+  .bell-drop-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}
+  .bell-drop-head h3{font-size:13px;font-weight:600}
+  .bell-drop-list{max-height:320px;overflow-y:auto}
+  .bell-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:background var(--t)}
+  .bell-item:hover{background:var(--page)}
+  .bell-item:last-child{border-bottom:0}
+  .bell-item .bi-dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--red-ink);margin-top:5px}
+  .bell-item b{font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;display:block}
+  .bell-item .bi-meta{font-size:12px;color:var(--ink-3);margin-top:2px}
+  .bell-empty{padding:28px 16px;text-align:center;font-size:13px;color:var(--ink-3)}
+  @media(max-width:768px){.bell-drop{width:calc(100vw - 36px);right:-12px}}
   .bell.pulse{animation:bellpulse .5s ease}
   @keyframes bellpulse{0%,100%{transform:none}25%{transform:rotate(-13deg)}55%{transform:rotate(10deg)}80%{transform:rotate(-4deg)}}
   @media (prefers-reduced-motion:reduce){.bell.pulse{animation:none}}
@@ -517,6 +531,11 @@
   .dash-sect-head h3{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
   .dash-sect.sec-collapsed > *:not(.dash-sect-head){display:none}
   .dash-toggle-bar{display:flex;justify-content:flex-end}
+  #view-dashboard.dash-data-hidden .m-value,
+  #view-dashboard.dash-data-hidden .m-sub,
+  #view-dashboard.dash-data-hidden .card-body,
+  #view-dashboard.dash-data-hidden .sector-row,
+  #view-dashboard.dash-data-hidden #tblRecentes tbody{filter:blur(6px);pointer-events:none;user-select:none}
 
   /* communication thread (CIPEAD ↔ denunciante) */
   .msg-badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:500;letter-spacing:.03em;text-transform:uppercase;padding:2px 8px;border-radius:5px;margin-bottom:4px}
@@ -641,10 +660,16 @@
       <svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
     <h1 id="viewTitle">Dashboard</h1>
-    <button class="bell" id="btnBell" aria-label="Novas ocorrências recebidas" title="Novas ocorrências">
-      <svg class="ic" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-      <span class="bell-badge" id="bellBadge" hidden>0</span>
-    </button>
+    <div class="bell-wrap">
+      <button class="bell" id="btnBell" aria-label="Novas ocorrências recebidas" title="Novas ocorrências">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="bell-badge" id="bellBadge" hidden>0</span>
+      </button>
+      <div class="bell-drop" id="bellDrop" hidden>
+        <div class="bell-drop-head"><h3>Notificações</h3><button class="btn btn-ghost" id="btnMergeDrop" style="height:28px;font-size:12px">Atualizar lista</button></div>
+        <div class="bell-drop-list" id="bellList"><div class="bell-empty">Nenhuma nova ocorrência no momento.</div></div>
+      </div>
+    </div>
     <span class="proto-badge">Protótipo estático · dados fictícios</span>
   </header>
 
@@ -1440,6 +1465,7 @@
     var o = fakeOco();
     pendingNew.unshift(o);
     updateNewIndicators();
+    if(!el("bellDrop").hidden) renderBellDrop();
     bellPulse();
     toast("Nova ocorrência recebida — "+o.p+" ("+o.g+").");
   }
@@ -1448,7 +1474,44 @@
     arrivalsStarted = true;
     (function tick(){ setTimeout(function(){ pushArrival(); if(arrivals<MAX_ARRIVALS) tick(); }, 8000); })();
   }
-  el("btnBell").addEventListener("click",function(){ go("ocorrencias"); });
+  function renderBellDrop(){
+    var list = el("bellList");
+    if(!pendingNew.length){
+      list.innerHTML = '<div class="bell-empty">Nenhuma nova ocorrência no momento.</div>';
+      el("btnMergeDrop").style.display = "none";
+      return;
+    }
+    el("btnMergeDrop").style.display = "";
+    list.innerHTML = pendingNew.map(function(o){
+      return '<div class="bell-item" data-bell-proto="'+o.p+'">'
+        +'<span class="bi-dot"></span>'
+        +'<div><b>'+esc(o.p)+'</b>'
+        +'<div class="bi-meta">'+pill(GRAV_PILL[o.g],o.g,gravDot(o.g))+' · '+esc(o.d)+' '+esc(o.hm)+'</div></div></div>';
+    }).join("");
+  }
+  function closeBellDrop(){ el("bellDrop").hidden = true; }
+  el("btnBell").addEventListener("click",function(e){
+    e.stopPropagation();
+    var drop = el("bellDrop");
+    var open = drop.hidden;
+    drop.hidden = !open;
+    if(open) renderBellDrop();
+  });
+  document.addEventListener("click",function(e){
+    if(!e.target.closest(".bell-wrap")) closeBellDrop();
+  });
+  document.addEventListener("click",function(e){
+    var item = e.target.closest("[data-bell-proto]");
+    if(!item) return;
+    var proto = item.dataset.bellProto;
+    mergeNew();
+    closeBellDrop();
+    if(byProto[proto]) openDetail(byProto[proto]);
+  });
+  el("btnMergeDrop").addEventListener("click",function(){
+    mergeNew();
+    closeBellDrop();
+  });
   el("btnAtualizar").addEventListener("click",mergeNew);
 
   /* ---------- auditoria ---------- */
@@ -1813,13 +1876,11 @@
     btn.querySelector(".ic").innerHTML = collapsed ? EYE_CLOSED : EYE_OPEN;
   });
   el("dashToggleAll").addEventListener("click",function(){
-    var sects = document.querySelectorAll("#view-dashboard .dash-sect");
-    var anyOpen = false;
-    sects.forEach(function(s){ if(!s.classList.contains("sec-collapsed")) anyOpen = true; });
-    sects.forEach(function(s){ s.classList.toggle("sec-collapsed", anyOpen); });
+    var dash = el("view-dashboard");
+    var hidden = dash.classList.toggle("dash-data-hidden");
     var ic = this.querySelector(".ic");
-    ic.innerHTML = anyOpen ? EYE_CLOSED : EYE_OPEN;
-    this.setAttribute("aria-label", anyOpen ? "Mostrar informações" : "Ocultar informações");
+    ic.innerHTML = hidden ? EYE_CLOSED : EYE_OPEN;
+    this.setAttribute("aria-label", hidden ? "Mostrar dados" : "Ocultar dados");
   });
 
   /* estado inicial do detalhe (caso aberto direto) */
