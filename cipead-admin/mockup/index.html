@@ -1204,6 +1204,8 @@
       lgBtn.disabled = false; lgBtn.innerHTML = "Entrar";
       sessionAuthAt = Date.now(); simulaFria = false;
       go("dashboard");
+      el("view-dashboard").classList.add("dash-data-hidden");
+      var tgl = el("dashToggleAll"); tgl.querySelector(".ic").innerHTML = EYE_CLOSED; tgl.setAttribute("aria-label","Mostrar dados");
       toast("Bem-vindo(a) ao painel, " + u + ".");
       startArrivals();
     }, 750);
