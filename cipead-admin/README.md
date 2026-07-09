@@ -52,15 +52,20 @@ um botão com ícone de olho que permite ocultar/exibir o conteúdo. Útil para
 focar na seção de interesse sem precisar rolar a página toda. Ao abrir uma
 nova ocorrência, todas as seções voltam ao estado expandido.
 
-## Anotações internas
+## Comunicação com o denunciante
 
-Dentro do detalhe da ocorrência há uma seção para registrar **anotações
-internas** — questionamentos, encaminhamentos, observações da comissão. Cada
-nota é atribuída ao membro que a escreveu (com data/hora) e fica visível para
-todos os membros que consultarem a ocorrência depois. A adição de uma nota gera
-entrada de auditoria (`ADD_NOTA`). Tabela: `db_denuncia_nota` (ver
-`schema.sql`), com FK para o relato e permissão SELECT+INSERT para
-`app_painel`.
+Dentro do detalhe da ocorrência há uma seção de **comunicação** que permite à
+comissão CIPEAD interagir com o denunciante — solicitar informações adicionais,
+pedir esclarecimentos ou enviar atualizações. A conversa aparece como um thread
+com mensagens diferenciadas visualmente (CIPEAD em cinza, denunciante em verde).
+O denunciante acessa as mensagens ao consultar seu protocolo na página pública.
+
+- Cada envio gera entrada de auditoria (`ENVIAR_COMUNICACAO`).
+- Denúncias anônimas exibem aviso de que o denunciante não informou contato,
+  mas as mensagens ficam disponíveis caso ele consulte o protocolo.
+- Tabela: `db_denuncia_comunicacao` (ver `schema.sql`), com FK para o relato,
+  campo `origem` (1 CIPEAD→denunciante, 2 denunciante→CIPEAD), permissão
+  SELECT+INSERT para `app_painel` e INSERT para `app_ingest` (respostas).
 
 ## "Marcar como vista"
 

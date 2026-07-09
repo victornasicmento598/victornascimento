@@ -512,6 +512,21 @@
   .note-form textarea::placeholder{color:#A1A1AA}
   .note-actions{display:flex;justify-content:flex-end}
   .notes-empty{font-size:13.5px;color:var(--ink-3);padding-bottom:6px}
+
+  /* dashboard collapsible sections */
+  .dash-sect{display:flex;flex-direction:column;gap:16px}
+  .dash-sect-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .dash-sect-head h3{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+  .dash-sect.sec-collapsed > *:not(.dash-sect-head){display:none}
+
+  /* communication thread (CIPEAD ↔ denunciante) */
+  .msg-badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:500;letter-spacing:.03em;text-transform:uppercase;padding:2px 8px;border-radius:5px;margin-bottom:4px}
+  .msg-badge-cipead{color:var(--ink-2);background:var(--wash)}
+  .msg-badge-den{color:var(--green-ink);background:var(--green-bg)}
+  .note-item.msg-den{border-color:var(--green-line);background:rgba(236,253,243,.45)}
+  .note-item.msg-den .note-avatar{background:var(--green-ink)}
+  .comm-anon{font-size:13px;color:var(--ink-3);padding-bottom:6px;display:flex;align-items:center;gap:10px}
+  .comm-anon .ic{width:16px;height:16px;flex:none}
 </style>
 
 <div class="login" id="login" role="dialog" aria-modal="true" aria-label="Entrar no painel">
@@ -638,52 +653,70 @@
 
     <!-- ================= DASHBOARD ================= -->
     <section class="view" id="view-dashboard">
-      <div class="metrics">
-        <div class="metric">
-          <div class="m-label">Total de ocorrências</div>
-          <div class="m-value" id="mTotal">128</div>
-          <div class="m-sub">desde a abertura do canal</div>
+      <div class="dash-sect">
+        <div class="dash-sect-head">
+          <h3>Indicadores</h3>
+          <button class="sec-toggle" data-sec-toggle aria-label="Ocultar indicadores"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
-        <div class="metric">
-          <div class="m-label">Pendentes</div>
-          <div class="m-value" id="mPend">23</div>
-          <div class="m-sub">aguardando análise</div>
-        </div>
-        <div class="metric">
-          <div class="m-label">Últimos 7 dias</div>
-          <div class="m-value" id="m7">9</div>
-          <div class="m-sub">+3 vs. semana anterior</div>
-        </div>
-        <div class="metric alert">
-          <div class="m-label">Ocorrências graves</div>
-          <div class="m-value">35</div>
-          <div class="m-sub">gravidade alta ou crítica</div>
-        </div>
-      </div>
-
-      <div class="grid-2a">
-        <div class="card">
-          <div class="card-head"><h2>Ocorrências por gravidade</h2><span>total acumulado</span></div>
-          <div class="card-body chart-wrap" id="chartGrav"></div>
-        </div>
-        <div class="card">
-          <div class="card-head"><h2>Evolução no tempo</h2><span>novas por semana · últimas 12 semanas</span></div>
-          <div class="card-body chart-wrap" id="chartLine"></div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="m-label">Total de ocorrências</div>
+            <div class="m-value" id="mTotal">128</div>
+            <div class="m-sub">desde a abertura do canal</div>
+          </div>
+          <div class="metric">
+            <div class="m-label">Pendentes</div>
+            <div class="m-value" id="mPend">23</div>
+            <div class="m-sub">aguardando análise</div>
+          </div>
+          <div class="metric">
+            <div class="m-label">Últimos 7 dias</div>
+            <div class="m-value" id="m7">9</div>
+            <div class="m-sub">+3 vs. semana anterior</div>
+          </div>
+          <div class="metric alert">
+            <div class="m-label">Ocorrências graves</div>
+            <div class="m-value">35</div>
+            <div class="m-sub">gravidade alta ou crítica</div>
+          </div>
         </div>
       </div>
 
-      <div class="grid-2b">
-        <div class="card">
-          <div class="card-head"><h2>Distribuição por setor</h2><span>top 6</span></div>
-          <div class="card-body" id="chartSetor"></div>
+      <div class="dash-sect">
+        <div class="dash-sect-head">
+          <h3>Gráficos</h3>
+          <button class="sec-toggle" data-sec-toggle aria-label="Ocultar gráficos"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
-        <div class="card">
-          <div class="card-head"><h2>Ocorrências recentes</h2><button class="btn-ghost btn" data-goto="ocorrencias" style="height:28px;font-size:12.5px">Ver todas</button></div>
-          <div style="overflow-x:auto">
-            <table class="tbl tbl-cards" id="tblRecentes">
-              <thead><tr><th>Protocolo</th><th>Setor</th><th>Gravidade</th><th>Status</th><th>Recebida</th></tr></thead>
-              <tbody></tbody>
-            </table>
+        <div class="grid-2a">
+          <div class="card">
+            <div class="card-head"><h2>Ocorrências por gravidade</h2><span>total acumulado</span></div>
+            <div class="card-body chart-wrap" id="chartGrav"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Evolução no tempo</h2><span>novas por semana · últimas 12 semanas</span></div>
+            <div class="card-body chart-wrap" id="chartLine"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-sect">
+        <div class="dash-sect-head">
+          <h3>Detalhamento</h3>
+          <button class="sec-toggle" data-sec-toggle aria-label="Ocultar detalhamento"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="grid-2b">
+          <div class="card">
+            <div class="card-head"><h2>Distribuição por setor</h2><span>top 6</span></div>
+            <div class="card-body" id="chartSetor"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Ocorrências recentes</h2><button class="btn-ghost btn" data-goto="ocorrencias" style="height:28px;font-size:12.5px">Ver todas</button></div>
+            <div style="overflow-x:auto">
+              <table class="tbl tbl-cards" id="tblRecentes">
+                <thead><tr><th>Protocolo</th><th>Setor</th><th>Gravidade</th><th>Status</th><th>Recebida</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -831,7 +864,7 @@
       </div>
 
       <div class="card" id="dNotasCard">
-        <div class="card-head"><h2>Anotações internas</h2><span>visível apenas para membros CIPEAD</span><button class="sec-toggle" data-sec-toggle aria-label="Ocultar seção"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+        <div class="card-head"><h2>Comunicação com o denunciante</h2><span>solicitação de informações · acompanhamento</span><button class="sec-toggle" data-sec-toggle aria-label="Ocultar seção"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
         <div class="notes-inner" id="dNotas"></div>
       </div>
 
@@ -880,7 +913,7 @@
             <select class="sel" id="aAcao">
               <option value="">Todas</option><option>LOGIN</option><option>LIST_RELATOS</option>
               <option>VIEW_RELATO</option><option>PREVIEW_ARQUIVO</option><option>DOWNLOAD_ARQUIVO</option><option>VIEW_CONTATO</option>
-              <option>ADD_NOTA</option><option>ALTERAR_STATUS</option><option>MARCAR_VISTA</option>
+              <option>ENVIAR_COMUNICACAO</option><option>ALTERAR_STATUS</option><option>MARCAR_VISTA</option>
             </select>
           </div>
           <div class="field">
@@ -1028,16 +1061,18 @@
     "DN-2026-000117":{nome:"",email:"",tel:"",vinculo:5}
   };
 
-  var notas = {
+  var comunicacoes = {
     "DN-2026-000126":[
-      {u:"m.silva",t:"06/07/2026 10:22",texto:"Solicitei ao setor jurídico parecer sobre a conduta descrita. Aguardando retorno."},
-      {u:"a.costa",t:"07/07/2026 14:15",texto:"Parecer recebido. Recomenda-se ouvir os colegas mencionados como testemunhas antes de qualquer encaminhamento."}
+      {dir:"cipead",u:"m.silva",t:"06/07/2026 10:22",texto:"Prezado(a), para darmos seguimento à apuração, seria possível fornecer mais detalhes sobre as datas específicas em que os episódios ocorreram?"},
+      {dir:"denunciante",t:"07/07/2026 09:15",texto:"Os episódios ocorreram nas semanas de 02/06 e 16/06, sempre no período da tarde, por volta das 15h. Posso fornecer mais informações se necessário."},
+      {dir:"cipead",u:"a.costa",t:"07/07/2026 14:15",texto:"Obrigado pelas informações. Vamos verificar os registros do período indicado e retornamos se houver necessidade de mais esclarecimentos."}
     ],
     "DN-2026-000128":[
-      {u:"v.nascimento",t:"08/07/2026 08:30",texto:"Verificar com a TI se os logs de acesso dos últimos 30 dias estão disponíveis para cruzamento."}
+      {dir:"cipead",u:"v.nascimento",t:"08/07/2026 08:30",texto:"Você conseguiria indicar quais sistemas específicos foram acessados indevidamente? Essa informação ajudará a TI a direcionar a análise dos logs."}
     ],
     "DN-2026-000121":[
-      {u:"a.costa",t:"07/07/2026 17:25",texto:"Situação delicada envolvendo diretoria. Recomendo que a apuração siga com pelo menos dois membros para garantir imparcialidade."}
+      {dir:"cipead",u:"a.costa",t:"07/07/2026 17:25",texto:"Gostaríamos de esclarecer alguns pontos do relato. Poderia detalhar se a decisão mencionada já foi formalizada ou se ainda está em andamento?"},
+      {dir:"denunciante",t:"08/07/2026 10:40",texto:"A decisão foi comunicada verbalmente na semana passada, mas até onde sei ainda não houve formalização por escrito."}
     ]
   };
 
@@ -1352,7 +1387,7 @@
     }
 
     el("dBoafeQuando").textContent = "("+o.d+" · "+o.hm+")";
-    renderNotas(o.p);
+    renderComunicacoes(o.p);
     document.querySelectorAll("#view-detalhe .sec-collapsed").forEach(function(c){c.classList.remove("sec-collapsed")});
     document.querySelectorAll("#view-detalhe .sec-toggle .ic").forEach(function(ic){
       ic.innerHTML='<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>';
@@ -1416,7 +1451,7 @@
   el("btnAtualizar").addEventListener("click",mergeNew);
 
   /* ---------- auditoria ---------- */
-  var ACAO_PILL = {VIEW_CONTATO:"a-viewcontato",LOGIN:"a-outline",LIST_RELATOS:"a-outline",VIEW_RELATO:"a-neutral",PREVIEW_ARQUIVO:"a-neutral",DOWNLOAD_ARQUIVO:"a-neutral",MARCAR_VISTA:"a-neutral",ADD_NOTA:"a-neutral",ALTERAR_STATUS:"a-neutral"};
+  var ACAO_PILL = {VIEW_CONTATO:"a-viewcontato",LOGIN:"a-outline",LIST_RELATOS:"a-outline",VIEW_RELATO:"a-neutral",PREVIEW_ARQUIVO:"a-neutral",DOWNLOAD_ARQUIVO:"a-neutral",MARCAR_VISTA:"a-neutral",ENVIAR_COMUNICACAO:"a-neutral",ALTERAR_STATUS:"a-neutral"};
   function renderAudit(){
     var f = el("aAcao").value;
     var rows = auditoria.filter(function(r){return !f || r.a===f});
@@ -1674,37 +1709,48 @@
   });
   document.addEventListener("pointerleave",hideTip,true);
 
-  /* ---------- notas internas ---------- */
-  function renderNotas(proto){
-    var list = notas[proto] || [];
+  /* ---------- comunicação com o denunciante ---------- */
+  function renderComunicacoes(proto){
+    var list = comunicacoes[proto] || [];
+    var o = byProto[proto];
+    var anonimo = !contatos[proto];
     var html = '';
+    if(anonimo){
+      html += '<div class="comm-anon"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>'
+        +'Denúncia anônima — o denunciante não informou dados de contato. Mensagens enviadas aqui ficarão disponíveis caso ele consulte o protocolo.</div>';
+    }
     if(list.length){
       html += '<div class="notes-list">';
-      list.forEach(function(n){
-        html += '<div class="note-item"><div class="note-author"><div class="note-avatar">'+iniciais(n.u)+'</div>'
-          +'<span class="note-who">'+esc(n.u)+'</span><span class="note-when">'+esc(n.t)+'</span></div>'
-          +'<p class="note-text">'+esc(n.texto)+'</p></div>';
+      list.forEach(function(m){
+        var isCipead = m.dir==="cipead";
+        html += '<div class="note-item'+(isCipead?'':' msg-den')+'">'
+          +'<div class="note-author">'
+          +'<div class="note-avatar">'+(isCipead?iniciais(m.u):'<svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7.5" r="3.5"/></svg>')+'</div>'
+          +'<span class="note-who">'+(isCipead?esc(m.u):'Denunciante')+'</span>'
+          +'<span class="msg-badge '+(isCipead?'msg-badge-cipead':'msg-badge-den')+'">'+(isCipead?'CIPEAD':'Denunciante')+'</span>'
+          +'<span class="note-when">'+esc(m.t)+'</span></div>'
+          +'<p class="note-text">'+esc(m.texto)+'</p></div>';
       });
       html += '</div>';
-    } else {
-      html += '<p class="notes-empty">Nenhuma anotação registrada para esta ocorrência.</p>';
+    } else if(!anonimo) {
+      html += '<p class="notes-empty">Nenhuma comunicação registrada para esta ocorrência.</p>';
     }
     html += '<div class="note-form">'
-      +'<textarea id="notaTexto" placeholder="Escreva uma anotação, questionamento ou observação para os demais membros da comissão…" rows="3"></textarea>'
+      +'<textarea id="notaTexto" placeholder="Escreva uma solicitação de informações, esclarecimento ou mensagem para o denunciante…" rows="3"></textarea>'
       +'<div class="note-actions"><button class="btn btn-dark" id="btnAddNota">'
-      +'<svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Adicionar anotação</button></div></div>';
+      +'<svg class="ic" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Enviar mensagem</button></div></div>';
     el("dNotas").innerHTML = html;
   }
   document.addEventListener("click",function(e){
     if(!e.target.closest("#btnAddNota")) return;
     var textarea = el("notaTexto");
     var texto = textarea ? textarea.value.trim() : "";
-    if(!texto){ toast("Escreva o texto da anotação antes de enviar."); return; }
-    if(!notas[currentProto]) notas[currentProto] = [];
-    notas[currentProto].push({u:usuarioAtual(), t:nowStr(), texto:texto});
-    logAudit("ADD_NOTA", currentProto, "anotação adicionada");
-    renderNotas(currentProto);
-    toast("Anotação registrada e visível para os demais membros da CIPEAD.");
+    if(!texto){ toast("Escreva o texto da mensagem antes de enviar."); return; }
+    if(!comunicacoes[currentProto]) comunicacoes[currentProto] = [];
+    comunicacoes[currentProto].push({dir:"cipead", u:usuarioAtual(), t:nowStr(), texto:texto});
+    logAudit("ENVIAR_COMUNICACAO", currentProto, "mensagem enviada ao denunciante");
+    renderComunicacoes(currentProto);
+    toast("Mensagem enviada — ficará disponível para o denunciante ao consultar o protocolo.");
   });
 
   /* ---------- alteração de status ---------- */
@@ -1738,7 +1784,7 @@
   var EYE_CLOSED = '<path d="M17.9 17.9A10.1 10.1 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.1-5.9M9.9 4.2A8.5 8.5 0 0 1 12 5c6.5 0 10 7 10 7-.7 1-1.2 1.8-1.8 2.5"/><line x1="2" y1="2" x2="22" y2="22"/>';
   document.addEventListener("click",function(e){
     var btn = e.target.closest("[data-sec-toggle]"); if(!btn) return;
-    var card = btn.closest(".card");
+    var card = btn.closest(".card") || btn.closest(".dash-sect");
     var collapsed = card.classList.toggle("sec-collapsed");
     btn.setAttribute("aria-label", collapsed ? "Mostrar seção" : "Ocultar seção");
     btn.querySelector(".ic").innerHTML = collapsed ? EYE_CLOSED : EYE_OPEN;

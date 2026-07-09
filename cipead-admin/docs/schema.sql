@@ -100,26 +100,28 @@ CREATE TABLE dbo.db_denuncia_arquivo (
 CREATE INDEX IX_arquivo_relato ON dbo.db_denuncia_arquivo (relato_id);
 
 ------------------------------------------------------------------------------
--- 1c. ANOTAÇÕES INTERNAS da CIPEAD sobre a ocorrência (1:N com o relato)
+-- 1c. COMUNICAÇÃO CIPEAD ↔ DENUNCIANTE (1:N com o relato)
 ------------------------------------------------------------------------------
--- Permite que membros registrem observações, questionamentos e
--- encaminhamentos internos diretamente na ocorrência, visíveis para
--- todos os membros que a consultarem depois. Append-only para o
--- app_painel (não há UPDATE/DELETE).
-CREATE TABLE dbo.db_denuncia_nota (
+-- Permite a troca de mensagens entre a comissão e o denunciante.
+-- Membros CIPEAD enviam solicitações de informações/esclarecimentos;
+-- o denunciante responde ao consultar seu protocolo na página pública.
+-- Append-only para ambas as contas (não há UPDATE/DELETE).
+CREATE TABLE dbo.db_denuncia_comunicacao (
     id          BIGINT IDENTITY(1,1) NOT NULL,
     relato_id   BIGINT        NOT NULL,
-    usuario     NVARCHAR(120) NOT NULL,            -- login (LDAP) do membro que anotou
+    origem      TINYINT       NOT NULL,            -- 1 CIPEAD → denunciante · 2 denunciante → CIPEAD
+    usuario     NVARCHAR(120) NULL,                -- login CIPEAD (NULL se origem = 2)
     texto       NVARCHAR(2000) NOT NULL,
     criado_em   DATETIME2(0)  NOT NULL
-        CONSTRAINT DF_nota_criado DEFAULT (SYSUTCDATETIME()),
+        CONSTRAINT DF_comunicacao_criado DEFAULT (SYSUTCDATETIME()),
 
-    CONSTRAINT PK_nota   PRIMARY KEY CLUSTERED (id),
-    CONSTRAINT FK_nota_relato FOREIGN KEY (relato_id)
-        REFERENCES dbo.db_denuncia_relato (id)
+    CONSTRAINT PK_comunicacao          PRIMARY KEY CLUSTERED (id),
+    CONSTRAINT FK_comunicacao_relato   FOREIGN KEY (relato_id)
+        REFERENCES dbo.db_denuncia_relato (id),
+    CONSTRAINT CK_comunicacao_origem   CHECK (origem BETWEEN 1 AND 2)
 );
 
-CREATE INDEX IX_nota_relato ON dbo.db_denuncia_nota (relato_id, criado_em DESC);
+CREATE INDEX IX_comunicacao_relato ON dbo.db_denuncia_comunicacao (relato_id, criado_em DESC);
 
 ------------------------------------------------------------------------------
 -- 2. CONTATO — identidade do denunciante
@@ -157,8 +159,8 @@ CREATE TABLE dbo.db_auditoria (
     acao        VARCHAR(40)   NOT NULL,            -- LOGIN, LOGIN_FALHA, LIST_RELATOS,
                                                    -- VIEW_RELATO, MARCAR_VISTA, PREVIEW_ARQUIVO,
                                                    -- DOWNLOAD_ARQUIVO, VIEW_CONTATO,
-                                                   -- TOKEN_ARQUIVO_GERADO, ADD_NOTA,
-                                                   -- ALTERAR_STATUS...
+                                                   -- TOKEN_ARQUIVO_GERADO,
+                                                   -- ENVIAR_COMUNICACAO, ALTERAR_STATUS...
     protocolo   CHAR(14)      NULL,                -- quando a ação se refere a uma ocorrência
     detalhe     NVARCHAR(400) NULL,                -- ex.: arquivo + motivo do download, se houve
                                                    -- reautenticação por senha, filtros usados
@@ -188,6 +190,7 @@ CREATE INDEX IX_auditoria_protocolo ON dbo.db_auditoria (protocolo) WHERE protoc
 GRANT INSERT ON dbo.db_denuncia_relato   TO app_ingest;
 GRANT INSERT ON dbo.db_denuncia_arquivo  TO app_ingest;
 GRANT INSERT ON dbo.db_denuncia_contato  TO app_ingest;
+GRANT INSERT ON dbo.db_denuncia_comunicacao TO app_ingest; -- respostas do denunciante
 DENY  SELECT, UPDATE, DELETE ON dbo.db_denuncia_contato TO app_ingest;
 
 -- conta do painel: lê relatos, lê contato (sob RLS), escreve auditoria
@@ -195,8 +198,8 @@ GRANT SELECT ON dbo.db_denuncia_relato  TO app_painel;
 GRANT SELECT ON dbo.db_denuncia_arquivo TO app_painel;
 GRANT SELECT ON dbo.db_denuncia_contato TO app_painel;
 GRANT UPDATE (status) ON dbo.db_denuncia_relato TO app_painel;
-GRANT SELECT, INSERT ON dbo.db_denuncia_nota TO app_painel;
-DENY  UPDATE, DELETE ON dbo.db_denuncia_nota TO app_painel;
+GRANT SELECT, INSERT ON dbo.db_denuncia_comunicacao TO app_painel;
+DENY  UPDATE, DELETE ON dbo.db_denuncia_comunicacao TO app_painel;
 GRANT INSERT, SELECT ON dbo.db_auditoria TO app_painel;
 DENY  UPDATE, DELETE ON dbo.db_auditoria TO app_painel;
 DENY  UPDATE, DELETE ON dbo.db_denuncia_contato TO app_painel;
