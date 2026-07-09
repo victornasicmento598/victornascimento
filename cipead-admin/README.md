@@ -37,6 +37,31 @@ backend foi iniciada (conforme combinado).
   motivo. Tudo vai para `DOWNLOAD_ARQUIVO` (com o motivo e se houve
   reautenticação). No protótipo há um botão para simular sessão fria/quente.
 
+## Alteração de status e saída automática
+
+Na tela de detalhe, o membro da CIPEAD pode alterar o status da ocorrência
+(Pendente → Em análise → Resolvido) via um seletor no cabeçalho. Toda mudança
+gera entrada de auditoria (`ALTERAR_STATUS`). Quando o status é alterado para
+**Resolvido**, o painel retorna automaticamente à listagem de ocorrências após
+600 ms, sinalizando que a ocorrência está encerrada.
+
+## Seções colapsáveis (toggle de olho)
+
+Na tela de detalhe, cada seção (Relato, Testemunhas, Evidências, Anotações) tem
+um botão com ícone de olho que permite ocultar/exibir o conteúdo. Útil para
+focar na seção de interesse sem precisar rolar a página toda. Ao abrir uma
+nova ocorrência, todas as seções voltam ao estado expandido.
+
+## Anotações internas
+
+Dentro do detalhe da ocorrência há uma seção para registrar **anotações
+internas** — questionamentos, encaminhamentos, observações da comissão. Cada
+nota é atribuída ao membro que a escreveu (com data/hora) e fica visível para
+todos os membros que consultarem a ocorrência depois. A adição de uma nota gera
+entrada de auditoria (`ADD_NOTA`). Tabela: `db_denuncia_nota` (ver
+`schema.sql`), com FK para o relato e permissão SELECT+INSERT para
+`app_painel`.
+
 ## "Marcar como vista"
 
 Ao abrir uma ocorrência **Pendente**, qualquer membro da CIPEAD pode clicar em
@@ -55,7 +80,7 @@ denúncias já aprovado. Mapeamento formulário → painel:
 | Campo do formulário | Onde vive | Onde aparece no painel |
 |---|---|---|
 | Relato dos fatos *(obrigatório)* | `relato.relato` | Detalhe |
-| Setor envolvido | `relato.setor` | Listagem, filtro, detalhe, gráfico |
+| Setor envolvido | `relato.setor` | Filtro, detalhe, gráfico (removido da tabela de listagem) |
 | Quando ocorreu | `relato.quando_ocorreu` | Detalhe |
 | Frequência | `relato.frequencia` | Detalhe |
 | Gravidade *(obrigatório)* | `relato.gravidade` | Listagem, filtro, dashboard, detalhe |

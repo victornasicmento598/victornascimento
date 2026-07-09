@@ -100,6 +100,28 @@ CREATE TABLE dbo.db_denuncia_arquivo (
 CREATE INDEX IX_arquivo_relato ON dbo.db_denuncia_arquivo (relato_id);
 
 ------------------------------------------------------------------------------
+-- 1c. ANOTAÇÕES INTERNAS da CIPEAD sobre a ocorrência (1:N com o relato)
+------------------------------------------------------------------------------
+-- Permite que membros registrem observações, questionamentos e
+-- encaminhamentos internos diretamente na ocorrência, visíveis para
+-- todos os membros que a consultarem depois. Append-only para o
+-- app_painel (não há UPDATE/DELETE).
+CREATE TABLE dbo.db_denuncia_nota (
+    id          BIGINT IDENTITY(1,1) NOT NULL,
+    relato_id   BIGINT        NOT NULL,
+    usuario     NVARCHAR(120) NOT NULL,            -- login (LDAP) do membro que anotou
+    texto       NVARCHAR(2000) NOT NULL,
+    criado_em   DATETIME2(0)  NOT NULL
+        CONSTRAINT DF_nota_criado DEFAULT (SYSUTCDATETIME()),
+
+    CONSTRAINT PK_nota   PRIMARY KEY CLUSTERED (id),
+    CONSTRAINT FK_nota_relato FOREIGN KEY (relato_id)
+        REFERENCES dbo.db_denuncia_relato (id)
+);
+
+CREATE INDEX IX_nota_relato ON dbo.db_denuncia_nota (relato_id, criado_em DESC);
+
+------------------------------------------------------------------------------
 -- 2. CONTATO — identidade do denunciante
 --    * SEM foreign key para o relato (isolamento proposital).
 --    * Chave de ligação = HMAC-SHA256(protocolo, pepper) em hex (64 chars).
@@ -135,7 +157,8 @@ CREATE TABLE dbo.db_auditoria (
     acao        VARCHAR(40)   NOT NULL,            -- LOGIN, LOGIN_FALHA, LIST_RELATOS,
                                                    -- VIEW_RELATO, MARCAR_VISTA, PREVIEW_ARQUIVO,
                                                    -- DOWNLOAD_ARQUIVO, VIEW_CONTATO,
-                                                   -- TOKEN_ARQUIVO_GERADO...
+                                                   -- TOKEN_ARQUIVO_GERADO, ADD_NOTA,
+                                                   -- ALTERAR_STATUS...
     protocolo   CHAR(14)      NULL,                -- quando a ação se refere a uma ocorrência
     detalhe     NVARCHAR(400) NULL,                -- ex.: arquivo + motivo do download, se houve
                                                    -- reautenticação por senha, filtros usados
@@ -172,6 +195,8 @@ GRANT SELECT ON dbo.db_denuncia_relato  TO app_painel;
 GRANT SELECT ON dbo.db_denuncia_arquivo TO app_painel;
 GRANT SELECT ON dbo.db_denuncia_contato TO app_painel;
 GRANT UPDATE (status) ON dbo.db_denuncia_relato TO app_painel;
+GRANT SELECT, INSERT ON dbo.db_denuncia_nota TO app_painel;
+DENY  UPDATE, DELETE ON dbo.db_denuncia_nota TO app_painel;
 GRANT INSERT, SELECT ON dbo.db_auditoria TO app_painel;
 DENY  UPDATE, DELETE ON dbo.db_auditoria TO app_painel;
 DENY  UPDATE, DELETE ON dbo.db_denuncia_contato TO app_painel;

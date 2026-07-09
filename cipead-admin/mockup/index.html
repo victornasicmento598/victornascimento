@@ -1,8 +1,8 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CIPEAD · OAB/RS — Painel do Canal de Denúncias (Protótipo)</title>
 <style>
   :root{
@@ -485,9 +485,34 @@
   @media (max-width:480px){
     .metrics{grid-template-columns:1fr}
   }
+
+  /* collapsible sections (eye toggle) */
+  .sec-toggle{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3);padding:4px 8px;border-radius:6px;margin-left:auto;transition:background var(--t),color var(--t)}
+  .sec-toggle:hover{background:var(--wash);color:var(--ink-2)}
+  .sec-toggle .ic{width:16px;height:16px}
+  .card.sec-collapsed > *:not(.card-head){display:none}
+  .card.sec-collapsed .card-head{padding-bottom:20px}
+
+  /* status change */
+  .det-actions{display:flex;gap:8px;align-items:center;margin-left:auto}
+  .status-sel{height:30px;font-size:12.5px;border-radius:7px;padding:0 28px 0 10px;cursor:pointer}
+
+  /* notes */
+  .notes-inner{padding:16px 24px 22px}
+  .notes-list{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+  .note-item{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--page)}
+  .note-author{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .note-avatar{flex:none;width:24px;height:24px;border-radius:50%;background:#27272A;color:#E4E4E7;display:grid;place-items:center;font-size:9px;font-weight:600}
+  .note-who{font-size:12.5px;font-weight:500;color:var(--ink-2)}
+  .note-when{font-size:11.5px;color:var(--ink-3);margin-left:auto;font-variant-numeric:tabular-nums}
+  .note-text{font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+  .note-form{display:flex;flex-direction:column;gap:10px}
+  .note-form textarea{width:100%;min-height:80px;resize:vertical;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-sm);font-size:13.5px;line-height:1.5;background:var(--card);color:var(--ink);transition:border-color var(--t)}
+  .note-form textarea:focus{border-color:var(--ink);outline:none}
+  .note-form textarea::placeholder{color:#A1A1AA}
+  .note-actions{display:flex;justify-content:flex-end}
+  .notes-empty{font-size:13.5px;color:var(--ink-3);padding-bottom:6px}
 </style>
-</head>
-<body>
 
 <div class="login" id="login" role="dialog" aria-modal="true" aria-label="Entrar no painel">
   <div class="login-brand">
@@ -707,7 +732,6 @@
               <option value="grav:desc">Gravidade (maior)</option>
               <option value="grav:asc">Gravidade (menor)</option>
               <option value="status:asc">Status</option>
-              <option value="setor:asc">Setor (A–Z)</option>
               <option value="proto:desc">Protocolo (maior)</option>
               <option value="evid:desc">Mais evidências</option>
             </select>
@@ -725,7 +749,6 @@
           <table class="tbl tbl-cards" id="tblOcorrencias">
             <thead><tr>
               <th data-col="proto"><button class="th-sort" data-sort="proto" type="button">Protocolo<span class="sar"></span></button></th>
-              <th data-col="setor"><button class="th-sort" data-sort="setor" type="button">Setor<span class="sar"></span></button></th>
               <th data-col="grav"><button class="th-sort" data-sort="grav" type="button">Gravidade<span class="sar"></span></button></th>
               <th data-col="status"><button class="th-sort" data-sort="status" type="button">Status<span class="sar"></span></button></th>
               <th data-col="evid"><button class="th-sort" data-sort="evid" type="button">Evidências<span class="sar"></span></button></th>
@@ -768,6 +791,11 @@
           <span class="proto" id="dProto">—</span>
           <span id="dGravPill"></span>
           <span id="dStatusPill"></span>
+          <div class="det-actions">
+            <select class="sel status-sel" id="dStatusSel" aria-label="Alterar status">
+              <option>Pendente</option><option>Em análise</option><option>Resolvido</option>
+            </select>
+          </div>
         </div>
         <div class="det-grav-desc" id="dGravDesc"></div>
         <div class="det-meta" id="dMeta"></div>
@@ -775,12 +803,12 @@
       </div>
 
       <div class="card">
-        <div class="card-head"><h2>Relato dos fatos</h2></div>
+        <div class="card-head"><h2>Relato dos fatos</h2><button class="sec-toggle" data-sec-toggle aria-label="Ocultar seção"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
         <div class="card-body relato-text" id="dRelato"></div>
       </div>
 
       <div class="card" id="dTestCard">
-        <div class="card-head"><h2>Testemunhas indicadas</h2><span>informado no relato</span></div>
+        <div class="card-head"><h2>Testemunhas indicadas</h2><span>informado no relato</span><button class="sec-toggle" data-sec-toggle aria-label="Ocultar seção"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
         <div class="card-body" style="padding-top:14px">
           <p class="test-text" id="dTest"></p>
           <p class="cf-tag" style="margin-top:12px">
@@ -791,7 +819,7 @@
       </div>
 
       <div class="card" id="dEvidCard">
-        <div class="card-head"><h2>Evidências</h2><span>visualização na página · download registrado</span></div>
+        <div class="card-head"><h2>Evidências</h2><span>visualização na página · download registrado</span><button class="sec-toggle" data-sec-toggle aria-label="Ocultar seção"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
         <div id="dEvid"></div>
       </div>
 
@@ -800,6 +828,11 @@
           <span class="ck"><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
           <span><b style="font-weight:600;color:var(--ink)">Declaração de boa-fé aceita.</b> O denunciante confirmou a veracidade das informações no envio <span id="dBoafeQuando" class="num"></span>.</span>
         </div>
+      </div>
+
+      <div class="card" id="dNotasCard">
+        <div class="card-head"><h2>Anotações internas</h2><span>visível apenas para membros CIPEAD</span><button class="sec-toggle" data-sec-toggle aria-label="Ocultar seção"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+        <div class="notes-inner" id="dNotas"></div>
       </div>
 
       <p class="notice">
@@ -847,6 +880,7 @@
             <select class="sel" id="aAcao">
               <option value="">Todas</option><option>LOGIN</option><option>LIST_RELATOS</option>
               <option>VIEW_RELATO</option><option>PREVIEW_ARQUIVO</option><option>DOWNLOAD_ARQUIVO</option><option>VIEW_CONTATO</option>
+              <option>ADD_NOTA</option><option>ALTERAR_STATUS</option><option>MARCAR_VISTA</option>
             </select>
           </div>
           <div class="field">
@@ -992,6 +1026,19 @@
     "DN-2026-000119":{nome:"Diego Exemplo",email:"diego.exemplo@exemplo.adv.br",tel:"(51) 9 9543-0000",vinculo:4},
     "DN-2026-000127":{nome:"",email:"anon.exemplo@exemplo.com.br",tel:"",vinculo:5},
     "DN-2026-000117":{nome:"",email:"",tel:"",vinculo:5}
+  };
+
+  var notas = {
+    "DN-2026-000126":[
+      {u:"m.silva",t:"06/07/2026 10:22",texto:"Solicitei ao setor jurídico parecer sobre a conduta descrita. Aguardando retorno."},
+      {u:"a.costa",t:"07/07/2026 14:15",texto:"Parecer recebido. Recomenda-se ouvir os colegas mencionados como testemunhas antes de qualquer encaminhamento."}
+    ],
+    "DN-2026-000128":[
+      {u:"v.nascimento",t:"08/07/2026 08:30",texto:"Verificar com a TI se os logs de acesso dos últimos 30 dias estão disponíveis para cruzamento."}
+    ],
+    "DN-2026-000121":[
+      {u:"a.costa",t:"07/07/2026 17:25",texto:"Situação delicada envolvendo diretoria. Recomendo que a apuração siga com pelo menos dois membros para garantir imparcialidade."}
+    ]
   };
 
   var auditoria = [
@@ -1146,7 +1193,7 @@
     var t = totEvid(o);
     return '<tr class="rowlink" tabindex="0" role="link" data-proto="'+o.p+'" aria-label="Abrir '+o.p+'">'
       +'<td data-l="Protocolo" class="proto">'+(o.st==="Pendente"&&!o.vistoPor?'<span class="unseen-dot" title="Ainda não vista por nenhum membro"></span>':'')+o.p+'</td>'
-      +'<td data-l="Setor">'+esc(o.s)+'</td>'
+      +(!withFiles?'<td data-l="Setor">'+esc(o.s)+'</td>':'')
       +'<td data-l="Gravidade">'+pill(GRAV_PILL[o.g],o.g,gravDot(o.g))+'</td>'
       +'<td data-l="Status">'+pill(STAT_PILL[o.st],o.st)+'</td>'
       +(withFiles?'<td data-l="Evidências" class="num td-muted">'+(t? t+" arquivo"+(t>1?"s":"") : "—")+'</td>':'')
@@ -1267,6 +1314,7 @@
     el("dProto").textContent = o.p;
     el("dGravPill").innerHTML = pill(GRAV_PILL[o.g],o.g,gravDot(o.g));
     el("dStatusPill").innerHTML = pill(STAT_PILL[o.st],o.st);
+    el("dStatusSel").value = o.st;
     el("dGravDesc").textContent = o.g+" — "+GRAV_DESC[o.g];
 
     var t = totEvid(o);
@@ -1304,6 +1352,11 @@
     }
 
     el("dBoafeQuando").textContent = "("+o.d+" · "+o.hm+")";
+    renderNotas(o.p);
+    document.querySelectorAll("#view-detalhe .sec-collapsed").forEach(function(c){c.classList.remove("sec-collapsed")});
+    document.querySelectorAll("#view-detalhe .sec-toggle .ic").forEach(function(ic){
+      ic.innerHTML='<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>';
+    });
     go("detalhe");
   }
 
@@ -1363,7 +1416,7 @@
   el("btnAtualizar").addEventListener("click",mergeNew);
 
   /* ---------- auditoria ---------- */
-  var ACAO_PILL = {VIEW_CONTATO:"a-viewcontato",LOGIN:"a-outline",LIST_RELATOS:"a-outline",VIEW_RELATO:"a-neutral",PREVIEW_ARQUIVO:"a-neutral",DOWNLOAD_ARQUIVO:"a-neutral",MARCAR_VISTA:"a-neutral"};
+  var ACAO_PILL = {VIEW_CONTATO:"a-viewcontato",LOGIN:"a-outline",LIST_RELATOS:"a-outline",VIEW_RELATO:"a-neutral",PREVIEW_ARQUIVO:"a-neutral",DOWNLOAD_ARQUIVO:"a-neutral",MARCAR_VISTA:"a-neutral",ADD_NOTA:"a-neutral",ALTERAR_STATUS:"a-neutral"};
   function renderAudit(){
     var f = el("aAcao").value;
     var rows = auditoria.filter(function(r){return !f || r.a===f});
@@ -1621,10 +1674,80 @@
   });
   document.addEventListener("pointerleave",hideTip,true);
 
+  /* ---------- notas internas ---------- */
+  function renderNotas(proto){
+    var list = notas[proto] || [];
+    var html = '';
+    if(list.length){
+      html += '<div class="notes-list">';
+      list.forEach(function(n){
+        html += '<div class="note-item"><div class="note-author"><div class="note-avatar">'+iniciais(n.u)+'</div>'
+          +'<span class="note-who">'+esc(n.u)+'</span><span class="note-when">'+esc(n.t)+'</span></div>'
+          +'<p class="note-text">'+esc(n.texto)+'</p></div>';
+      });
+      html += '</div>';
+    } else {
+      html += '<p class="notes-empty">Nenhuma anotação registrada para esta ocorrência.</p>';
+    }
+    html += '<div class="note-form">'
+      +'<textarea id="notaTexto" placeholder="Escreva uma anotação, questionamento ou observação para os demais membros da comissão…" rows="3"></textarea>'
+      +'<div class="note-actions"><button class="btn btn-dark" id="btnAddNota">'
+      +'<svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Adicionar anotação</button></div></div>';
+    el("dNotas").innerHTML = html;
+  }
+  document.addEventListener("click",function(e){
+    if(!e.target.closest("#btnAddNota")) return;
+    var textarea = el("notaTexto");
+    var texto = textarea ? textarea.value.trim() : "";
+    if(!texto){ toast("Escreva o texto da anotação antes de enviar."); return; }
+    if(!notas[currentProto]) notas[currentProto] = [];
+    notas[currentProto].push({u:usuarioAtual(), t:nowStr(), texto:texto});
+    logAudit("ADD_NOTA", currentProto, "anotação adicionada");
+    renderNotas(currentProto);
+    toast("Anotação registrada e visível para os demais membros da CIPEAD.");
+  });
+
+  /* ---------- alteração de status ---------- */
+  el("dStatusSel").addEventListener("change",function(){
+    var o = byProto[currentProto]; if(!o) return;
+    var newSt = this.value, oldSt = o.st;
+    o.st = newSt;
+    el("dStatusPill").innerHTML = pill(STAT_PILL[newSt], newSt);
+    logAudit("ALTERAR_STATUS", currentProto, oldSt+" → "+newSt);
+    renderOcorrencias();
+    el("tblRecentes").querySelector("tbody").innerHTML =
+      ocorrencias.slice(0,6).map(function(x){return rowHtml(x,false)}).join("");
+    if(newSt==="Resolvido"){
+      toast("Status alterado para Resolvido — ocorrência encerrada.");
+      setTimeout(function(){ go("ocorrencias"); }, 600);
+    } else {
+      toast("Status alterado para "+newSt+".");
+      var vb = el("dVisto");
+      if(newSt==="Pendente"){
+        vb.hidden = false;
+        vb.innerHTML = o.vistoPor
+          ? '<span class="vb-text"><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Vista por <b>'+esc(o.vistoPor)+'</b> em '+o.vistoEm+'</span>'
+          : '<span class="vb-text">Ainda não vista por nenhum membro da CIPEAD.</span>'
+            +'<button class="btn btn-dark" id="btnMarcarVista" style="height:32px">Marcar como vista</button>';
+      } else { vb.hidden = true; }
+    }
+  });
+
+  /* ---------- toggle olho (mostrar/ocultar seções) ---------- */
+  var EYE_OPEN = '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>';
+  var EYE_CLOSED = '<path d="M17.9 17.9A10.1 10.1 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.1-5.9M9.9 4.2A8.5 8.5 0 0 1 12 5c6.5 0 10 7 10 7-.7 1-1.2 1.8-1.8 2.5"/><line x1="2" y1="2" x2="22" y2="22"/>';
+  document.addEventListener("click",function(e){
+    var btn = e.target.closest("[data-sec-toggle]"); if(!btn) return;
+    var card = btn.closest(".card");
+    var collapsed = card.classList.toggle("sec-collapsed");
+    btn.setAttribute("aria-label", collapsed ? "Mostrar seção" : "Ocultar seção");
+    btn.querySelector(".ic").innerHTML = collapsed ? EYE_CLOSED : EYE_OPEN;
+  });
+
   /* estado inicial do detalhe (caso aberto direto) */
   openDetail(byProto["DN-2026-000126"]);
   go("dashboard");
 })();
 </script>
-</body>
+
 </html>
