@@ -26,6 +26,17 @@ backend foi iniciada (conforme combinado).
   ordem lógica (não alfabética) e Recebida por data/hora. No mobile, onde o
   cabeçalho vira card, há um seletor "Ordenar por" que reflete o mesmo estado.
 
+## Evidências: preview na página e download com fricção
+
+- **Visualizar na página** os tipos com suporte nativo (PDF, imagens, áudio,
+  vídeo MP4) — sem download, sem cópia local. Cada visualização gera log
+  `PREVIEW_ARQUIVO`. Tipos sem preview nativo (Word/Excel/MOV) só têm download.
+- **Baixar** exige **motivo** (categoria + detalhamento) e, se a sessão estiver
+  aberta há mais de **10 minutos**, **reinserir a senha** — com o painel
+  explicando ao usuário por que está pedindo. Se a sessão está "quente", só o
+  motivo. Tudo vai para `DOWNLOAD_ARQUIVO` (com o motivo e se houve
+  reautenticação). No protótipo há um botão para simular sessão fria/quente.
+
 ## "Marcar como vista"
 
 Ao abrir uma ocorrência **Pendente**, qualquer membro da CIPEAD pode clicar em

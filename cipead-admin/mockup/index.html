@@ -126,6 +126,76 @@
   th[aria-sort] .sar{opacity:1;color:var(--ink)}
   .sar svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .sort-mobile{display:none}
+
+  /* ---------- Modal (preview / download) ---------- */
+  .mscrim{position:fixed;inset:0;z-index:90;background:rgba(10,10,10,.55);display:flex;align-items:center;justify-content:center;padding:24px}
+  .mscrim[hidden]{display:none}
+  .modal{background:var(--card);border:1px solid var(--line);border-radius:14px;width:100%;max-width:640px;max-height:calc(100vh - 48px);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+  .modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:20px 22px 16px;border-bottom:1px solid var(--line)}
+  .mh-eyebrow{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+  .modal-head h3{font-size:15px;font-weight:600;letter-spacing:-.01em;word-break:break-word}
+  .mclose{flex:none;width:32px;height:32px;border-radius:8px;display:grid;place-items:center;color:var(--ink-3);transition:background var(--t),color var(--t)}
+  .mclose:hover{background:var(--wash);color:var(--ink)}
+  .mclose .ic{width:18px;height:18px}
+  .modal-body{padding:22px;overflow-y:auto}
+  .modal-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 22px;border-top:1px solid var(--line);background:var(--page)}
+  .mfoot-note{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-3)}
+  .mfoot-note .ic{width:15px;height:15px;flex:none;color:var(--green-ink)}
+  .mfoot-actions{display:flex;gap:10px;margin-left:auto}
+
+  .pv-doc{background:#fff;border:1px solid var(--line);border-radius:8px;padding:34px 38px;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:11px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .pv-doc .pv-title{height:14px;width:56%;border-radius:4px;background:var(--ink);opacity:.85;margin-bottom:8px}
+  .pv-line{height:8px;border-radius:4px;background:var(--wash)}
+  .pv-gap{height:6px}
+  .pv-image{border:1px solid var(--line);border-radius:10px;overflow:hidden;max-width:520px;margin:0 auto}
+  .pv-image .pv-bar{display:flex;gap:5px;padding:9px 12px;background:#fff;border-bottom:1px solid var(--line)}
+  .pv-image .pv-bar i{width:9px;height:9px;border-radius:50%;background:var(--line-2)}
+  .pv-image .pv-canvas{aspect-ratio:16/10;background:radial-gradient(circle at 30% 32%, #ececef, transparent 46%),linear-gradient(135deg,#f4f4f5,#e4e4e7);display:grid;place-items:center}
+  .pv-image .pv-canvas svg{width:52px;height:52px;color:#B4B4B8;stroke-width:1.4}
+  .pv-audio{max-width:520px;margin:0 auto;border:1px solid var(--line);border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:16px;background:#fff}
+  .pv-play{flex:none;width:46px;height:46px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center}
+  .pv-play .ic{width:20px;height:20px}
+  .pv-audio .pv-mid{flex:1;min-width:0}
+  .pv-wave{display:flex;align-items:flex-end;gap:3px;height:44px}
+  .pv-wave i{flex:1;background:var(--line-2);border-radius:2px;min-width:2px}
+  .pv-wave i.on{background:var(--ink-2)}
+  .pv-time{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-3);margin-top:8px;font-variant-numeric:tabular-nums}
+  .pv-video{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#27272A,#0A0A0A);display:grid;place-items:center;max-width:560px;margin:0 auto}
+  .pv-video .pv-vplay{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.5);display:grid;place-items:center;color:#fff}
+  .pv-video .pv-vplay .ic{width:26px;height:26px;margin-left:3px}
+  .pv-video .pv-vbar{position:absolute;left:16px;right:16px;bottom:14px;height:4px;border-radius:2px;background:rgba(255,255,255,.25)}
+  .pv-video .pv-vbar::after{content:"";position:absolute;left:0;top:0;bottom:0;width:34%;border-radius:2px;background:#fff}
+  .pv-text{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.7;color:var(--ink-2);background:var(--page);border:1px solid var(--line);border-radius:8px;padding:16px 18px;white-space:pre-wrap;max-height:340px;overflow:auto}
+  .pv-caption{text-align:center;font-size:12px;color:var(--ink-3);margin-top:14px}
+
+  .dl-file{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:18px;background:var(--page)}
+  .dl-file .file-ic{width:34px;height:34px}
+  .dl-file b{font-size:13.5px;font-weight:600;display:block}
+  .dl-file span{font-size:12px;color:var(--ink-3)}
+  .dl-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+  .dl-field label{font-size:12.5px;font-weight:500;color:var(--ink-2)}
+  .dl-field .req{color:var(--red-ink)}
+  .dl-field textarea.inp{height:auto;min-height:70px;padding:10px 12px;resize:vertical;line-height:1.5;width:100%}
+  .dl-field .inp,.dl-field .sel{width:100%}
+  .dl-reauth{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:16px;background:var(--page)}
+  .dl-reauth .dl-why{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-2);margin-bottom:12px}
+  .dl-reauth .dl-why .ic{width:16px;height:16px;flex:none;margin-top:1px;color:var(--ink)}
+  .dl-reauth .dl-why b{font-weight:600}
+  .dl-warm{display:flex;gap:9px;align-items:center;font-size:12.5px;color:var(--ink-3);padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:16px;background:var(--page)}
+  .dl-warm .ic{width:15px;height:15px;flex:none;color:var(--green-ink)}
+  .sim-toggle{font-size:11.5px;color:var(--ink-3);text-align:right;margin-bottom:2px}
+  .sim-toggle button{color:var(--ink-2);text-decoration:underline;text-underline-offset:2px;font-size:11.5px;background:none}
+  .sim-toggle button:hover{color:var(--ink)}
+  .dl-err{display:none;align-items:center;gap:8px;font-size:13px;color:var(--red-ink);background:var(--red-bg);border:1px solid var(--red-line);border-radius:8px;padding:9px 12px;margin-top:4px}
+  .dl-err.show{display:flex}
+  .dl-err .ic{width:15px;height:15px;flex:none}
+  .a-det{font-size:11.5px;color:var(--ink-3);margin-top:4px;max-width:360px;line-height:1.45}
+  .file-actions{display:flex;gap:8px;flex:none}
+  @media (max-width:768px){
+    .mscrim{padding:0}
+    .modal{max-width:none;max-height:100vh;height:100vh;border-radius:0;border:0}
+    .file-actions{flex-wrap:wrap;justify-content:flex-end}
+  }
   .content{max-width:1180px;margin:0 auto;padding:32px 40px 64px;display:flex;flex-direction:column;gap:20px}
   .view[hidden]{display:none}
   .view{display:flex;flex-direction:column;gap:20px}
@@ -721,7 +791,7 @@
       </div>
 
       <div class="card" id="dEvidCard">
-        <div class="card-head"><h2>Evidências</h2><span>download via token temporário</span></div>
+        <div class="card-head"><h2>Evidências</h2><span>visualização na página · download registrado</span></div>
         <div id="dEvid"></div>
       </div>
 
@@ -776,7 +846,7 @@
             <label for="aAcao">Ação</label>
             <select class="sel" id="aAcao">
               <option value="">Todas</option><option>LOGIN</option><option>LIST_RELATOS</option>
-              <option>VIEW_RELATO</option><option>DOWNLOAD_ARQUIVO</option><option>VIEW_CONTATO</option>
+              <option>VIEW_RELATO</option><option>PREVIEW_ARQUIVO</option><option>DOWNLOAD_ARQUIVO</option><option>VIEW_CONTATO</option>
             </select>
           </div>
           <div class="field">
@@ -804,6 +874,19 @@
       </p>
     </section>
 
+  </div>
+</div>
+
+<div class="mscrim" id="mscrim" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <div class="modal-head">
+      <div><div class="mh-eyebrow" id="mEyebrow"></div><h3 id="mTitle">—</h3></div>
+      <button class="mclose" id="mClose" aria-label="Fechar">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="mBody"></div>
+    <div class="modal-foot" id="mFoot"></div>
   </div>
 </div>
 
@@ -959,6 +1042,7 @@
       renderOcorrencias();
       el("tblRecentes").querySelector("tbody").innerHTML =
         ocorrencias.slice(0,6).map(function(x){return rowHtml(x,false)}).join("");
+      logAudit("MARCAR_VISTA", currentProto, "vista por "+quem);
       toast("Ocorrência marcada como vista — registrado em auditoria.");
       return;
     }
@@ -1010,6 +1094,7 @@
       document.querySelector(".sb-user").setAttribute("title", u + " — CIPEAD");
       document.body.classList.add("logged-in");
       lgBtn.disabled = false; lgBtn.innerHTML = "Entrar";
+      sessionAuthAt = Date.now(); simulaFria = false;
       go("dashboard");
       toast("Bem-vindo(a) ao painel, " + u + ".");
       startArrivals();
@@ -1157,11 +1242,18 @@
       : type==="av"
       ? '<circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3z"/>'
       : '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>';
+    var kind = previewKind(name);
+    var d = 'data-fname="'+esc(name)+'" data-fmeta="'+esc(meta)+'" data-kind="'+(kind||"file")+'"';
+    var previewBtn = kind
+      ? '<button class="btn btn-ghost fbtn" data-act="preview" '+d+'>'
+        +'<svg class="ic" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Visualizar</button>'
+      : '';
+    var dlBtn = '<button class="btn fbtn" data-act="download" '+d+'>'
+      +'<svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>Baixar</button>';
     return '<div class="file-row">'
       +'<div class="file-ic"><svg class="ic" viewBox="0 0 24 24">'+icon+'</svg></div>'
-      +'<div class="file-info"><b>'+esc(name)+'</b><span>'+esc(meta)+'</span></div>'
-      +'<button class="btn" data-toast="Link temporário gerado — expira em 15 minutos, uso único. Acesso registrado em auditoria.">'
-      +'<svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>Gerar link</button></div>';
+      +'<div class="file-info"><b>'+esc(name)+'</b><span>'+esc(meta)+(kind?'':' · sem pré-visualização')+'</span></div>'
+      +'<div class="file-actions">'+previewBtn+dlBtn+'</div></div>';
   }
   function evidGroup(title,list,count,type){
     if(!count) return "";
@@ -1271,20 +1363,153 @@
   el("btnAtualizar").addEventListener("click",mergeNew);
 
   /* ---------- auditoria ---------- */
-  var ACAO_PILL = {VIEW_CONTATO:"a-viewcontato",LOGIN:"a-outline",LIST_RELATOS:"a-outline",VIEW_RELATO:"a-neutral",DOWNLOAD_ARQUIVO:"a-neutral"};
+  var ACAO_PILL = {VIEW_CONTATO:"a-viewcontato",LOGIN:"a-outline",LIST_RELATOS:"a-outline",VIEW_RELATO:"a-neutral",PREVIEW_ARQUIVO:"a-neutral",DOWNLOAD_ARQUIVO:"a-neutral",MARCAR_VISTA:"a-neutral"};
   function renderAudit(){
     var f = el("aAcao").value;
     var rows = auditoria.filter(function(r){return !f || r.a===f});
     el("tblAudit").querySelector("tbody").innerHTML = rows.map(function(r){
       return '<tr><td data-l="Data / hora" class="num td-muted">'+r.t+'</td>'
         +'<td data-l="Usuário" style="font-weight:500">'+r.u+'</td>'
-        +'<td data-l="Ação">'+pill(ACAO_PILL[r.a],r.a)+'</td>'
+        +'<td data-l="Ação">'+pill(ACAO_PILL[r.a]||"a-neutral",r.a)+(r.det?'<div class="a-det">'+esc(r.det)+'</div>':'')+'</td>'
         +'<td data-l="Protocolo" class="proto">'+r.p+'</td>'
         +'<td data-l="Origem" class="num td-muted">'+r.ip+'</td></tr>';
     }).join("");
   }
   el("aAcao").addEventListener("input",renderAudit);
   renderAudit();
+
+  /* ---------- preview embutido + download com motivo/reautenticação ---------- */
+  var sessionAuthAt = 0, simulaFria = false;
+  function idadeSessaoMin(){ return Math.floor((Date.now()-sessionAuthAt)/60000); }
+  function sessaoFria(){ return simulaFria || (Date.now()-sessionAuthAt) > 10*60*1000; }
+  function extOf(name){ var m=/\.([a-z0-9]+)$/i.exec(name); return m?m[1].toLowerCase():""; }
+  function previewKind(name){
+    var e = extOf(name);
+    if(e==="pdf") return "pdf";
+    if(["jpg","jpeg","png","webp","gif"].indexOf(e)>=0) return "image";
+    if(["mp3","wav","m4a"].indexOf(e)>=0) return "audio";
+    if(e==="mp4") return "video";
+    if(["txt","csv"].indexOf(e)>=0) return "text";
+    return null; /* doc/docx/xls/xlsx/mov -> sem preview nativo, só download */
+  }
+  function usuarioAtual(){ return (document.querySelector(".sb-user b").textContent||"").trim() || "membro CIPEAD"; }
+  function nowStr(){ var n=new Date(); function z(x){return ("0"+x).slice(-2)}
+    return z(n.getDate())+"/"+z(n.getMonth()+1)+"/"+n.getFullYear()+" "+z(n.getHours())+":"+z(n.getMinutes()); }
+  function logAudit(acao, proto, det){
+    auditoria.unshift({t:nowStr(), u:usuarioAtual(), a:acao, p:proto||"—", ip:"200.128.44.17", det:det||""});
+    renderAudit();
+  }
+
+  /* modal genérico */
+  function openModal(){ el("mscrim").hidden=false; document.body.style.overflow="hidden"; }
+  function closeModal(){ el("mscrim").hidden=true; document.body.style.overflow=""; }
+  el("mClose").addEventListener("click",closeModal);
+  el("mscrim").addEventListener("click",function(e){ if(e.target===el("mscrim")) closeModal(); });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape" && !el("mscrim").hidden) closeModal(); });
+
+  function pvLines(ws){ return ws.map(function(x){return '<div class="pv-line" style="width:'+x+'%"></div>'}).join(""); }
+  var PLAY='<svg class="ic" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg>';
+  function previewHtml(file){
+    var k = file.kind;
+    if(k==="pdf"){
+      return '<div class="pv-doc"><div class="pv-title"></div>'
+        + pvLines([94,88,76,90,66]) + '<div class="pv-gap"></div>'
+        + pvLines([90,82,94,72,86,60]) + '<div class="pv-gap"></div>'
+        + pvLines([88,78,92]) + '</div>'
+        + '<div class="pv-caption">Conteúdo ilustrativo — pré-visualização do PDF na própria página.</div>';
+    }
+    if(k==="image"){
+      return '<div class="pv-image"><div class="pv-bar"><i></i><i></i><i></i></div>'
+        + '<div class="pv-canvas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 15l-5-4-9 7"/></svg></div></div>'
+        + '<div class="pv-caption">Imagem exibida na página — pré-visualização simulada.</div>';
+    }
+    if(k==="audio"){
+      var bars="", n=52;
+      for(var i=0;i<n;i++){ var h=16+Math.round(Math.abs(Math.sin(i*0.5))*66 + (i%3)*8); bars+='<i class="'+(i<n*0.34?"on":"")+'" style="height:'+h+'%"></i>'; }
+      return '<div class="pv-audio"><button class="pv-play" aria-label="Reproduzir (simulado)">'+PLAY+'</button>'
+        + '<div class="pv-mid"><div class="pv-wave">'+bars+'</div><div class="pv-time"><span>00:46</span><span>02:14</span></div></div></div>'
+        + '<div class="pv-caption">Áudio reproduzível na própria página — player simulado.</div>';
+    }
+    if(k==="video"){
+      return '<div class="pv-video"><div class="pv-vplay">'+PLAY+'</div><div class="pv-vbar"></div></div>'
+        + '<div class="pv-caption">Vídeo reproduzível na própria página — player simulado.</div>';
+    }
+    return '<div class="pv-text">'+esc("Anexo de texto — conteúdo ilustrativo\n----------------------------------------\nData: 27/06/2026\nSetor: Coordenação de Sistemas / TI\n\nExibido diretamente na página, sem download.\nLinha de exemplo 1\nLinha de exemplo 2\nLinha de exemplo 3")+'</div>'
+      + '<div class="pv-caption">Texto exibido na página — pré-visualização simulada.</div>';
+  }
+
+  function abrirPreview(file){
+    logAudit("PREVIEW_ARQUIVO", currentProto, "arquivo: "+file.name);
+    el("mEyebrow").textContent = "Pré-visualização · "+(extOf(file.name).toUpperCase()||"ARQUIVO");
+    el("mTitle").textContent = file.name;
+    el("mBody").innerHTML = previewHtml(file);
+    el("mFoot").innerHTML =
+      '<span class="mfoot-note"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/></svg>Visualização registrada em auditoria — sem cópia local.</span>'
+      + '<div class="mfoot-actions"><button class="btn" id="mToDownload">Baixar arquivo</button><button class="btn btn-dark" id="mCloseFoot">Fechar</button></div>';
+    el("mCloseFoot").addEventListener("click",closeModal);
+    el("mToDownload").addEventListener("click",function(){ abrirDownload(file); });
+    openModal();
+  }
+
+  function downloadFormHtml(file, fria){
+    var reauth = fria
+      ? '<div class="dl-reauth"><div class="dl-why"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'
+        + '<span><b>Confirmação de identidade.</b> Sua sessão está aberta há mais de 10 minutos. Por segurança, confirme sua senha para baixar este arquivo.</span></div>'
+        + '<div class="dl-field" style="margin:0"><label for="mSenha">Senha</label><input class="inp" id="mSenha" type="password" placeholder="••••••••" autocomplete="current-password"></div></div>'
+      : '<div class="dl-warm"><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Sessão confirmada '
+        + (idadeSessaoMin()<1?"há instantes":"há "+idadeSessaoMin()+" min") + ' — não é necessário reinserir a senha.</span></div>';
+    return '<div class="dl-file"><div class="file-ic"><svg class="ic" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg></div>'
+      + '<div><b>'+esc(file.name)+'</b><span>'+esc(file.meta)+'</span></div></div>'
+      + '<div class="dl-field"><label for="mMotivo">Motivo do download <span class="req">*</span></label>'
+      + '<select class="sel" id="mMotivo"><option value="">Selecione o motivo</option>'
+      + '<option>Apuração da denúncia</option><option>Requisição da comissão CIPEAD</option>'
+      + '<option>Encaminhamento a autoridade competente</option><option value="Outro">Outro (especificar)</option></select></div>'
+      + '<div class="dl-field"><label for="mObs">Detalhamento <span id="mObsReq" class="req" style="display:none">*</span></label>'
+      + '<textarea class="inp" id="mObs" placeholder="Contexto adicional (obrigatório se o motivo for &ldquo;Outro&rdquo;)."></textarea></div>'
+      + reauth
+      + '<div class="sim-toggle">Protótipo: <button type="button" id="mSim">'+(fria?"simular sessão recente (&lt;10 min)":"simular sessão antiga (&gt;10 min)")+'</button></div>'
+      + '<div class="dl-err" id="mErr"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span></div>';
+  }
+  function abrirDownload(file){
+    var fria = sessaoFria();
+    el("mEyebrow").textContent = "Download de evidência";
+    el("mTitle").textContent = file.name;
+    el("mBody").innerHTML = downloadFormHtml(file, fria);
+    el("mFoot").innerHTML =
+      '<button class="btn btn-ghost" id="mCancel">Cancelar</button>'
+      + '<button class="btn btn-dark" id="mConfirm"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>Confirmar download</button>';
+    el("mCancel").addEventListener("click",closeModal);
+    el("mConfirm").addEventListener("click",function(){ confirmarDownload(file); });
+    el("mMotivo").addEventListener("change",function(){ el("mObsReq").style.display = this.value==="Outro" ? "" : "none"; });
+    el("mSim").addEventListener("click",function(){
+      if(sessaoFria()){ simulaFria=false; sessionAuthAt=Date.now(); } else { simulaFria=true; }
+      abrirDownload(file);
+    });
+    openModal();
+    setTimeout(function(){ el("mMotivo").focus(); },30);
+  }
+  function mostraErro(msg){ var e=el("mErr"); e.querySelector("span").textContent=msg; e.classList.add("show"); }
+  function confirmarDownload(file){
+    var motivo = el("mMotivo").value;
+    var obs = el("mObs") ? el("mObs").value.trim() : "";
+    var fria = sessaoFria();
+    var senha = el("mSenha") ? el("mSenha").value : "";
+    if(!motivo){ mostraErro("Selecione o motivo do download."); return; }
+    if(motivo==="Outro" && !obs){ mostraErro("Descreva o motivo no campo de detalhamento."); return; }
+    if(fria && !senha){ mostraErro("Confirme sua senha para prosseguir com o download."); return; }
+    var motivoFull = motivo==="Outro" ? obs : (motivo + (obs?" — "+obs:""));
+    logAudit("DOWNLOAD_ARQUIVO", currentProto, "arquivo: "+file.name+" · motivo: "+motivoFull + (fria?" · reautenticado por senha":""));
+    if(fria){ sessionAuthAt = Date.now(); simulaFria = false; }
+    closeModal();
+    toast("Download iniciado (simulado) — registrado em auditoria.");
+  }
+
+  /* clique nos botões Visualizar / Baixar das evidências */
+  document.addEventListener("click",function(e){
+    var b = e.target.closest(".fbtn"); if(!b) return;
+    var file = {name:b.dataset.fname, meta:b.dataset.fmeta, kind:b.dataset.kind};
+    if(b.dataset.act==="preview") abrirPreview(file); else abrirDownload(file);
+  });
 
   /* ---------- contatos ---------- */
   function encField(label,val){

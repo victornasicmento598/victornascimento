@@ -101,11 +101,32 @@ contato. Mas pode conter nomes de terceiros. Tratamento adotado:
   - Documentos: PDF, DOC, DOCX, XLS, XLSX, TXT, CSV
   - Imagens: JPG, PNG, WebP, GIF
   - Áudio: MP3, WAV, M4A · Vídeo: MP4, MOV
-- Download somente por token temporário: o painel pede um link → backend
-  registra auditoria e emite token aleatório (32 bytes) com validade curta
-  (ex.: 15 min), single-use, associado ao arquivo e ao usuário → endpoint de
-  download valida o token e serve o arquivo com `Content-Disposition`.
-  Nenhuma URL estável existe.
+### Visualização (preview) na página
+
+- Tipos com suporte nativo do navegador — PDF, imagens (JPG/PNG/WebP/GIF),
+  áudio (MP3/WAV/M4A) e vídeo MP4 — são **exibidos embutidos no painel**, sem
+  precisar baixar. O byte do arquivo é servido pelo mesmo endpoint autenticado
+  (token de curta duração), com header que força inline e **nunca** deixa URL
+  estável nem cópia em disco pública.
+- Tipos sem preview nativo (DOC/DOCX/XLS/XLSX e MOV com codec incompatível) não
+  têm visualização — só download. Renderizá-los no cliente exigiria baixar o
+  arquivo bruto de qualquer forma, então não reduziria exposição.
+- **Toda visualização gera log** `PREVIEW_ARQUIVO` (quem, quando, protocolo,
+  arquivo) — a fricção de senha/motivo NÃO se aplica ao preview (é embutido,
+  sem cópia local), só ao download.
+
+### Download (com motivo e reautenticação condicional)
+
+- **Motivo obrigatório** em todo download: categoria (apuração, requisição da
+  comissão, encaminhamento a autoridade, outro) + detalhamento livre. Gravado
+  no log `DOWNLOAD_ARQUIVO`.
+- **Reautenticação por senha se a sessão estiver "fria"** (autenticada há mais
+  de 10 min — padrão "sudo"). Se estiver "quente", não pede senha e o painel
+  **informa isso ao usuário** ("sessão confirmada há X min"); se fria, exibe a
+  explicação do porquê e exige a senha. Um download bem-sucedido renova o
+  relógio da sessão. O log registra quando houve reautenticação.
+- O arquivo em si é servido por token temporário (32 bytes, validade curta,
+  single-use, atrelado a arquivo+usuário) — nenhuma URL estável existe.
 
 ## 5. Autenticação e sessão do painel
 

@@ -133,10 +133,12 @@ CREATE TABLE dbo.db_auditoria (
     id          BIGINT IDENTITY(1,1) NOT NULL,
     usuario     NVARCHAR(120) NOT NULL,            -- login (LDAP) autenticado
     acao        VARCHAR(40)   NOT NULL,            -- LOGIN, LOGIN_FALHA, LIST_RELATOS,
-                                                   -- VIEW_RELATO, DOWNLOAD_ARQUIVO,
-                                                   -- VIEW_CONTATO, TOKEN_ARQUIVO_GERADO...
+                                                   -- VIEW_RELATO, MARCAR_VISTA, PREVIEW_ARQUIVO,
+                                                   -- DOWNLOAD_ARQUIVO, VIEW_CONTATO,
+                                                   -- TOKEN_ARQUIVO_GERADO...
     protocolo   CHAR(14)      NULL,                -- quando a ação se refere a uma ocorrência
-    detalhe     NVARCHAR(400) NULL,                -- ex.: id do arquivo baixado, filtros usados
+    detalhe     NVARCHAR(400) NULL,                -- ex.: arquivo + motivo do download, se houve
+                                                   -- reautenticação por senha, filtros usados
     ip_origem   VARCHAR(45)   NULL,                -- IPv4/IPv6
     user_agent  NVARCHAR(300) NULL,
     ocorrido_em DATETIME2(0)  NOT NULL
