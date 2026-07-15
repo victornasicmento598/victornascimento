@@ -42,6 +42,9 @@ CREATE TABLE dbo.db_denuncia_relato (
                                                    -- Setado uma única vez (o 1º a marcar "vence");
                                                    -- qualquer membro pode marcar. Também gravado em
                                                    -- auditoria (ação MARCAR_VISTA) para histórico completo.
+    relator           NVARCHAR(120) NULL,          -- login do membro CIPEAD que se designou relator
+    relator_em        DATETIME2(0)  NULL,          -- quando se designou; gravado em auditoria
+                                                   -- (ação DEFINIR_RELATOR). Pode ser reatribuído.
     criado_em         DATETIME2(0)  NOT NULL
         CONSTRAINT DF_relato_criado DEFAULT (SYSUTCDATETIME()),
 
@@ -159,7 +162,7 @@ CREATE TABLE dbo.db_auditoria (
     acao        VARCHAR(40)   NOT NULL,            -- LOGIN, LOGIN_FALHA, LIST_RELATOS,
                                                    -- VIEW_RELATO, MARCAR_VISTA, PREVIEW_ARQUIVO,
                                                    -- DOWNLOAD_ARQUIVO, VIEW_CONTATO,
-                                                   -- TOKEN_ARQUIVO_GERADO,
+                                                   -- TOKEN_ARQUIVO_GERADO, DEFINIR_RELATOR,
                                                    -- ENVIAR_COMUNICACAO, ALTERAR_STATUS...
     protocolo   CHAR(14)      NULL,                -- quando a ação se refere a uma ocorrência
     detalhe     NVARCHAR(400) NULL,                -- ex.: arquivo + motivo do download, se houve
@@ -197,7 +200,7 @@ DENY  SELECT, UPDATE, DELETE ON dbo.db_denuncia_contato TO app_ingest;
 GRANT SELECT ON dbo.db_denuncia_relato  TO app_painel;
 GRANT SELECT ON dbo.db_denuncia_arquivo TO app_painel;
 GRANT SELECT ON dbo.db_denuncia_contato TO app_painel;
-GRANT UPDATE (status) ON dbo.db_denuncia_relato TO app_painel;
+GRANT UPDATE (status, vista_por, vista_em, relator, relator_em) ON dbo.db_denuncia_relato TO app_painel;
 GRANT SELECT, INSERT ON dbo.db_denuncia_comunicacao TO app_painel;
 DENY  UPDATE, DELETE ON dbo.db_denuncia_comunicacao TO app_painel;
 GRANT INSERT, SELECT ON dbo.db_auditoria TO app_painel;

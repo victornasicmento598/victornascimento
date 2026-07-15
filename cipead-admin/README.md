@@ -88,6 +88,22 @@ problema de uma denúncia crítica ficar dias sem ninguém confirmar que a viu.
 Pendentes ainda não vistas ganham um indicador (ponto vermelho) ao lado do
 protocolo na listagem. A marcação também gera entrada em auditoria.
 
+## Relator da ocorrência
+
+Qualquer membro da CIPEAD pode se designar como **relator** de uma ocorrência
+(Pendente ou Em análise). O relator é o membro responsável por conduzir a
+análise e produzir o parecer sobre aquele caso.
+
+- Na tela de detalhe, uma barra abaixo dos metadados mostra o relator atual ou
+  um botão "Definir-se como relator" se ninguém estiver designado.
+- A designação gera entrada de auditoria (`DEFINIR_RELATOR`).
+- Se outro membro já estiver designado, o nome e a data são exibidos (sem botão
+  de reatribuição no protótipo; no painel real, avaliar se a reatribuição é
+  livre ou exige justificativa).
+- Campos no banco: `relator` e `relator_em` em `db_denuncia_relato`
+  (ver `schema.sql`).
+- Ocorrências com status Resolvido não exibem a barra de relator.
+
 ## Campos recebidos do formulário público (OAB/RS)
 
 O painel foi modelado para receber **exatamente** os campos do canal de

@@ -321,6 +321,12 @@
   .visto-bar .vb-text{font-size:13px;color:var(--ink-3);display:flex;align-items:center;gap:8px}
   .visto-bar .vb-text .ic{width:15px;height:15px;color:var(--green-ink);flex:none}
   .visto-bar .vb-text b{color:var(--ink-2);font-weight:600}
+  .relator-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 14px;padding:13px 24px;border-top:1px solid var(--line);background:var(--page)}
+  .relator-bar[hidden]{display:none}
+  .relator-bar .rb-text{font-size:13px;color:var(--ink-3);display:flex;align-items:center;gap:8px}
+  .relator-bar .rb-text .ic{width:15px;height:15px;flex:none}
+  .relator-bar .rb-text b{color:var(--ink-2);font-weight:600}
+  .relator-bar .rb-assigned .ic{color:var(--ink-2)}
   .unseen-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red-ink);margin-right:8px;vertical-align:middle}
   .det-meta{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
   .det-meta>div{padding:16px 24px;border-right:1px solid var(--line)}
@@ -860,6 +866,7 @@
         <div class="det-grav-desc" id="dGravDesc"></div>
         <div class="det-meta" id="dMeta"></div>
         <div class="visto-bar" id="dVisto" hidden></div>
+        <div class="relator-bar" id="dRelator"></div>
       </div>
 
       <div class="card">
@@ -940,7 +947,7 @@
             <select class="sel" id="aAcao">
               <option value="">Todas</option><option>LOGIN</option><option>LIST_RELATOS</option>
               <option>VIEW_RELATO</option><option>PREVIEW_ARQUIVO</option><option>DOWNLOAD_ARQUIVO</option><option>VIEW_CONTATO</option>
-              <option>ENVIAR_COMUNICACAO</option><option>ALTERAR_STATUS</option><option>MARCAR_VISTA</option>
+              <option>ENVIAR_COMUNICACAO</option><option>ALTERAR_STATUS</option><option>MARCAR_VISTA</option><option>DEFINIR_RELATOR</option>
             </select>
           </div>
           <div class="field">
@@ -1037,6 +1044,7 @@
     {p:"DN-2026-000126",s:"Jurídico / Advocacia",g:"Alta",st:"Em análise",
      quando:"junho/2026",freq:2,tentou:2,test:"Colegas que dividem a mesma sala podem confirmar os episódios.",
      docs:1,imgs:1,av:0,d:"05/07/2026",hm:"14:32",
+     relator:"m.silva",relatorEm:"06/07/2026 · 09:18",
      rel:"Presenciei condutas incompatíveis com as normas da instituição por parte de um responsável de setor, incluindo tratamento desrespeitoso e insinuações constrangedoras repetidas em mais de uma ocasião, na presença de outros colegas. Reportei à chefia imediata e não obtive resposta. Solicito que a situação seja apurada com discrição, pois os envolvidos seguem em contato direto no dia a dia."},
     {p:"DN-2026-000125",s:"Recursos Humanos",g:"Média",st:"Em análise",
      quando:"maio/2025",freq:3,tentou:3,test:null,
@@ -1057,6 +1065,7 @@
     {p:"DN-2026-000121",s:"Diretoria / Presidência",g:"Crítica",st:"Em análise",
      quando:"junho/2026",freq:2,tentou:4,test:"Prefiro não expor os nomes neste momento.",
      docs:1,imgs:0,av:1,d:"25/06/2026",hm:"17:03",
+     relator:"a.costa",relatorEm:"26/06/2026 · 08:45",
      rel:"Situação em andamento envolvendo decisão que expõe colaboradores a risco, tomada sem observar as normas internas. Tenho receio de retaliação por reportar, mas entendo a gravidade. Anexo uma gravação que ajuda a esclarecer o contexto."},
     {p:"DN-2026-000120",s:"Financeiro / Contabilidade",g:"Média",st:"Resolvido",
      quando:"fevereiro/2026",freq:1,tentou:3,test:null,
@@ -1152,6 +1161,18 @@
       renderRecentes();
       logAudit("MARCAR_VISTA", currentProto, "vista por "+quem);
       toast("Ocorrência marcada como vista — registrado em auditoria.");
+      return;
+    }
+    if(e.target.closest("#btnRelator")){
+      var o = byProto[currentProto];
+      var quem = (document.querySelector(".sb-user b").textContent || "").trim() || "membro CIPEAD";
+      var now = new Date();
+      o.relator = quem;
+      o.relatorEm = ("0"+now.getDate()).slice(-2)+"/"+("0"+(now.getMonth()+1)).slice(-2)+"/"+now.getFullYear()
+        +" · "+("0"+now.getHours()).slice(-2)+":"+("0"+now.getMinutes()).slice(-2);
+      openDetail(o);
+      logAudit("DEFINIR_RELATOR", currentProto, "relator: "+quem);
+      toast("Você foi designado(a) como relator desta ocorrência.");
       return;
     }
     var g = e.target.closest("[data-goto]");
@@ -1402,6 +1423,17 @@
           +'<button class="btn btn-dark" id="btnMarcarVista" style="height:32px">Marcar como vista</button>';
     } else {
       vb.hidden = true;
+    }
+
+    var rb = el("dRelator");
+    if(o.st!=="Resolvido"){
+      rb.hidden = false;
+      rb.innerHTML = o.relator
+        ? '<span class="rb-text rb-assigned"><svg class="ic" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg>Relator: <b>'+esc(o.relator)+'</b> · desde '+esc(o.relatorEm)+'</span>'
+        : '<span class="rb-text"><svg class="ic" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg>Nenhum relator designado.</span>'
+          +'<button class="btn btn-dark" id="btnRelator" style="height:32px">Definir-se como relator</button>';
+    } else {
+      rb.hidden = true;
     }
 
     el("dRelato").innerHTML = "<p>"+esc(o.rel)+"</p>";
