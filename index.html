@@ -39,6 +39,16 @@
       }
     }
   </script>
+  <script>
+    // Prepara só o Hero antes da primeira pintura. Sem JS, o conteúdo fica visível.
+    // Se o módulo local falhar, a página libera o estado final em até 1,8 s.
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.dataset.heroMotion = 'pending';
+      window.heroMotionFallback = window.setTimeout(function () {
+        document.documentElement.dataset.heroMotion = 'ready';
+      }, 1800);
+    }
+  </script>
   <style>
     :root {
       --bg: #FFFFFF;
@@ -107,7 +117,11 @@
 
     .marquee-wrapper { overflow: hidden; width: 100%; max-width: 100vw; }
     .marquee-track { display: flex; width: max-content; animation: marqueeScroll 40s linear infinite; }
-    .marquee-track:hover { animation-play-state: paused; }
+    /* O CSS mantém uma rolagem básica caso o módulo Motion não carregue. */
+    @media (hover: hover) and (pointer: fine) {
+      .marquee-wrapper:hover .marquee-track { animation-play-state: paused; }
+    }
+    .marquee-track.is-motion-controlled { animation: none; will-change: transform; }
     .marquee-track-reverse { animation-direction: reverse; animation-duration: 40s; }
     @keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
@@ -143,6 +157,34 @@
     }
     #hero > div.z-10 {
       padding-top: 25px !important;
+    }
+
+    /* A máscara reserva a altura real de cada linha; somente o texto se move. */
+    .hero-title-part, .hero-title-mask, .hero-title-line { display: block; }
+    .hero-title-mask { overflow: clip; }
+    .hero-title-line { white-space: pre; }
+    .hero-photo-parallax { width: 100%; }
+    .hero-availability-dot { transform-origin: center; }
+    #hero a.btn-neon, #hero a.btn-outline { min-height: 44px; }
+
+    /* As frases invisíveis ocupam a mesma célula e reservam o maior texto.
+       A digitação muda apenas o conteúdo, sem deslocar o CTA. */
+    .hero-typewriter { display: grid; }
+    .hero-typewriter-text, .hero-typewriter-reserve { grid-area: 1 / 1; }
+    .hero-typewriter-reserve { visibility: hidden; pointer-events: none; }
+    html[data-hero-motion="pending"] #hero .hero-title-part { visibility: hidden; }
+    html[data-hero-motion="pending"] #hero .hero-photo-reveal { clip-path: inset(0 0 100% 0); }
+    html[data-hero-motion="pending"] #hero .hero-typewriter-text { opacity: 0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto !important; }
+      #hero .hero-title-part { visibility: visible !important; }
+      #hero .hero-title-line, #hero .hero-photo-parallax, #hero .hero-availability-dot {
+        transform: none !important; opacity: 1 !important;
+      }
+      #hero .hero-photo-reveal { clip-path: none !important; }
+      #hero .hero-typewriter-text { opacity: 1 !important; }
+      #hero .typewriter-cursor { animation: none; opacity: 0; }
     }
 
     #hero .profile-frame {
@@ -372,7 +414,12 @@
     .header-menu-icon { color: rgba(255,255,255,0.85); }
 
     @media (prefers-reduced-motion: reduce) {
-      .marquee-track { animation: none !important; }
+      /* Sem movimento: todas as tags únicas ficam legíveis, em linhas estáticas. */
+      .marquee-track { animation: none !important; transform: none !important; width: 100%; will-change: auto; }
+      .marquee-track > div:first-child { flex-wrap: wrap; width: 100%; justify-content: center; }
+      /* Oculta os separadores decorativos para não ficarem isolados nas quebras. */
+      .marquee-track > div:first-child > span[class*="text-neon/"] { display: none; }
+      [data-marquee-copy], [data-marquee-duplicate] { display: none !important; }
       .reveal { opacity: 1; transform: none; transition: none; }
       .typewriter-cursor { animation: none; opacity: 1; }
       .glass-card:hover, .btn-neon:hover, .btn-outline:hover, .whatsapp-float:hover { transform: none; }
@@ -440,61 +487,75 @@
   <main>
     <!-- HERO -->
     <section id="hero" class="relative min-h-screen flex items-center pt-16 overflow-hidden">
-      <div class="glow-orb" style="width:600px;height:600px;background:rgba(26,63,212,0.05);top:-200px;right:-200px;"></div>
-      <div class="glow-orb" style="width:400px;height:400px;background:rgba(26,63,212,0.035);bottom:-100px;left:-150px;"></div>
+      <div class="glow-orb" aria-hidden="true" style="width:600px;height:600px;background:rgba(26,63,212,0.05);top:-200px;right:-200px;"></div>
+      <div class="glow-orb" aria-hidden="true" style="width:400px;height:400px;background:rgba(26,63,212,0.035);bottom:-100px;left:-150px;"></div>
       <!-- Marca d'água VN no fundo da hero -->
-      <img src="brand-icons-svg/logo.png" alt="" class="absolute pointer-events-none select-none opacity-[0.04] max-w-none w-[700px] sm:w-[900px] md:w-[1000px] lg:w-[1200px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0">
+      <img src="brand-icons-svg/logo.png" alt="" aria-hidden="true" class="absolute pointer-events-none select-none opacity-[0.04] max-w-none w-[700px] sm:w-[900px] md:w-[1000px] lg:w-[1200px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0">
       <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-16 lg:py-24 relative z-10">
         <!-- MOBILE HERO -->
         <div class="flex flex-col items-center gap-8 md:hidden">
-          <div class="w-full text-center min-w-0 parallax-layer" data-speed="0.02">
-            <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-neon/5 border border-neon/10 mb-5 reveal">
-              <span class="w-2 h-2 rounded-full bg-neon animate-pulse flex-shrink-0"></span>
+          <div class="w-full text-center min-w-0">
+            <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-neon/5 border border-neon/10 mb-5">
+              <span class="hero-availability-dot w-2 h-2 rounded-full bg-neon flex-shrink-0" aria-hidden="true"></span>
               <span class="text-xs text-neon/70 font-medium">Porto Alegre, RS — Disponível</span>
             </div>
-            <h1 class="text-3xl font-extrabold leading-[1.1] tracking-tight text-gray-900 mb-3 reveal reveal-delay-1">
-              Victor Nascimento
-              <span class="block text-gray-400 font-semibold text-xl mt-1">Analista de Sistemas</span>
+            <h1 class="text-3xl font-extrabold leading-[1.1] tracking-tight text-gray-900 mb-3">
+              <span class="hero-title-part">Victor Nascimento</span>
+              <span class="hero-title-part block text-gray-400 font-semibold text-xl mt-1">Analista de Sistemas</span>
             </h1>
-            <div class="text-lg font-bold text-neon mb-4 reveal reveal-delay-2" style="min-height:1.6em;" aria-live="polite" aria-atomic="true">
-              <span id="typewriter"></span><span class="typewriter-cursor"></span>
+            <div class="hero-typewriter text-lg font-bold text-neon mb-4" style="min-height:1.6em;">
+              <span class="hero-typewriter-text" aria-hidden="true"><span id="typewriter">IA para produtividade real</span><span class="typewriter-cursor"></span></span>
+              <span class="sr-only">IA para produtividade real. Landing Pages que convertem. Websites modernos e rápidos. Mini-sistemas sob medida para empresas. Consultoria de TI e infraestrutura.</span>
+              <span class="hero-typewriter-reserve" aria-hidden="true">IA para produtividade real</span>
+              <span class="hero-typewriter-reserve" aria-hidden="true">Landing Pages que convertem</span>
+              <span class="hero-typewriter-reserve" aria-hidden="true">Websites modernos e rápidos</span>
+              <span class="hero-typewriter-reserve" aria-hidden="true">Mini-sistemas sob medida para empresas</span>
+              <span class="hero-typewriter-reserve" aria-hidden="true">Consultoria de TI e infraestrutura</span>
             </div>
-            <p class="text-sm text-gray-500 leading-relaxed max-w-xl mx-auto mb-7 reveal reveal-delay-3">Soluções práticas em IA, automação e desenvolvimento web para destravar processos, melhorar atendimento e acelerar resultados.</p>
-            <div class="flex flex-col gap-3 reveal reveal-delay-4">
+            <p class="text-sm text-gray-500 leading-relaxed max-w-xl mx-auto mb-7">Soluções práticas em IA, automação e desenvolvimento web para destravar processos, melhorar atendimento e acelerar resultados.</p>
+            <div class="flex flex-col gap-3">
               <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon w-full text-center"><i class="fa-brands fa-whatsapp text-lg"></i> Chamar no WhatsApp</a>
               <a href="#servicos" class="btn-outline w-full text-center">Ver serviços <i class="fa-solid fa-arrow-down text-sm"></i></a>
             </div>
           </div>
-          <div class="reveal reveal-delay-5 w-full flex justify-center">
-            <div class="profile-frame mx-auto" style="max-width:260px;">
-              <img src="assets/hero.png" alt="Foto de Victor Nascimento — Analista de Sistemas" loading="eager" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:#f5f6ff;display:flex;align-items:center;justify-content:center;border-radius:20px;\'><i class=\'fa-solid fa-user\' style=\'font-size:3rem;color:rgba(26,63,212,0.2);\'></i></div>'">
+          <div class="w-full flex justify-center">
+            <div class="hero-photo-parallax">
+              <div class="hero-photo-reveal profile-frame mx-auto" style="max-width:260px;">
+                <img src="assets/hero.png" alt="Foto de Victor Nascimento — Analista de Sistemas" width="273" height="366" loading="eager" fetchpriority="high" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:#f5f6ff;display:flex;align-items:center;justify-content:center;border-radius:20px;\'><i class=\'fa-solid fa-user\' style=\'font-size:3rem;color:rgba(26,63,212,0.2);\'></i></div>'">
+              </div>
             </div>
           </div>
         </div>
         <!-- DESKTOP HERO -->
         <div class="hidden md:grid md:grid-cols-[1.1fr_0.9fr] md:items-start md:gap-10 lg:gap-14 xl:gap-16">
-          <div class="text-left min-w-0 parallax-layer" data-speed="0.02">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neon/5 border border-neon/10 mb-4 lg:mb-5 reveal">
-              <span class="w-2 h-2 rounded-full bg-neon animate-pulse flex-shrink-0"></span>
+          <div class="text-left min-w-0">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neon/5 border border-neon/10 mb-4 lg:mb-5">
+              <span class="hero-availability-dot w-2 h-2 rounded-full bg-neon flex-shrink-0" aria-hidden="true"></span>
               <span class="text-sm text-neon/70 font-medium">Porto Alegre, RS — Disponível para projetos e parcerias</span>
             </div>
-            <h1 class="text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-[1.05] tracking-tight text-gray-900 mb-3 lg:mb-4 reveal reveal-delay-1">
-              Victor Nascimento
-              <span class="block text-gray-400 font-semibold text-2xl lg:text-3xl xl:text-4xl mt-2">Analista de Sistemas</span>
+            <h1 class="text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-[1.05] tracking-tight text-gray-900 mb-3 lg:mb-4">
+              <span class="hero-title-part">Victor Nascimento</span>
+              <span class="hero-title-part block text-gray-400 font-semibold text-2xl lg:text-3xl xl:text-4xl mt-2">Analista de Sistemas</span>
             </h1>
-            <div class="text-xl lg:text-2xl xl:text-3xl font-bold text-neon mb-3 lg:mb-4 reveal reveal-delay-2" style="min-height:1.6em;" aria-live="polite" aria-atomic="true">
-              <span id="typewriterDesktop"></span><span class="typewriter-cursor"></span>
+            <div class="hero-typewriter text-xl lg:text-2xl xl:text-3xl font-bold text-neon mb-3 lg:mb-4" style="min-height:1.6em;">
+              <span class="hero-typewriter-text" aria-hidden="true"><span id="typewriterDesktop">IA para produtividade real</span><span class="typewriter-cursor"></span></span>
+              <span class="sr-only">IA para produtividade real. Landing Pages que convertem. Websites modernos e rápidos. Mini-sistemas sob medida para empresas. Consultoria de TI e infraestrutura.</span>
+              <span class="hero-typewriter-reserve" aria-hidden="true">IA para produtividade real</span>
+              <span class="hero-typewriter-reserve" aria-hidden="true">Landing Pages que convertem</span>
+              <span class="hero-typewriter-reserve" aria-hidden="true">Websites modernos e rápidos</span>
+              <span class="hero-typewriter-reserve" aria-hidden="true">Mini-sistemas sob medida para empresas</span>
+              <span class="hero-typewriter-reserve" aria-hidden="true">Consultoria de TI e infraestrutura</span>
             </div>
-            <p class="text-base lg:text-lg text-gray-500 leading-relaxed max-w-xl mb-6 lg:mb-8 reveal reveal-delay-3">Soluções práticas em IA, automação e desenvolvimento web para destravar processos, melhorar atendimento e acelerar resultados.</p>
-            <div class="flex flex-row gap-4 reveal reveal-delay-4">
+            <p class="text-base lg:text-lg text-gray-500 leading-relaxed max-w-xl mb-6 lg:mb-8">Soluções práticas em IA, automação e desenvolvimento web para destravar processos, melhorar atendimento e acelerar resultados.</p>
+            <div class="flex flex-row gap-4">
               <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="btn-neon"><i class="fa-brands fa-whatsapp text-lg"></i> Chamar no WhatsApp</a>
               <a href="#servicos" class="btn-outline">Ver serviços <i class="fa-solid fa-arrow-down text-sm"></i></a>
             </div>
           </div>
-          <div class="flex justify-center md:pt-2 reveal reveal-delay-3 parallax-layer" data-speed="-0.015">
-            <div class="w-full max-w-[300px] lg:max-w-[330px] xl:max-w-[360px] h-[400px] lg:h-[440px] xl:h-[480px]">
-              <div class="profile-frame is-desktop" style="max-width:100%;height:100%;">
-                <img src="assets/hero.png" alt="Foto de Victor Nascimento — Analista de Sistemas" loading="eager" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:#f5f6ff;display:flex;align-items:center;justify-content:center;border-radius:28px;\'><i class=\'fa-solid fa-user\' style=\'font-size:4rem;color:rgba(26,63,212,0.15);\'></i></div>'">
+          <div class="flex justify-center md:pt-2">
+            <div class="hero-photo-parallax w-full max-w-[300px] lg:max-w-[330px] xl:max-w-[360px] h-[400px] lg:h-[440px] xl:h-[480px]">
+              <div class="hero-photo-reveal profile-frame is-desktop" style="max-width:100%;height:100%;">
+                <img src="assets/hero.png" alt="Foto de Victor Nascimento — Analista de Sistemas" width="273" height="366" loading="eager" fetchpriority="high" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:#f5f6ff;display:flex;align-items:center;justify-content:center;border-radius:28px;\'><i class=\'fa-solid fa-user\' style=\'font-size:4rem;color:rgba(26,63,212,0.15);\'></i></div>'">
               </div>
             </div>
           </div>
@@ -503,7 +564,7 @@
     </section>
 
     <!-- MARQUEE -->
-    <section class="relative py-6 overflow-hidden w-full" aria-hidden="true">
+    <section class="relative py-6 overflow-hidden w-full" aria-hidden="true" data-marquee-section>
       <div class="neon-separator mb-6"></div>
       <div class="marquee-wrapper">
         <div class="marquee-track">
@@ -520,7 +581,7 @@
             <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Tailwind</span><span class="text-neon/25">&#x2022;</span>
             <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Processos & QA</span><span class="text-neon/25">&#x2022;</span>
           </div>
-          <div class="flex items-center gap-6 sm:gap-8 px-4" aria-hidden="true">
+          <div class="flex items-center gap-6 sm:gap-8 px-4" aria-hidden="true" data-marquee-copy>
             <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">IA & Automação</span><span class="text-neon/25">&#x2022;</span>
             <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Landing Pages</span><span class="text-neon/25">&#x2022;</span>
             <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Web Apps</span><span class="text-neon/25">&#x2022;</span>
@@ -539,7 +600,7 @@
         <div class="marquee-track marquee-track-reverse" id="brandMarquee">
           <div class="flex items-center gap-8 sm:gap-12 px-4" id="brandSet1">
           </div>
-          <div class="flex items-center gap-8 sm:gap-12 px-4" id="brandSet2" aria-hidden="true">
+          <div class="flex items-center gap-8 sm:gap-12 px-4" id="brandSet2" aria-hidden="true" data-marquee-copy>
           </div>
         </div>
       </div>
@@ -563,31 +624,18 @@
           var repeats = 6;
           for (var r = 0; r < repeats; r++) {
             for (var k = 0; k < brands.length; k++) {
-              html += '<div class="flex items-center gap-2.5 whitespace-nowrap">';
+              // As cópias fecham o loop; com movimento reduzido só a primeira fica visível.
+              var duplicate = r > 0 ? ' data-marquee-duplicate' : '';
+              html += '<div class="flex items-center gap-2.5 whitespace-nowrap"' + duplicate + '>';
               html += '<span class="brand-marquee-icon">' + brands[k].svg + '</span>';
               html += '<span class="text-xs sm:text-sm font-semibold text-gray-400 tracking-wide">' + brands[k].name + '</span>';
               html += '</div>';
-              html += '<span class="text-neon/20">&#x2022;</span>';
+              html += '<span class="text-neon/20"' + duplicate + '>&#x2022;</span>';
             }
           }
           document.getElementById('brandSet1').innerHTML = html;
           document.getElementById('brandSet2').innerHTML = html;
 
-          // Dynamically adjust animation duration to match the visual speed of the upper marquee
-          setTimeout(function() {
-            var topSet = document.querySelector('.marquee-track:not(.marquee-track-reverse) > div');
-            var bottomSet = document.getElementById('brandSet1');
-            var bottomTrack = document.getElementById('brandMarquee');
-            if (topSet && bottomSet && bottomTrack) {
-              var topWidth = topSet.getBoundingClientRect().width;
-              var bottomWidth = bottomSet.getBoundingClientRect().width;
-              if (topWidth > 0 && bottomWidth > 0) {
-                var topDuration = 40; // matches top marquee's 40s duration
-                var bottomDuration = topDuration * (bottomWidth / topWidth);
-                bottomTrack.style.animationDuration = bottomDuration + 's';
-              }
-            }
-          }, 100);
         })();
       </script>
       <div class="neon-separator mt-6"></div>
@@ -953,45 +1001,432 @@
     <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>WhatsApp</title><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
   </a>
 
+  <script type="module" data-motion-section="marquee">
+    import { animate, scroll } from './assets/vendor/motion-14.1.0.js';
+
+    const band = document.querySelector('[data-marquee-section]');
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const hover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const baseSpeed = 56; // Pixels por segundo, iguais nas duas faixas.
+    const rows = Array.from(band.querySelectorAll('.marquee-track'), track => ({
+      track, wrapper: track.parentElement, set: track.firstElementChild,
+      reverse: track.classList.contains('marquee-track-reverse'),
+      controls: null, distance: 0, duration: 0, hovering: false, touch: null
+    }));
+    let inViewport = false;
+    let stopScroll = null;
+    let speed = 1;
+    let targetSpeed = 1;
+    let lastScrollAt = 0;
+    let lastPosition = window.scrollY;
+    let speedFrame = 0;
+    let previousFrame = 0;
+    let resizeFrame = 0;
+    const canMove = () => !preference.matches && inViewport && !document.hidden;
+
+    function updatePlayback(row) {
+      if (!row.controls) return;
+      if (canMove() && !(hover.matches && row.hovering) && !row.touch) row.controls.play();
+      else row.controls.pause();
+    }
+
+    // Uma cópia inteira percorre o quadro; a cópia idêntica ocupa seu lugar.
+    // Só transform é animado. A segunda faixa mantém o sentido oposto atual.
+    function measureRows() {
+      resizeFrame = 0;
+      if (preference.matches) return;
+      rows.forEach(row => {
+        const distance = row.set.getBoundingClientRect().width;
+        if (!distance || (row.controls && Math.abs(distance - row.distance) < 0.5)) return;
+        // Preserva a posição do loop quando fontes ou viewport mudam de tamanho.
+        const phase = row.controls ? (row.controls.time / row.duration) % 1 : 0;
+        row.controls?.cancel();
+        row.distance = distance;
+        row.duration = distance / baseSpeed;
+        row.track.classList.add('is-motion-controlled');
+        row.controls = animate(row.track, {
+          transform: row.reverse
+            ? [`translateX(${-distance}px)`, 'translateX(0px)']
+            : ['translateX(0px)', `translateX(${-distance}px)`]
+        }, { duration: row.duration, ease: 'linear', repeat: Infinity });
+        row.controls.time = phase * row.duration;
+        row.controls.speed = speed;
+        updatePlayback(row);
+      });
+    }
+
+    function queueMeasurement() {
+      if (!resizeFrame) resizeFrame = requestAnimationFrame(measureRows);
+    }
+
+    // A velocidade da página aumenta o ritmo até 3x. A resposta e a desaceleração
+    // são suavizadas em cerca de 300 ms, sem reiniciar a posição das faixas.
+    function smoothSpeed(now) {
+      speedFrame = 0;
+      if (!canMove()) return;
+      const elapsed = previousFrame ? Math.min(now - previousFrame, 64) : 16;
+      previousFrame = now;
+      if (now - lastScrollAt > 90) targetSpeed = 1;
+      speed += (targetSpeed - speed) * (1 - Math.exp(-elapsed / 100));
+      if (Math.abs(targetSpeed - speed) < 0.015) speed = targetSpeed;
+      rows.forEach(row => { if (row.controls) row.controls.speed = speed; });
+      if (speed !== 1 || targetSpeed !== 1) speedFrame = requestAnimationFrame(smoothSpeed);
+      else previousFrame = 0;
+    }
+
+    function resetSpeed() {
+      cancelAnimationFrame(speedFrame);
+      speedFrame = 0;
+      previousFrame = 0;
+      speed = targetSpeed = 1;
+      rows.forEach(row => { if (row.controls) row.controls.speed = 1; });
+    }
+
+    // scroll é a API JS oficial do Motion para este site HTML estático.
+    // O listener e os loops pausam fora da tela ou quando a aba está oculta.
+    function syncVisibility() {
+      if (canMove()) {
+        measureRows();
+        if (!stopScroll) {
+          lastPosition = window.scrollY;
+          stopScroll = scroll((progress, info) => {
+            if (info.y.current === lastPosition) return;
+            lastPosition = info.y.current;
+            lastScrollAt = performance.now();
+            targetSpeed = 1 + Math.min(Math.abs(info.y.velocity) / 1800, 2);
+            if (!speedFrame) speedFrame = requestAnimationFrame(smoothSpeed);
+          }, { container: document.scrollingElement });
+        }
+      } else {
+        stopScroll?.();
+        stopScroll = null;
+        resetSpeed();
+      }
+      rows.forEach(updatePlayback);
+    }
+
+    rows.forEach(row => {
+      // Hover é uma conveniência: o movimento também funciona ao entrar na tela.
+      row.wrapper.addEventListener('pointerenter', event => {
+        if (event.pointerType !== 'mouse') return;
+        row.hovering = true;
+        updatePlayback(row);
+      });
+      row.wrapper.addEventListener('pointerleave', () => {
+        row.hovering = false;
+        updatePlayback(row);
+      });
+      // No toque, segurar pausa; arrastar libera imediatamente a rolagem da página.
+      row.wrapper.addEventListener('pointerdown', event => {
+        if (event.pointerType !== 'touch') return;
+        row.touch = { id: event.pointerId, x: event.clientX, y: event.clientY };
+        updatePlayback(row);
+      }, { passive: true });
+      window.addEventListener('pointermove', event => {
+        if (!row.touch || row.touch.id !== event.pointerId) return;
+        if (Math.hypot(event.clientX - row.touch.x, event.clientY - row.touch.y) > 8) {
+          row.touch = null;
+          updatePlayback(row);
+        }
+      }, { passive: true });
+      const releaseTouch = event => {
+        if (row.touch?.id !== event.pointerId) return;
+        row.touch = null;
+        updatePlayback(row);
+      };
+      window.addEventListener('pointerup', releaseTouch, { passive: true });
+      window.addEventListener('pointercancel', releaseTouch, { passive: true });
+    });
+
+    // A preferência também pode mudar com a página aberta: cancela o Motion e
+    // deixa o CSS mostrar todas as tags únicas, sem parallax nem loop nesta faixa.
+    preference.addEventListener('change', () => {
+      if (preference.matches) {
+        rows.forEach(row => {
+          row.controls?.cancel();
+          row.controls = null;
+          row.track.classList.remove('is-motion-controlled');
+          row.track.style.removeProperty('transform');
+        });
+      }
+      syncVisibility();
+    });
+    hover.addEventListener('change', () => rows.forEach(updatePlayback));
+    document.addEventListener('visibilitychange', () => {
+      rows.forEach(row => { row.touch = null; });
+      syncVisibility();
+    });
+    new IntersectionObserver(entries => {
+      inViewport = entries[0].isIntersecting;
+      syncVisibility();
+    }).observe(band);
+    const resizeObserver = new ResizeObserver(queueMeasurement);
+    rows.forEach(row => resizeObserver.observe(row.set));
+    document.fonts.ready.then(queueMeasurement);
+  </script>
+
+  <script type="module">
+    // Este repositório é HTML estático: usamos a API JS oficial do Motion.
+    // animate (mini) usa WAAPI; scroll é o equivalente a useScroll/useTransform
+    // neste ambiente. O bundle local evita React, GSAP e requisições a outro CDN.
+    import { animate, scroll } from './assets/vendor/motion-14.1.0.js';
+
+    const hero = document.getElementById('hero');
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mobile = window.matchMedia('(max-width: 767px)');
+    const ease = [0.22, 1, 0.36, 1];
+    const intro = new Set();
+    let pulseControls = [];
+    let pulseTimer = 0;
+    let parallaxCleanup = [];
+    let resizeFrame = 0;
+    let typingTimer = 0;
+    let entered = false;
+    let inViewport = hero.getBoundingClientRect().bottom > 0 && hero.getBoundingClientRect().top < window.innerHeight;
+
+    // Mantém as cinco frases existentes. Um único timer atualiza mobile/desktop;
+    // leitores de tela recebem o texto estático, sem anúncios por caractere.
+    const phrases = Array.from(hero.querySelectorAll('.hero-typewriter-reserve')).slice(0, 5).map(el => el.textContent);
+    const typedElements = Array.from(hero.querySelectorAll('#typewriter, #typewriterDesktop'));
+    let phraseIndex = 0;
+    let charIndex = phrases[0].length;
+    let deleting = false;
+    const canMove = () => !preference.matches && inViewport && !document.hidden;
+    const writePhrase = text => typedElements.forEach(el => { el.textContent = text; });
+
+    function stopTyping() {
+      window.clearTimeout(typingTimer);
+      typingTimer = 0;
+    }
+
+    function tickTyping() {
+      typingTimer = 0;
+      if (!canMove()) return;
+      const phrase = phrases[phraseIndex];
+      let delay = deleting ? 35 : 75;
+      if (!deleting && charIndex === phrase.length) {
+        deleting = true;
+        delay = 2000;
+      } else {
+        charIndex += deleting ? -1 : 1;
+        writePhrase(phrase.slice(0, charIndex));
+        if (deleting && charIndex === 0) {
+          deleting = false;
+          phraseIndex = (phraseIndex + 1) % phrases.length;
+          delay = 500;
+        }
+      }
+      typingTimer = window.setTimeout(tickTyping, delay);
+    }
+
+    // Mede as linhas naturais com Range (incluindo quebra do nome em telas
+    // estreitas). Não usa imagem de texto nem duplica o título para animação.
+    // Os spans continuam sendo texto real do h1, com a fonte e tamanho atuais.
+    function maskTitleLines() {
+      hero.querySelectorAll('.hero-title-part').forEach(part => {
+        if (!part.getClientRects().length || !part.offsetWidth) return;
+        const text = part.textContent;
+        const node = document.createTextNode(text);
+        part.replaceChildren(node);
+        const range = document.createRange();
+        const lines = [];
+        let start = 0;
+        let lastTop = null;
+        for (let i = 0; i < text.length; i++) {
+          range.setStart(node, i);
+          range.setEnd(node, i + 1);
+          const rect = range.getClientRects()[0];
+          if (!rect || !rect.height) continue;
+          if (lastTop !== null && Math.abs(rect.top - lastTop) > 2) {
+            lines.push(text.slice(start, i));
+            start = i;
+          }
+          lastTop = rect.top;
+        }
+        lines.push(text.slice(start));
+        const fragment = document.createDocumentFragment();
+        lines.forEach(text => {
+          const mask = document.createElement('span');
+          const line = document.createElement('span');
+          mask.className = 'hero-title-mask';
+          line.className = 'hero-title-line';
+          line.textContent = text;
+          mask.append(line);
+          fragment.append(mask);
+        });
+        part.replaceChildren(fragment);
+      });
+    }
+
+    function finishIntro() {
+      intro.forEach(control => control.cancel());
+      intro.clear();
+      hero.querySelectorAll('.hero-title-line, .hero-typewriter-text').forEach(el => {
+        el.style.removeProperty('transform');
+        el.style.removeProperty('opacity');
+      });
+      hero.querySelectorAll('.hero-photo-reveal').forEach(el => el.style.removeProperty('clip-path'));
+      document.documentElement.dataset.heroMotion = 'ready';
+      window.clearTimeout(window.heroMotionFallback);
+    }
+
+    function playIntro() {
+      if (entered) return;
+      entered = true;
+      const prepared = document.documentElement.dataset.heroMotion === 'pending';
+      if (preference.matches || !prepared || window.scrollY > 80 || document.hidden) {
+        finishIntro();
+        return;
+      }
+
+      // Única sequência ao carregar: cada linha sobe pela própria máscara
+      // durante 450 ms, com 70 ms entre linhas. Não reinicia ao rolar.
+      const lines = Array.from(hero.querySelectorAll('.hero-title-line')).filter(el => el.getClientRects().length);
+      const motions = lines.map((line, i) => animate(line, {
+        transform: ['translateY(105%)', 'translateY(0%)']
+      }, { duration: 0.45, delay: i * 0.07, ease }));
+
+      // A foto abre de cima para baixo (única exceção a transform/opacity).
+      hero.querySelectorAll('.hero-photo-reveal').forEach(photo => {
+        if (!photo.getClientRects().length) return;
+        motions.push(animate(photo, { clipPath: ['inset(0 0 100% 0)', 'inset(0 0 0% 0)'] }, {
+          duration: 0.55, delay: 0.12, ease
+        }));
+      });
+      hero.querySelectorAll('.hero-typewriter-text').forEach(text => {
+        if (text.getClientRects().length) motions.push(animate(text, { opacity: [0, 1] }, {
+          duration: 0.25, delay: 0.25, ease
+        }));
+      });
+      motions.forEach(control => intro.add(control));
+      document.documentElement.dataset.heroMotion = 'running';
+      window.clearTimeout(window.heroMotionFallback);
+      Promise.all(motions.map(control => Promise.resolve(control))).then(finishIntro);
+    }
+
+    function stopLoops() {
+      stopTyping();
+      window.clearTimeout(pulseTimer);
+      pulseTimer = 0;
+      pulseControls.forEach(control => control.cancel());
+      pulseControls = [];
+      parallaxCleanup.forEach(cleanup => cleanup());
+      parallaxCleanup = [];
+      hero.querySelectorAll('.hero-photo-parallax, .hero-availability-dot').forEach(el => {
+        el.style.removeProperty('transform');
+        el.style.removeProperty('opacity');
+      });
+    }
+
+    function syncMotion() {
+      stopLoops();
+      if (preference.matches) {
+        finishIntro();
+        phraseIndex = 0;
+        charIndex = phrases[0].length;
+        deleting = false;
+        writePhrase(phrases[0]);
+        return;
+      }
+      if (!canMove()) return;
+
+      // Pulso discreto só no ponto decorativo de disponibilidade. Para quando
+      // o Hero sai da tela, a aba fica oculta ou a preferência é alterada.
+      function pulse() {
+        pulseControls.forEach(control => control.cancel());
+        pulseControls = [];
+        if (!canMove()) return;
+        hero.querySelectorAll('.hero-availability-dot').forEach(dot => {
+          if (!dot.getClientRects().length) return;
+          pulseControls.push(animate(dot, {
+            transform: ['scale(1)', 'scale(1.35)', 'scale(1)'], opacity: [1, 0.55, 1]
+          }, { duration: 0.6, ease: 'easeInOut' }));
+        });
+        pulseTimer = window.setTimeout(pulse, 2400);
+      }
+      pulse();
+
+      // Só a foto tem parallax: percurso total limitado a 10 px no mobile
+      // e 24 px no desktop. A moldura externa continua reservando seu espaço.
+      hero.querySelectorAll('.hero-photo-parallax').forEach(photo => {
+        if (!photo.getClientRects().length) return;
+        const distance = mobile.matches ? 10 : 24;
+        // O body existente tem overflow-x:hidden. Vincular a callback à raiz
+        // evita que um ViewTimeline escolha esse body como contêiner parado.
+        const cleanup = scroll(progress => {
+          const boundedProgress = Math.min(1, Math.max(0, progress));
+          photo.style.transform = `translateY(${-boundedProgress * distance}px)`;
+        }, { container: document.scrollingElement, target: hero, offset: ['start start', 'end start'] });
+        parallaxCleanup.push(cleanup);
+      });
+      if (!typingTimer) typingTimer = window.setTimeout(tickTyping, 2000);
+    }
+
+    try {
+      // Espera a fonte antes de medir. O timeout evita esconder o Hero caso
+      // um recurso externo já usado pelo site demore ou falhe.
+      await Promise.race([document.fonts.ready, new Promise(resolve => window.setTimeout(resolve, 900))]);
+      maskTitleLines();
+      playIntro();
+      syncMotion();
+
+      const observer = new IntersectionObserver(entries => {
+        inViewport = entries[0].isIntersecting;
+        syncMotion();
+      });
+      observer.observe(hero);
+      preference.addEventListener('change', syncMotion);
+      // Se Inter chegar depois do timeout, preserva suas quebras naturais
+      // sem reiniciar a entrada nem manter uma quebra medida com outra fonte.
+      document.fonts.addEventListener('loadingdone', () => {
+        finishIntro();
+        maskTitleLines();
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) finishIntro();
+        syncMotion();
+      });
+      // Recalcula quebras ao redimensionar, mas nunca repete a entrada.
+      window.addEventListener('resize', () => {
+        window.cancelAnimationFrame(resizeFrame);
+        resizeFrame = window.requestAnimationFrame(() => {
+          finishIntro();
+          maskTitleLines();
+          syncMotion();
+        });
+      }, { passive: true });
+      window.addEventListener('pagehide', () => { finishIntro(); stopLoops(); });
+      window.addEventListener('pageshow', event => { if (event.persisted) syncMotion(); });
+    } catch (error) {
+      // Melhoria progressiva: o contato e o conteúdo continuam disponíveis.
+      stopLoops();
+      finishIntro();
+      console.warn('Não foi possível iniciar o motion do Hero.', error);
+    }
+  </script>
+
   <script>
-    (function(){const phrases=['IA para produtividade real','Landing Pages que convertem','Websites modernos e rápidos','Mini-sistemas sob medida para empresas','Consultoria de TI e infraestrutura'];const pr=window.matchMedia('(prefers-reduced-motion: reduce)').matches;function run(el){if(!el)return;if(pr){el.textContent=phrases[0];return;}let pi=0,ci=0,del=false,sp=60;function t(){const c=phrases[pi];if(del){el.textContent=c.substring(0,ci-1);ci--;sp=35;}else{el.textContent=c.substring(0,ci+1);ci++;sp=60+Math.random()*40;}if(!del&&ci===c.length){sp=2000;del=true;}else if(del&&ci===0){del=false;pi=(pi+1)%phrases.length;sp=500;}setTimeout(t,sp);}t();}run(document.getElementById('typewriter'));run(document.getElementById('typewriterDesktop'));})();
     (function(){const pr=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(pr){document.querySelectorAll('.reveal').forEach(e=>e.classList.add('visible'));return;}const o=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){en.target.classList.add('visible');o.unobserve(en.target);}});},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});document.querySelectorAll('.reveal').forEach(e=>o.observe(e));})();
     (function(){const pr=window.matchMedia('(prefers-reduced-motion: reduce)').matches;const c=document.getElementById('timelineContainer'),p=document.getElementById('timelineProgress');const d1=document.getElementById('dot1'),d2=document.getElementById('dot2'),d3=document.getElementById('dot3');if(!c||!p||pr)return;function u(){const r=c.getBoundingClientRect();const s=Math.min(Math.max((window.innerHeight-r.top)/(r.height+window.innerHeight*0.3),0),1);p.style.height=(s*r.height)+'px';d1.classList.toggle('active',s>0.03);d2.classList.toggle('active',s>0.38);d3.classList.toggle('active',s>0.72);}window.addEventListener('scroll',u,{passive:true});u();})();
     (function(){const pr=window.matchMedia('(prefers-reduced-motion: reduce)').matches;const bars=document.querySelectorAll('.lang-bar-fill');if(pr){bars.forEach(b=>{b.style.width=b.dataset.width;});return;}const o=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){setTimeout(()=>{en.target.style.width=en.target.dataset.width;},200);o.unobserve(en.target);}});},{threshold:0.5});bars.forEach(b=>o.observe(b));})();
-    (function(){
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      const ls = document.querySelectorAll('.parallax-layer');
-      if (!ls.length) return;
-      let targetY = window.scrollY;
-      let currentY = window.scrollY;
-      let active = false;
-      function update() {
-        currentY += (targetY - currentY) * 0.1;
-        ls.forEach(l => {
-          const speed = parseFloat(l.dataset.speed) || 0.02;
-          l.style.transform = 'translateY(' + (currentY * speed * 100) + 'px)';
-        });
-        if (Math.abs(targetY - currentY) > 0.05) {
-          requestAnimationFrame(update);
-        } else {
-          currentY = targetY;
-          ls.forEach(l => {
-            const speed = parseFloat(l.dataset.speed) || 0.02;
-            l.style.transform = 'translateY(' + (currentY * speed * 100) + 'px)';
-          });
-          active = false;
-        }
-      }
-      window.addEventListener('scroll', () => {
-        targetY = window.scrollY;
-        if (!active) {
-          active = true;
-          requestAnimationFrame(update);
-        }
-      }, { passive: true });
-    })();
     (function(){const tg=document.getElementById('menuToggle'),cl=document.getElementById('menuClose'),m=document.getElementById('mobileMenu');function o(){m.classList.add('open');tg.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';}function c(){m.classList.remove('open');tg.setAttribute('aria-expanded','false');document.body.style.overflow='';}tg.addEventListener('click',o);cl.addEventListener('click',c);m.querySelectorAll('a').forEach(l=>l.addEventListener('click',c));document.addEventListener('keydown',e=>{if(e.key==='Escape'&&m.classList.contains('open'))c();});})();
-    (function(){document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){const h=this.getAttribute('href');if(h==='#')return;const t=document.querySelector(h);if(t){e.preventDefault();window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'});}});});})();
+    // O CTA "Ver serviços" conserva seu destino e respeita movimento reduzido.
+    (function () {
+      document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', function (e) {
+          const h = this.getAttribute('href');
+          if (h === '#') return;
+          const t = document.querySelector(h);
+          if (t) {
+            e.preventDefault();
+            window.scrollTo({
+              top: t.getBoundingClientRect().top + window.scrollY - 80,
+              behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'
+            });
+          }
+        });
+      });
+    })();
   </script>
 </body>
 </html>
