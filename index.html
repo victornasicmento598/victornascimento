@@ -117,7 +117,11 @@
 
     .marquee-wrapper { overflow: hidden; width: 100%; max-width: 100vw; }
     .marquee-track { display: flex; width: max-content; animation: marqueeScroll 40s linear infinite; }
-    .marquee-track:hover { animation-play-state: paused; }
+    /* O CSS mantém uma rolagem básica caso o módulo Motion não carregue. */
+    @media (hover: hover) and (pointer: fine) {
+      .marquee-wrapper:hover .marquee-track { animation-play-state: paused; }
+    }
+    .marquee-track.is-motion-controlled { animation: none; will-change: transform; }
     .marquee-track-reverse { animation-direction: reverse; animation-duration: 40s; }
     @keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
@@ -410,7 +414,12 @@
     .header-menu-icon { color: rgba(255,255,255,0.85); }
 
     @media (prefers-reduced-motion: reduce) {
-      .marquee-track { animation: none !important; }
+      /* Sem movimento: todas as tags únicas ficam legíveis, em linhas estáticas. */
+      .marquee-track { animation: none !important; transform: none !important; width: 100%; will-change: auto; }
+      .marquee-track > div:first-child { flex-wrap: wrap; width: 100%; justify-content: center; }
+      /* Oculta os separadores decorativos para não ficarem isolados nas quebras. */
+      .marquee-track > div:first-child > span[class*="text-neon/"] { display: none; }
+      [data-marquee-copy], [data-marquee-duplicate] { display: none !important; }
       .reveal { opacity: 1; transform: none; transition: none; }
       .typewriter-cursor { animation: none; opacity: 1; }
       .glass-card:hover, .btn-neon:hover, .btn-outline:hover, .whatsapp-float:hover { transform: none; }
@@ -555,7 +564,7 @@
     </section>
 
     <!-- MARQUEE -->
-    <section class="relative py-6 overflow-hidden w-full" aria-hidden="true">
+    <section class="relative py-6 overflow-hidden w-full" aria-hidden="true" data-marquee-section>
       <div class="neon-separator mb-6"></div>
       <div class="marquee-wrapper">
         <div class="marquee-track">
@@ -572,7 +581,7 @@
             <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Tailwind</span><span class="text-neon/25">&#x2022;</span>
             <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Processos & QA</span><span class="text-neon/25">&#x2022;</span>
           </div>
-          <div class="flex items-center gap-6 sm:gap-8 px-4" aria-hidden="true">
+          <div class="flex items-center gap-6 sm:gap-8 px-4" aria-hidden="true" data-marquee-copy>
             <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">IA & Automação</span><span class="text-neon/25">&#x2022;</span>
             <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Landing Pages</span><span class="text-neon/25">&#x2022;</span>
             <span class="text-xs sm:text-sm font-semibold text-gray-400 whitespace-nowrap tracking-wide uppercase">Web Apps</span><span class="text-neon/25">&#x2022;</span>
@@ -591,7 +600,7 @@
         <div class="marquee-track marquee-track-reverse" id="brandMarquee">
           <div class="flex items-center gap-8 sm:gap-12 px-4" id="brandSet1">
           </div>
-          <div class="flex items-center gap-8 sm:gap-12 px-4" id="brandSet2" aria-hidden="true">
+          <div class="flex items-center gap-8 sm:gap-12 px-4" id="brandSet2" aria-hidden="true" data-marquee-copy>
           </div>
         </div>
       </div>
@@ -615,31 +624,18 @@
           var repeats = 6;
           for (var r = 0; r < repeats; r++) {
             for (var k = 0; k < brands.length; k++) {
-              html += '<div class="flex items-center gap-2.5 whitespace-nowrap">';
+              // As cópias fecham o loop; com movimento reduzido só a primeira fica visível.
+              var duplicate = r > 0 ? ' data-marquee-duplicate' : '';
+              html += '<div class="flex items-center gap-2.5 whitespace-nowrap"' + duplicate + '>';
               html += '<span class="brand-marquee-icon">' + brands[k].svg + '</span>';
               html += '<span class="text-xs sm:text-sm font-semibold text-gray-400 tracking-wide">' + brands[k].name + '</span>';
               html += '</div>';
-              html += '<span class="text-neon/20">&#x2022;</span>';
+              html += '<span class="text-neon/20"' + duplicate + '>&#x2022;</span>';
             }
           }
           document.getElementById('brandSet1').innerHTML = html;
           document.getElementById('brandSet2').innerHTML = html;
 
-          // Dynamically adjust animation duration to match the visual speed of the upper marquee
-          setTimeout(function() {
-            var topSet = document.querySelector('.marquee-track:not(.marquee-track-reverse) > div');
-            var bottomSet = document.getElementById('brandSet1');
-            var bottomTrack = document.getElementById('brandMarquee');
-            if (topSet && bottomSet && bottomTrack) {
-              var topWidth = topSet.getBoundingClientRect().width;
-              var bottomWidth = bottomSet.getBoundingClientRect().width;
-              if (topWidth > 0 && bottomWidth > 0) {
-                var topDuration = 40; // matches top marquee's 40s duration
-                var bottomDuration = topDuration * (bottomWidth / topWidth);
-                bottomTrack.style.animationDuration = bottomDuration + 's';
-              }
-            }
-          }, 100);
         })();
       </script>
       <div class="neon-separator mt-6"></div>
@@ -1004,6 +1000,170 @@
   <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Sou%20profissional%2Fescrit%C3%B3rio%20e%20quero%20melhorar%20minha%20presen%C3%A7a%20digital%20e%20produtividade.%20Podemos%20conversar%3F" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Abrir conversa no WhatsApp">
     <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>WhatsApp</title><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
   </a>
+
+  <script type="module" data-motion-section="marquee">
+    import { animate, scroll } from './assets/vendor/motion-14.1.0.js';
+
+    const band = document.querySelector('[data-marquee-section]');
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const hover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const baseSpeed = 56; // Pixels por segundo, iguais nas duas faixas.
+    const rows = Array.from(band.querySelectorAll('.marquee-track'), track => ({
+      track, wrapper: track.parentElement, set: track.firstElementChild,
+      reverse: track.classList.contains('marquee-track-reverse'),
+      controls: null, distance: 0, duration: 0, hovering: false, touch: null
+    }));
+    let inViewport = false;
+    let stopScroll = null;
+    let speed = 1;
+    let targetSpeed = 1;
+    let lastScrollAt = 0;
+    let lastPosition = window.scrollY;
+    let speedFrame = 0;
+    let previousFrame = 0;
+    let resizeFrame = 0;
+    const canMove = () => !preference.matches && inViewport && !document.hidden;
+
+    function updatePlayback(row) {
+      if (!row.controls) return;
+      if (canMove() && !(hover.matches && row.hovering) && !row.touch) row.controls.play();
+      else row.controls.pause();
+    }
+
+    // Uma cópia inteira percorre o quadro; a cópia idêntica ocupa seu lugar.
+    // Só transform é animado. A segunda faixa mantém o sentido oposto atual.
+    function measureRows() {
+      resizeFrame = 0;
+      if (preference.matches) return;
+      rows.forEach(row => {
+        const distance = row.set.getBoundingClientRect().width;
+        if (!distance || (row.controls && Math.abs(distance - row.distance) < 0.5)) return;
+        // Preserva a posição do loop quando fontes ou viewport mudam de tamanho.
+        const phase = row.controls ? (row.controls.time / row.duration) % 1 : 0;
+        row.controls?.cancel();
+        row.distance = distance;
+        row.duration = distance / baseSpeed;
+        row.track.classList.add('is-motion-controlled');
+        row.controls = animate(row.track, {
+          transform: row.reverse
+            ? [`translateX(${-distance}px)`, 'translateX(0px)']
+            : ['translateX(0px)', `translateX(${-distance}px)`]
+        }, { duration: row.duration, ease: 'linear', repeat: Infinity });
+        row.controls.time = phase * row.duration;
+        row.controls.speed = speed;
+        updatePlayback(row);
+      });
+    }
+
+    function queueMeasurement() {
+      if (!resizeFrame) resizeFrame = requestAnimationFrame(measureRows);
+    }
+
+    // A velocidade da página aumenta o ritmo até 3x. A resposta e a desaceleração
+    // são suavizadas em cerca de 300 ms, sem reiniciar a posição das faixas.
+    function smoothSpeed(now) {
+      speedFrame = 0;
+      if (!canMove()) return;
+      const elapsed = previousFrame ? Math.min(now - previousFrame, 64) : 16;
+      previousFrame = now;
+      if (now - lastScrollAt > 90) targetSpeed = 1;
+      speed += (targetSpeed - speed) * (1 - Math.exp(-elapsed / 100));
+      if (Math.abs(targetSpeed - speed) < 0.015) speed = targetSpeed;
+      rows.forEach(row => { if (row.controls) row.controls.speed = speed; });
+      if (speed !== 1 || targetSpeed !== 1) speedFrame = requestAnimationFrame(smoothSpeed);
+      else previousFrame = 0;
+    }
+
+    function resetSpeed() {
+      cancelAnimationFrame(speedFrame);
+      speedFrame = 0;
+      previousFrame = 0;
+      speed = targetSpeed = 1;
+      rows.forEach(row => { if (row.controls) row.controls.speed = 1; });
+    }
+
+    // scroll é a API JS oficial do Motion para este site HTML estático.
+    // O listener e os loops pausam fora da tela ou quando a aba está oculta.
+    function syncVisibility() {
+      if (canMove()) {
+        measureRows();
+        if (!stopScroll) {
+          lastPosition = window.scrollY;
+          stopScroll = scroll((progress, info) => {
+            if (info.y.current === lastPosition) return;
+            lastPosition = info.y.current;
+            lastScrollAt = performance.now();
+            targetSpeed = 1 + Math.min(Math.abs(info.y.velocity) / 1800, 2);
+            if (!speedFrame) speedFrame = requestAnimationFrame(smoothSpeed);
+          }, { container: document.scrollingElement });
+        }
+      } else {
+        stopScroll?.();
+        stopScroll = null;
+        resetSpeed();
+      }
+      rows.forEach(updatePlayback);
+    }
+
+    rows.forEach(row => {
+      // Hover é uma conveniência: o movimento também funciona ao entrar na tela.
+      row.wrapper.addEventListener('pointerenter', event => {
+        if (event.pointerType !== 'mouse') return;
+        row.hovering = true;
+        updatePlayback(row);
+      });
+      row.wrapper.addEventListener('pointerleave', () => {
+        row.hovering = false;
+        updatePlayback(row);
+      });
+      // No toque, segurar pausa; arrastar libera imediatamente a rolagem da página.
+      row.wrapper.addEventListener('pointerdown', event => {
+        if (event.pointerType !== 'touch') return;
+        row.touch = { id: event.pointerId, x: event.clientX, y: event.clientY };
+        updatePlayback(row);
+      }, { passive: true });
+      window.addEventListener('pointermove', event => {
+        if (!row.touch || row.touch.id !== event.pointerId) return;
+        if (Math.hypot(event.clientX - row.touch.x, event.clientY - row.touch.y) > 8) {
+          row.touch = null;
+          updatePlayback(row);
+        }
+      }, { passive: true });
+      const releaseTouch = event => {
+        if (row.touch?.id !== event.pointerId) return;
+        row.touch = null;
+        updatePlayback(row);
+      };
+      window.addEventListener('pointerup', releaseTouch, { passive: true });
+      window.addEventListener('pointercancel', releaseTouch, { passive: true });
+    });
+
+    // A preferência também pode mudar com a página aberta: cancela o Motion e
+    // deixa o CSS mostrar todas as tags únicas, sem parallax nem loop nesta faixa.
+    preference.addEventListener('change', () => {
+      if (preference.matches) {
+        rows.forEach(row => {
+          row.controls?.cancel();
+          row.controls = null;
+          row.track.classList.remove('is-motion-controlled');
+          row.track.style.removeProperty('transform');
+        });
+      }
+      syncVisibility();
+    });
+    hover.addEventListener('change', () => rows.forEach(updatePlayback));
+    document.addEventListener('visibilitychange', () => {
+      rows.forEach(row => { row.touch = null; });
+      syncVisibility();
+    });
+    new IntersectionObserver(entries => {
+      inViewport = entries[0].isIntersecting;
+      syncVisibility();
+    }).observe(band);
+    const resizeObserver = new ResizeObserver(queueMeasurement);
+    rows.forEach(row => resizeObserver.observe(row.set));
+    document.fonts.ready.then(queueMeasurement);
+  </script>
 
   <script type="module">
     // Este repositório é HTML estático: usamos a API JS oficial do Motion.
