@@ -395,6 +395,7 @@
       .footer-bottom { padding-right: 0; padding-bottom: 78px; }
     }
   </style>
+  <link rel="stylesheet" href="motion.css">
 </head>
 <body class="bg-grid">
 
@@ -993,5 +994,6 @@
     (function(){const tg=document.getElementById('menuToggle'),cl=document.getElementById('menuClose'),m=document.getElementById('mobileMenu');function o(){m.classList.add('open');tg.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';}function c(){m.classList.remove('open');tg.setAttribute('aria-expanded','false');document.body.style.overflow='';}tg.addEventListener('click',o);cl.addEventListener('click',c);m.querySelectorAll('a').forEach(l=>l.addEventListener('click',c));document.addEventListener('keydown',e=>{if(e.key==='Escape'&&m.classList.contains('open'))c();});})();
     (function(){document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',function(e){const h=this.getAttribute('href');if(h==='#')return;const t=document.querySelector(h);if(t){e.preventDefault();window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'});}});});})();
   </script>
+  <script src="motion.js"></script>
 </body>
 </html>
