@@ -1,0 +1,66 @@
+/* Chat com IA — mesmo vocabulário visual do site (azul #1A3FD4, vidro, cantos 16px) */
+.vn-chat-btn {
+  position: fixed; right: 24px; bottom: 92px; z-index: 80; height: 56px; padding: 0 20px 0 16px; border: 0; cursor: pointer;
+  display: flex; align-items: center; gap: 10px; border-radius: 28px; color: #fff; font: 700 14px/1 'Inter', system-ui, sans-serif;
+  background: linear-gradient(135deg, #1A3FD4, #0D1A6B); box-shadow: 0 4px 22px rgba(26,63,212,.45), inset 0 1px 0 rgba(255,255,255,.18);
+  transition: transform .5s cubic-bezier(.16,1,.3,1), box-shadow .4s;
+}
+.vn-chat-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(26,63,212,.55), inset 0 1px 0 rgba(255,255,255,.18); }
+.vn-chat-btn svg { width: 22px; height: 22px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.vn-chat-btn .dot { width: 8px; height: 8px; border-radius: 50%; background: #5EE6A8; box-shadow: 0 0 0 0 rgba(94,230,168,.7); animation: vnPulse 2.4s infinite; }
+@keyframes vnPulse { 70% { box-shadow: 0 0 0 8px rgba(94,230,168,0); } 100% { box-shadow: 0 0 0 0 rgba(94,230,168,0); } }
+.vn-chat-btn.hide { opacity: 0; transform: scale(.8); pointer-events: none; }
+
+.vn-chat {
+  position: fixed; right: 24px; bottom: 92px; z-index: 90; width: 380px; max-width: calc(100vw - 32px);
+  height: min(560px, calc(100dvh - 120px)); display: flex; flex-direction: column; overflow: hidden;
+  background: rgba(255,255,255,.96); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(0,0,0,.07); border-radius: 20px; font-family: 'Inter', system-ui, sans-serif;
+  box-shadow: 0 24px 70px rgba(13,26,107,.28), 0 2px 8px rgba(0,0,0,.06);
+  opacity: 0; visibility: hidden; transform: translateY(18px) scale(.97); transform-origin: 100% 100%;
+  transition: opacity .35s ease, transform .6s cubic-bezier(.16,1,.3,1), visibility 0s .6s;
+}
+.vn-chat.open { opacity: 1; visibility: visible; transform: none; transition: opacity .35s ease, transform .6s cubic-bezier(.16,1,.3,1); }
+
+.vn-chat header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; color: #fff; flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(26,63,212,.96), rgba(5,10,50,.96)); }
+.vn-chat header img { width: 34px; height: 34px; border-radius: 10px; background: #fff; padding: 4px; object-fit: contain; }
+.vn-chat header b { display: block; font-size: 14px; font-weight: 700; line-height: 1.2; }
+.vn-chat header small { display: flex; align-items: center; gap: 6px; font-size: 11.5px; opacity: .8; margin-top: 2px; }
+.vn-chat header small i { width: 6px; height: 6px; border-radius: 50%; background: #5EE6A8; }
+.vn-chat header button { margin-left: auto; width: 32px; height: 32px; border: 0; border-radius: 8px; cursor: pointer; background: rgba(255,255,255,.1); color: #fff; font-size: 18px; line-height: 1; }
+.vn-chat header button:hover { background: rgba(255,255,255,.2); }
+
+.vn-msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; overscroll-behavior: contain; }
+.vn-m { max-width: 86%; padding: 10px 13px; border-radius: 16px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word;
+  animation: vnIn .5s cubic-bezier(.16,1,.3,1); }
+@keyframes vnIn { from { opacity: 0; transform: translateY(10px) scale(.97); } }
+.vn-m.bot { align-self: flex-start; background: #f2f4ff; color: #1b1f3a; border-bottom-left-radius: 5px; }
+.vn-m.me { align-self: flex-end; background: #1A3FD4; color: #fff; border-bottom-right-radius: 5px; }
+.vn-m a.wa { display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 9px 14px; border-radius: 10px; background: #25D366; color: #fff; font-weight: 700; font-size: 13px; text-decoration: none; }
+.vn-typing { align-self: flex-start; display: flex; gap: 4px; padding: 13px 14px; background: #f2f4ff; border-radius: 16px; border-bottom-left-radius: 5px; }
+.vn-typing i { width: 6px; height: 6px; border-radius: 50%; background: #1A3FD4; opacity: .35; animation: vnDot 1.1s infinite; }
+.vn-typing i:nth-child(2) { animation-delay: .15s; } .vn-typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes vnDot { 40% { opacity: 1; transform: translateY(-3px); } }
+
+.vn-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px 10px; }
+.vn-chips button { border: 1px solid rgba(26,63,212,.25); background: #fff; color: #1A3FD4; border-radius: 999px; padding: 7px 12px; font: 600 12.5px 'Inter', system-ui, sans-serif; cursor: pointer; transition: all .25s; }
+.vn-chips button:hover { background: rgba(26,63,212,.07); border-color: #1A3FD4; }
+
+.vn-chat form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid rgba(0,0,0,.07); flex-shrink: 0; background: #fff; }
+.vn-chat input { flex: 1; min-width: 0; border: 1px solid rgba(0,0,0,.12); border-radius: 12px; padding: 11px 13px; font: 400 16px 'Inter', system-ui, sans-serif; color: #111; outline: none; transition: border-color .25s, box-shadow .25s; }
+.vn-chat input:focus { border-color: #1A3FD4; box-shadow: 0 0 0 3px rgba(26,63,212,.12); }
+.vn-chat form button { width: 44px; border: 0; border-radius: 12px; background: #1A3FD4; color: #fff; cursor: pointer; display: grid; place-items: center; transition: background .25s, transform .3s; }
+.vn-chat form button:hover { background: #1530A8; }
+.vn-chat form button:disabled { opacity: .45; cursor: default; }
+.vn-chat form button svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.vn-note { text-align: center; font-size: 11px; color: #8a90ad; padding: 0 12px 10px; background: #fff; }
+
+@media (max-width: 640px) {
+  .vn-chat-btn { right: 16px; bottom: 84px; height: 52px; padding: 0 16px 0 14px; }
+  .vn-chat { right: 8px; left: 8px; bottom: 8px; width: auto; max-width: none; height: min(78dvh, 640px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vn-chat, .vn-chat.open, .vn-m { transition: none; animation: none; }
+  .vn-chat-btn .dot, .vn-typing i { animation: none; }
+}
