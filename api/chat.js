@@ -62,13 +62,30 @@ async function callGemini(model, key, contents, withThinkingOff) {
   });
 }
 
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-flash-latest';
+const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+
+// Groq usa o formato OpenAI: papel "assistant" em vez de "model"
+function callGroq(groqKey, contents) {
+  const messages = [{ role: 'system', content: SYSTEM }].concat(
+    contents.map(c => ({ role: c.role === 'model' ? 'assistant' : 'user', content: c.parts[0].text }))
+  );
+  return fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + groqKey },
+    signal: AbortSignal.timeout(9000),
+    body: JSON.stringify({ model: GROQ_MODEL, messages, max_tokens: 500, temperature: 0.5 })
+  });
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
   if (!allowedOrigin(req.headers.origin)) return res.status(403).json({ error: 'origin' });
 
   const key = process.env.GEMINI_API_KEY;
-  if (!key) return res.status(503).json({ error: 'config', reply: `O chat está indisponível no momento. Fale direto com o Victor: ${WHATSAPP}` });
+  const groqKey = process.env.GROQ_API_KEY;
+  if (!key && !groqKey) return res.status(503).json({ error: 'config', reply: `O chat está indisponível no momento. Fale direto com o Victor: ${WHATSAPP}` });
 
   const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'anon';
   if (limited(ip)) return res.status(429).json({ error: 'rate', reply: 'Você enviou muitas mensagens em pouco tempo. Para continuar agora, fale direto com o Victor no WhatsApp. [[WHATSAPP]]' });
@@ -84,35 +101,34 @@ module.exports = async (req, res) => {
   if (!contents.length || contents[contents.length - 1].role !== 'user') return res.status(400).json({ error: 'bad' });
   while (contents[0].role !== 'user') contents.shift();
 
-  // tenta o modelo configurado e, se o Google tiver aposentado/renomeado, os seguintes
-  const models = [process.env.GEMINI_MODEL, 'gemini-flash-latest', 'gemini-3.8-flash', 'gemini-flash-lite-latest', 'gemini-3.8-flash-lite', 'gemini-2.5-flash-lite'].filter(Boolean);
   try {
-    let r; const trail = [];
-    // 404 = modelo aposentado; 500/503 = Google sobrecarregado: tenta o próximo modelo e, no fim, uma segunda rodada
-    const skip = [404, 500, 503, 504];
-    outer: for (let round = 0; round < 2; round++) {
-      for (const model of models) {
-        try {
-          r = await callGemini(model, key, contents, true);
-          if (r.status === 400) r = await callGemini(model, key, contents, false); // modelos sem thinkingBudget
-        } catch (e) { r = { ok: false, status: 504, text: async () => 'timeout' }; }
-        if (!skip.includes(r.status)) break outer;
-        trail.push([model, r.status]);
-      }
-      if (round === 0) await new Promise(ok => setTimeout(ok, 800));
+    let reply = '', busy = false;
+
+    // 1º Groq (limite gratuito maior); 2º Gemini como reserva
+    if (groqKey) {
+      try {
+        const r = await callGroq(groqKey, contents);
+        if (r.ok) {
+          const d = await r.json();
+          reply = ((d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content) || '').trim();
+        } else { busy = busy || r.status === 429; console.error('groq', r.status); }
+      } catch (e) { console.error('groq', e && e.message); }
     }
-    if (!r.ok) {
-      const detail = (await r.text()).slice(0, 400);
-      console.error('gemini', r.status, detail);
-      const busy = r.status === 429;
-      return res.status(502).json({ error: 'upstream', status: r.status, trail, detail, reply: busy
-        ? 'Estou com muitas conversas agora. Tente de novo em instantes ou fale direto com o Victor. [[WHATSAPP]]'
-        : 'Não consegui responder agora. Fale direto com o Victor no WhatsApp. [[WHATSAPP]]' });
+    if (!reply && key) {
+      try {
+        let r = await callGemini(GEMINI_MODEL, key, contents, true);
+        if (r.status === 400) r = await callGemini(GEMINI_MODEL, key, contents, false);
+        if (r.ok) {
+          const d = await r.json();
+          const parts = (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) || [];
+          reply = parts.map(p => p.text || '').join('').trim();
+        } else { busy = busy || r.status === 429; console.error('gemini', r.status); }
+      } catch (e) { console.error('gemini', e && e.message); }
     }
-    const data = await r.json();
-    const parts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
-    const reply = parts.map(p => p.text || '').join('').trim();
-    if (!reply) return res.status(502).json({ error: 'empty', reply: 'Não consegui formular uma resposta. Fale direto com o Victor no WhatsApp. [[WHATSAPP]]' });
+
+    if (!reply) return res.status(502).json({ error: 'upstream', reply: busy
+      ? 'Estou com muitas conversas agora. Tente de novo em instantes ou fale direto com o Victor. [[WHATSAPP]]'
+      : 'Não consegui responder agora. Fale direto com o Victor no WhatsApp. [[WHATSAPP]]' });
     return res.status(200).json({ reply });
   } catch (e) {
     console.error('chat', e && e.message);
