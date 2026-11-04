@@ -88,9 +88,10 @@ module.exports = async (req, res) => {
     let r = await callGemini(model, key, contents, true);
     if (r.status === 400) r = await callGemini(model, key, contents, false); // modelos sem thinkingBudget
     if (!r.ok) {
-      console.error('gemini', r.status, (await r.text()).slice(0, 300));
+      const detail = (await r.text()).slice(0, 300);
+      console.error('gemini', r.status, detail);
       const busy = r.status === 429;
-      return res.status(502).json({ error: 'upstream', reply: busy
+      return res.status(502).json({ error: 'upstream', status: r.status, detail, reply: busy
         ? 'Estou com muitas conversas agora. Tente de novo em instantes ou fale direto com o Victor. [[WHATSAPP]]'
         : 'Não consegui responder agora. Fale direto com o Victor no WhatsApp. [[WHATSAPP]]' });
     }
