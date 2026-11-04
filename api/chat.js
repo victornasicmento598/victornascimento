@@ -63,10 +63,10 @@ async function callGemini(model, key, contents, withThinkingOff) {
 }
 
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-flash-latest';
-const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const GROQ_MODELS = [process.env.GROQ_MODEL, 'openai/gpt-oss-120b', 'openai/gpt-oss-20b'].filter(Boolean);
 
 // Groq usa o formato OpenAI: papel "assistant" em vez de "model"
-function callGroq(groqKey, contents) {
+function callGroq(groqKey, model, contents) {
   const messages = [{ role: 'system', content: SYSTEM }].concat(
     contents.map(c => ({ role: c.role === 'model' ? 'assistant' : 'user', content: c.parts[0].text }))
   );
@@ -74,7 +74,7 @@ function callGroq(groqKey, contents) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + groqKey },
     signal: AbortSignal.timeout(9000),
-    body: JSON.stringify({ model: GROQ_MODEL, messages, max_tokens: 500, temperature: 0.5 })
+    body: JSON.stringify({ model, messages, max_tokens: 900, temperature: 0.5, reasoning_effort: 'low' })
   });
 }
 
@@ -102,17 +102,24 @@ module.exports = async (req, res) => {
   while (contents[0].role !== 'user') contents.shift();
 
   try {
-    let reply = '', busy = false; const why = []; // TEMP-DIAG
+    let reply = '', busy = false;
 
     // 1º Groq (limite gratuito maior); 2º Gemini como reserva
     if (groqKey) {
-      try {
-        const r = await callGroq(groqKey, contents);
-        if (r.ok) {
-          const d = await r.json();
-          reply = ((d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content) || '').trim();
-        } else { busy = busy || r.status === 429; console.error('groq', r.status); why.push(['groq', r.status, (await r.text()).slice(0,120)]); try { const m = await fetch('https://api.groq.com/openai/v1/models', { headers: { Authorization: 'Bearer ' + groqKey }, signal: AbortSignal.timeout(5000) }); const j = await m.json(); why.push((j.data || []).map(x => x.id)); } catch (e) {} }
-      } catch (e) { console.error('groq', e && e.message); }
+      for (const model of GROQ_MODELS) {
+        try {
+          const r = await callGroq(groqKey, model, contents);
+          if (r.ok) {
+            const d = await r.json();
+            reply = ((d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content) || '').trim();
+            if (reply) break;
+          } else {
+            busy = busy || r.status === 429;
+            console.error('groq', model, r.status);
+            if (![404, 429, 500, 503].includes(r.status)) break;
+          }
+        } catch (e) { console.error('groq', model, e && e.message); }
+      }
     }
     if (!reply && key) {
       try {
@@ -122,11 +129,11 @@ module.exports = async (req, res) => {
           const d = await r.json();
           const parts = (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) || [];
           reply = parts.map(p => p.text || '').join('').trim();
-        } else { busy = busy || r.status === 429; console.error('gemini', r.status); why.push(['gemini', r.status]); }
+        } else { busy = busy || r.status === 429; console.error('gemini', r.status); }
       } catch (e) { console.error('gemini', e && e.message); }
     }
 
-    if (!reply) return res.status(502).json({ error: 'upstream', why, reply: busy
+    if (!reply) return res.status(502).json({ error: 'upstream', reply: busy
       ? 'Estou com muitas conversas agora. Tente de novo em instantes ou fale direto com o Victor. [[WHATSAPP]]'
       : 'Não consegui responder agora. Fale direto com o Victor no WhatsApp. [[WHATSAPP]]' });
     return res.status(200).json({ reply });
