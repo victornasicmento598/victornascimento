@@ -36,7 +36,7 @@
   function add(role, text) {
     const m = $('div', 'vn-m ' + (role === 'user' ? 'me' : 'bot'));
     const wa = /\[\[WHATSAPP\]\]/.test(text);
-    m.textContent = text.replace(/\s*\[\[WHATSAPP\]\]\s*/g, '').trim();
+    m.textContent = text.replace(/\s*\[\[WHATSAPP\]\]\s*/g, '').replace(/\*\*|__|`/g, '').replace(/^#+\s*/gm, '').trim();
     if (wa) {
       const a = $('a', 'wa', 'Falar com o Victor no WhatsApp'); a.href = WA; a.target = '_blank'; a.rel = 'noopener';
       m.append($('br'), a);
