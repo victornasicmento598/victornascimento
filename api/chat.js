@@ -84,7 +84,7 @@ module.exports = async (req, res) => {
   while (contents[0].role !== 'user') contents.shift();
 
   // tenta o modelo configurado e, se o Google tiver aposentado/renomeado, os seguintes
-  const models = [process.env.GEMINI_MODEL, 'gemini-flash-latest', 'gemini-3.8-flash', 'gemini-2.5-flash'].filter(Boolean);
+  const models = [process.env.GEMINI_MODEL, 'gemini-flash-latest', 'gemini-3.8-flash', 'gemini-flash-lite-latest', 'gemini-3.8-flash-lite', 'gemini-2.5-flash-lite'].filter(Boolean);
   try {
     let r; const trail = [];
     // 404 = modelo aposentado; 500/503 = Google sobrecarregado: tenta o próximo modelo e, no fim, uma segunda rodada
