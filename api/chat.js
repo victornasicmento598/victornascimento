@@ -87,12 +87,16 @@ module.exports = async (req, res) => {
   const models = [process.env.GEMINI_MODEL, 'gemini-flash-latest', 'gemini-3.8-flash', 'gemini-2.5-flash'].filter(Boolean);
   try {
     let r; const trail = [];
-    for (const model of models) {
-      r = await callGemini(model, key, contents, true);
-      if (r.status === 400) r = await callGemini(model, key, contents, false); // modelos sem thinkingBudget
-      if (r.status !== 404) break;
-      trail.push([model, r.status]);
-      console.error('gemini modelo indisponível:', model);
+    // 404 = modelo aposentado; 500/503 = Google sobrecarregado: tenta o próximo modelo e, no fim, uma segunda rodada
+    const skip = [404, 500, 503];
+    outer: for (let round = 0; round < 2; round++) {
+      for (const model of models) {
+        r = await callGemini(model, key, contents, true);
+        if (r.status === 400) r = await callGemini(model, key, contents, false); // modelos sem thinkingBudget
+        if (!skip.includes(r.status)) break outer;
+        trail.push([model, r.status]);
+      }
+      if (round === 0) await new Promise(ok => setTimeout(ok, 800));
     }
     if (!r.ok) {
       const detail = (await r.text()).slice(0, 400);
