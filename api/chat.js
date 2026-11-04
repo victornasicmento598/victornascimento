@@ -86,17 +86,19 @@ module.exports = async (req, res) => {
   // tenta o modelo configurado e, se o Google tiver aposentado/renomeado, os seguintes
   const models = [process.env.GEMINI_MODEL, 'gemini-flash-latest', 'gemini-3.8-flash', 'gemini-2.5-flash'].filter(Boolean);
   try {
-    let r;
+    let r; const trail = [];
     for (const model of models) {
       r = await callGemini(model, key, contents, true);
       if (r.status === 400) r = await callGemini(model, key, contents, false); // modelos sem thinkingBudget
       if (r.status !== 404) break;
+      trail.push([model, r.status]);
       console.error('gemini modelo indisponível:', model);
     }
     if (!r.ok) {
-      console.error('gemini', r.status, (await r.text()).slice(0, 300));
+      const detail = (await r.text()).slice(0, 400);
+      console.error('gemini', r.status, detail);
       const busy = r.status === 429;
-      return res.status(502).json({ error: 'upstream', reply: busy
+      return res.status(502).json({ error: 'upstream', status: r.status, trail, detail, reply: busy
         ? 'Estou com muitas conversas agora. Tente de novo em instantes ou fale direto com o Victor. [[WHATSAPP]]'
         : 'Não consegui responder agora. Fale direto com o Victor no WhatsApp. [[WHATSAPP]]' });
     }
