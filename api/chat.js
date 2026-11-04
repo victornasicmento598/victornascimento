@@ -111,7 +111,7 @@ module.exports = async (req, res) => {
         if (r.ok) {
           const d = await r.json();
           reply = ((d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content) || '').trim();
-        } else { busy = busy || r.status === 429; console.error('groq', r.status); why.push(['groq', r.status, (await r.text()).slice(0,200)]); }
+        } else { busy = busy || r.status === 429; console.error('groq', r.status); why.push(['groq', r.status, (await r.text()).slice(0,120)]); try { const m = await fetch('https://api.groq.com/openai/v1/models', { headers: { Authorization: 'Bearer ' + groqKey }, signal: AbortSignal.timeout(5000) }); const j = await m.json(); why.push((j.data || []).map(x => x.id)); } catch (e) {} }
       } catch (e) { console.error('groq', e && e.message); }
     }
     if (!reply && key) {
