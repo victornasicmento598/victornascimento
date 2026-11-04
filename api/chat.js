@@ -57,6 +57,7 @@ async function callGemini(model, key, contents, withThinkingOff) {
   return fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+    signal: AbortSignal.timeout(9000),
     body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM }] }, contents, generationConfig })
   });
 }
@@ -88,11 +89,13 @@ module.exports = async (req, res) => {
   try {
     let r; const trail = [];
     // 404 = modelo aposentado; 500/503 = Google sobrecarregado: tenta o próximo modelo e, no fim, uma segunda rodada
-    const skip = [404, 500, 503];
+    const skip = [404, 500, 503, 504];
     outer: for (let round = 0; round < 2; round++) {
       for (const model of models) {
-        r = await callGemini(model, key, contents, true);
-        if (r.status === 400) r = await callGemini(model, key, contents, false); // modelos sem thinkingBudget
+        try {
+          r = await callGemini(model, key, contents, true);
+          if (r.status === 400) r = await callGemini(model, key, contents, false); // modelos sem thinkingBudget
+        } catch (e) { r = { ok: false, status: 504, text: async () => 'timeout' }; }
         if (!skip.includes(r.status)) break outer;
         trail.push([model, r.status]);
       }
