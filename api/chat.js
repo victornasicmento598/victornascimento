@@ -84,7 +84,7 @@ module.exports = async (req, res) => {
   if (!allowedOrigin(req.headers.origin)) return res.status(403).json({ error: 'origin' });
 
   const key = process.env.GEMINI_API_KEY;
-  const groqKey = process.env.GROQ_API_KEY;
+  const groqKey = process.env.GROQ_API_KEY || process.env.Groq_KEY;
   if (!key && !groqKey) return res.status(503).json({ error: 'config', reply: `O chat está indisponível no momento. Fale direto com o Victor: ${WHATSAPP}` });
 
   const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'anon';
