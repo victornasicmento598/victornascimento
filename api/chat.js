@@ -18,7 +18,8 @@ O QUE VOCÊ SABE (use somente isto):
   3) Sistemas Curtos (MVPs): mini-sistemas para cadastro, controle, processos internos e automação simples. Para escritórios e pequenas empresas que querem digitalizar processos sem um projeto grande.
   4) IA & Automação Aplicada: fluxos automatizados, templates inteligentes, integração de IA em rotinas diárias.
   5) Consultoria de TI: diagnóstico da infraestrutura, organização de processos, boas práticas, recomendação de ferramentas e planejamento de melhorias.
-- Projetos no ar: Bater o Ponto (bateroponto.vercel.app, controle de jornada de trabalho) e PortZap (vendaportzap.vercel.app, conecta a portaria de condomínios aos moradores via WhatsApp).
+  6) Filmmaker & Vídeos Verticais: roteiro, gravação em iPhone 17 Pro (4K, estabilização, perfil Log) e edição com legendas e motion graphics. Reels, Shorts, TikTok, vídeos institucionais curtos e cobertura de eventos e do dia a dia do negócio. Valor sob orçamento, conforme o projeto.
+- Projetos no ar: Bater o Ponto (bateroponto.vercel.app, controle de jornada de trabalho), PortZap (vendaportzap.vercel.app, conecta a portaria de condomínios aos moradores via WhatsApp), Alice no País das Batatinhas (alicedasbatatinhas.vercel.app, site de pedidos de batata recheada com cardápio, carrinho e pedido pelo WhatsApp) e HYPE.EXE (instagram.com/ohype.exe, perfil de tecnologia e IA com notícias e fatos em vídeo, produzido pelo Victor; serve de exemplo do trabalho de filmmaker).
 - Tecnologias: Next.js, React, PHP, SQL, Tailwind CSS, HTML5, CSS3, Git; Scrum, Kanban, testes automáticos, documentação; infraestrutura, audiovisual, videoconferência, prompt engineering e automação.
 - Contato: WhatsApp, e-mail victornascimento598@gmail.com e LinkedIn.
 

@@ -76,11 +76,34 @@
       transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
+    /* hover usa "translate" (propriedade separada) para não brigar com o transform da animação de entrada */
+    .glass-card { translate: 0 0; }
     .glass-card:hover {
       background: var(--card-hover); border-color: var(--border-hover);
       box-shadow: 0 8px 30px rgba(var(--accent-rgb), 0.08), 0 2px 8px rgba(0,0,0,0.04);
-      transform: translateY(-4px);
+      translate: 0 -4px;
     }
+
+    /* Portfólio */
+    .proj-card { position: relative; display: flex; align-items: flex-start; gap: 18px; padding: 22px; color: inherit; height: 100%; overflow: hidden; }
+    .proj-card::after { content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--proj); opacity: 0; transition: opacity .35s; }
+    .proj-card:hover::after { opacity: 1; }
+    .proj-logo {
+      flex-shrink: 0; width: 72px; height: 72px; border-radius: 18px; overflow: hidden; background: #fff;
+      border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+      transition: transform .5s cubic-bezier(0.22,1,0.36,1), box-shadow .5s;
+    }
+    .proj-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .proj-card:hover .proj-logo { transform: scale(1.06) rotate(-3deg); box-shadow: 0 10px 26px color-mix(in srgb, var(--proj) 35%, transparent); }
+    .proj-body { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    .proj-tag { font-size: 10.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--proj); margin-bottom: 6px; }
+    .proj-title { font-size: 1.125rem; font-weight: 800; color: #111827; line-height: 1.25; margin-bottom: 6px; transition: color .3s; }
+    .proj-card:hover .proj-title { color: var(--proj); }
+    .proj-desc { font-size: .875rem; color: #9ca3af; line-height: 1.55; flex: 1; }
+    .proj-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: .8rem; font-weight: 700; color: var(--proj); }
+    .proj-link i { font-size: .7rem; transition: transform .3s; }
+    .proj-card:hover .proj-link i { transform: translate(2px, -2px); }
+    @media (min-width: 640px) { .proj-card { padding: 28px; gap: 22px; } .proj-logo { width: 84px; height: 84px; } .proj-title { font-size: 1.25rem; } }
 
     .btn-neon {
       background: var(--accent); color: #fff; font-weight: 700; border-radius: 12px;
@@ -375,6 +398,8 @@
       .marquee-track { animation: none !important; }
       .reveal { opacity: 1; transform: none; transition: none; }
       .typewriter-cursor { animation: none; opacity: 1; }
+      .glass-card:hover { translate: none; }
+      .proj-card:hover .proj-logo { transform: none; }
       .glass-card:hover, .btn-neon:hover, .btn-outline:hover, .whatsapp-float:hover { transform: none; }
       .parallax-layer, .lang-bar-fill, .timeline-line-progress { transition: none; }
     }
@@ -671,16 +696,22 @@
             <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: profissionais e equipes que perdem horas com tarefas repetitivas e querem que a IA trabalhe por eles.</p>
             <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20usando%20IA%20e%20automa%C3%A7%C3%A3o.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero automatizar minha rotina <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
           </div>
-          <div class="glass-card p-6 sm:p-8 flex flex-col sm:col-span-2 lg:col-span-2 reveal reveal-delay-2">
-            <div class="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
-              <div class="flex-shrink-0"><div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center"><i class="fa-solid fa-compass-drafting text-neon text-sm sm:text-base"></i></div></div>
-              <div class="flex-1 min-w-0">
-                <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Consultoria de TI</h3>
-                <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4">Diagnóstico completo da infraestrutura, organização de processos, boas práticas de TI, recomendações de ferramentas e planejamento de melhorias. Para times que precisam de clareza e direção técnica.</p>
-                <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: pequenas empresas e escritórios sem liderança técnica interna que precisam organizar processos e implantar soluções de verdade.</p>
-                <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20uma%20consultoria%20de%20TI.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg">Quero uma consultoria de TI <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
-              </div>
+          <div class="glass-card p-6 sm:p-8 flex flex-col reveal reveal-delay-2">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center mb-5 sm:mb-6 flex-shrink-0"><i class="fa-solid fa-compass-drafting text-neon text-sm sm:text-base"></i></div>
+            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Consultoria de TI</h3>
+            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 flex-1">Diagnóstico da infraestrutura, organização de processos, boas práticas, recomendação de ferramentas e plano de melhorias. Clareza e direção técnica.</p>
+            <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: pequenas empresas e escritórios sem liderança técnica interna que precisam organizar processos e implantar soluções de verdade.</p>
+            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20parecer%20mais%20profissional%20com%20uma%20consultoria%20de%20TI.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero uma consultoria de TI <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
+          </div>
+          <div class="glass-card p-6 sm:p-8 flex flex-col reveal reveal-delay-3">
+            <div class="flex items-center justify-between mb-5 sm:mb-6">
+              <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-neon/5 border border-neon/10 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-video text-neon text-sm sm:text-base"></i></div>
+              <span class="text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-neon bg-neon/5 border border-neon/10 rounded-full px-2.5 py-1">Novo</span>
             </div>
+            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Filmmaker &amp; Vídeos Verticais</h3>
+            <p class="text-xs sm:text-sm text-gray-400 leading-relaxed mb-3 sm:mb-4 flex-1">Roteiro, gravação em iPhone 17 Pro (4K, estabilização, perfil Log) e edição com legendas e motion graphics. Reels, Shorts, institucionais curtos e cobertura de eventos.</p>
+            <p class="text-[11px] sm:text-xs text-gray-300 mb-4 sm:mb-5">Para: negócios que precisam aparecer nas redes com vídeo de qualidade, do roteiro ao post. Valor sob orçamento.</p>
+            <a href="https://wa.me/5551985710749?text=Ol%C3%A1%20Victor!%20Quero%20um%20or%C3%A7amento%20de%20v%C3%ADdeo%20para%20o%20meu%20neg%C3%B3cio.%20Podemos%20falar%3F" target="_blank" rel="noopener" class="btn-outline !py-2 !px-3.5 sm:!py-2.5 sm:!px-4 !text-xs sm:!text-sm !rounded-lg self-start">Quero um orçamento de vídeo <i class="fa-solid fa-arrow-right text-[10px] sm:text-xs"></i></a>
           </div>
         </div>
       </div>
@@ -694,18 +725,50 @@
           <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6 tracking-tight">Meus Projetos</h2>
           <p class="text-base sm:text-lg text-gray-400">Conheça algumas das soluções que desenvolvi.</p>
         </div>
-        <div class="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        <div class="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
 
           <!-- Bater o Ponto -->
-          <a href="https://bateroponto.vercel.app/" target="_blank" rel="noopener" class="glass-card p-6 sm:p-8 flex flex-col group reveal reveal-delay-1 no-underline">
-            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3 group-hover:text-neon transition-colors">Bater o Ponto</h3>
-            <p class="text-sm text-gray-400 leading-relaxed">Seu parceiro na jornada de trabalho.</p>
+          <a href="https://bateroponto.vercel.app/" target="_blank" rel="noopener" class="glass-card proj-card group reveal reveal-delay-1 no-underline" style="--proj:#1A5CFF">
+            <span class="proj-logo"><img src="assets/logo-bateroponto.png" alt="Logo Bater o Ponto" width="80" height="80" loading="lazy"></span>
+            <span class="proj-body">
+              <span class="proj-tag">Web App</span>
+              <h3 class="proj-title">Bater o Ponto</h3>
+              <span class="proj-desc">Seu parceiro na jornada de trabalho: registro e controle de ponto direto do celular.</span>
+              <span class="proj-link">Abrir projeto <i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+            </span>
           </a>
 
           <!-- PortZap -->
-          <a href="https://vendaportzap.vercel.app/" target="_blank" rel="noopener" class="glass-card p-6 sm:p-8 flex flex-col group reveal reveal-delay-2 no-underline">
-            <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3 group-hover:text-neon transition-colors">PortZap</h3>
-            <p class="text-sm text-gray-400 leading-relaxed">Conectando sua portaria aos moradores via WhatsApp.</p>
+          <a href="https://vendaportzap.vercel.app/" target="_blank" rel="noopener" class="glass-card proj-card group reveal reveal-delay-2 no-underline" style="--proj:#3BB54A">
+            <span class="proj-logo"><img src="assets/logo-portzap.png" alt="Logo PortZap" width="500" height="500" loading="lazy"></span>
+            <span class="proj-body">
+              <span class="proj-tag">Sistema · WhatsApp</span>
+              <h3 class="proj-title">PortZap</h3>
+              <span class="proj-desc">Conecta a portaria do condomínio aos moradores pelo WhatsApp.</span>
+              <span class="proj-link">Abrir projeto <i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+            </span>
+          </a>
+
+          <!-- Alice no País das Batatinhas -->
+          <a href="https://alicedasbatatinhas.vercel.app/" target="_blank" rel="noopener" class="glass-card proj-card group reveal reveal-delay-1 no-underline" style="--proj:#8A5A2B">
+            <span class="proj-logo"><img src="assets/logo-alice.png" alt="Logo Alice no País das Batatinhas" width="150" height="150" loading="lazy"></span>
+            <span class="proj-body">
+              <span class="proj-tag">Site · Delivery</span>
+              <h3 class="proj-title">Alice no País das Batatinhas</h3>
+              <span class="proj-desc">Cardápio online, carrinho e pedido pelo WhatsApp para uma loja de batata recheada.</span>
+              <span class="proj-link">Abrir projeto <i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+            </span>
+          </a>
+
+          <!-- HYPE.EXE -->
+          <a href="https://www.instagram.com/ohype.exe/" target="_blank" rel="noopener" class="glass-card proj-card group reveal reveal-delay-2 no-underline" style="--proj:#7B5CFF">
+            <span class="proj-logo"><img src="assets/logo-hype.png" alt="Logo HYPE.EXE" width="150" height="150" loading="lazy"></span>
+            <span class="proj-body">
+              <span class="proj-tag">Conteúdo · Vídeo</span>
+              <h3 class="proj-title">HYPE.EXE</h3>
+              <span class="proj-desc">Perfil de tecnologia e IA com notícias e fatos em vídeo. Roteiro, gravação e edição feitos por mim.</span>
+              <span class="proj-link"><i class="fa-brands fa-instagram"></i> @ohype.exe</span>
+            </span>
           </a>
 
         </div>
