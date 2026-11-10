@@ -176,7 +176,6 @@
   /* ---------- scroll: header, progresso, #sobre, marquee ---------- */
   const header = $('header.header-blur'), sobre = $('#sobre');
   const bar = document.createElement('i'); bar.className = 'm-progress'; header?.append(bar);
-  const marq = $$('.marquee-track').flatMap(t => t.getAnimations ? t.getAnimations() : []);
   let lastY = scrollY, vel = 0, ticking = false;
   function onScroll() {
     const y = scrollY, H = innerHeight, max = document.documentElement.scrollHeight - H;
@@ -197,13 +196,31 @@
   addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
   onScroll();
 
-  // marquee acelera com a velocidade do scroll e volta ao ritmo normal
-  if (marq.length) {
-    let rate = 1;
-    (function m() {
-      const target = 1 + clamp(Math.abs(vel) * .25, 0, 6);
-      rate += (target - rate) * .08; vel *= .9;
-      marq.forEach(a => { a.playbackRate = rate; });
+  // marquee: acelera com a velocidade do scroll e desacelera até parar com o mouse em cima.
+  // Controle só por JS (sem :hover no CSS), então nunca fica preso em pausa no toque.
+  const tracks = $$('.marquee-track').map(el => ({ el, anims: el.getAnimations ? el.getAnimations() : [], hover: false, rate: 1 }))
+    .filter(t => t.anims.length);
+  if (tracks.length) {
+    tracks.forEach(t => {
+      t.el.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') t.hover = true; });
+      t.el.addEventListener('pointerleave', () => { t.hover = false; });
+      t.el.addEventListener('pointercancel', () => { t.hover = false; });
+    });
+    addEventListener('blur', () => tracks.forEach(t => { t.hover = false; }));
+    // suavização por tempo real (não por quadro): volta ao ritmo no mesmo tempo mesmo se a aba engasgar
+    const ease = (k, dt) => 1 - Math.pow(1 - k, dt / 16.7);
+    let last = performance.now();
+    (function m(now) {
+      const dt = Math.min(Math.max((now || performance.now()) - last, 0), 250); last = now || performance.now();
+      // saltos grandes (âncora do menu, restauração de scroll) não contam como "rolagem rápida"
+      const v = Math.abs(vel) > 200 ? 0 : Math.abs(vel);
+      const boost = 1 + clamp(v * .25, 0, 6); vel *= Math.pow(.9, dt / 16.7);
+      tracks.forEach(t => {
+        const target = t.hover ? 0 : boost;
+        t.rate += (target - t.rate) * ease(t.hover ? .1 : .06, dt);
+        if (!t.hover && t.rate < .05) t.rate = .05;
+        t.anims.forEach(an => { if (an.playState !== 'running') an.play(); an.playbackRate = t.rate; });
+      });
       requestAnimationFrame(m);
     })();
   }
