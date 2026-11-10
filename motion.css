@@ -95,38 +95,8 @@ html.m.m-fine .m-mag {
 html.m.m-fine .m-mag.m-on { transition: background .5s var(--m-ease), border-color .5s var(--m-ease), box-shadow .6s var(--m-ease), color .5s var(--m-ease), transform .6s var(--m-ease), translate .5s var(--m-ease); }
 html.m.m-fine .btn-neon.m-mag:hover { transform: none; }
 
-/* ---------- Cards empilhados (Serviços e Portfólio) ---------- */
-html.m body { overflow-x: clip; } /* hidden quebraria o position: sticky */
-html.m .m-stack { display: flex !important; flex-direction: column; gap: 0 !important; max-width: 760px; margin-inline: auto; padding-bottom: 8vh; }
-html.m .m-stack > .glass-card {
-  position: sticky; top: calc(96px + var(--k) * 14px); margin-bottom: 18vh;
-  background: #fff; opacity: 1; transform: none; transform-origin: 50% 0;
-  scale: var(--m-s, 1); filter: brightness(var(--m-b, 1));
-  box-shadow: 0 -8px 30px rgba(13,26,107,.06), 0 1px 3px rgba(0,0,0,.04);
-  transition: border-color .4s, box-shadow .4s;
-  min-height: min(52svh, 380px);
-}
-html.m .m-stack > .glass-card:last-child { margin-bottom: 0; }
-html.m .m-stack > .glass-card:hover { transform: none; }
-@media (max-width: 767px) {
-  html.m .m-stack > .glass-card { top: calc(80px + var(--k) * 10px); margin-bottom: 12vh; min-height: 0; }
-}
-
-/* ---------- Neon azul que segue o cursor ---------- */
-.m-neon { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 45; pointer-events: none; }
-
-/* ---------- Portfólio: preview que segue o cursor ---------- */
-.m-preview {
-  position: fixed; left: 0; top: 0; z-index: 60; width: 340px; aspect-ratio: 16/10; border-radius: 14px; overflow: hidden;
-  pointer-events: none; box-shadow: 0 30px 60px rgba(13,26,107,.25); opacity: 0; scale: .7;
-  transition: opacity .35s var(--m-ease), scale .5s var(--m-ease); will-change: transform;
-}
-.m-preview.on { opacity: 1; scale: 1; }
-.m-preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transition: opacity .3s; }
-.m-preview img.on { opacity: 1; }
-.m-thumb { display: block; margin: -8px -8px 18px; border-radius: 10px; overflow: hidden; aspect-ratio: 16/10; background: #eef0ff; }
-.m-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; transform: scale(1.12); transition: transform 1.4s var(--m-ease) .2s; }
-.visible .m-thumb img, .visible > .m-thumb img { transform: none; }
-
 /* ---------- Rótulos com decodificação ---------- */
 .m-scr { font-variant-numeric: tabular-nums; }
+
+/* ---------- Halo neon que segue o cursor ---------- */
+.m-neon { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 45; pointer-events: none; }

@@ -141,59 +141,8 @@
     b.addEventListener('pointerleave', () => { b.classList.remove('m-on'); b.style.setProperty('--m-bx', '0px'); b.style.setProperty('--m-by', '0px'); });
   });
 
-  /* ---------- portfólio: imagens dos projetos ---------- */
-  const shots = { 'bateroponto': 'assets/bater%20o%20ponto.png', 'vendaportzap': 'assets/portzap.png' };
-  const projCards = $$('#portfolio a.glass-card').filter(a => Object.keys(shots).some(k => a.href.includes(k)));
-  const srcOf = a => shots[Object.keys(shots).find(k => a.href.includes(k))];
-  if (fine && projCards.length) {
-    const pv = document.createElement('div'); pv.className = 'm-preview'; pv.setAttribute('aria-hidden', 'true');
-    projCards.forEach(a => { const im = new Image(); im.src = srcOf(a); im.alt = ''; im.dataset.k = a.href; pv.append(im); });
-    document.body.append(pv);
-    let tx = 0, ty = 0, x = 0, y = 0, raf = 0;
-    const loop = () => {
-      const dx = tx - x; x += dx * .14; y += (ty - y) * .14;
-      pv.style.transform = `translate3d(${x - 170}px,${y - 230}px,0) rotate(${clamp(dx * .04, -8, 8)}deg)`;
-      raf = pv.classList.contains('on') || Math.abs(dx) > .5 ? requestAnimationFrame(loop) : 0;
-    };
-    projCards.forEach(a => {
-      a.addEventListener('pointerenter', e => {
-        if (!raf) { x = tx = e.clientX; y = ty = e.clientY; }
-        $$('img', pv).forEach(im => im.classList.toggle('on', im.dataset.k === a.href));
-        pv.classList.add('on'); if (!raf) raf = requestAnimationFrame(loop);
-      });
-      a.addEventListener('pointermove', e => { tx = e.clientX; ty = e.clientY; });
-      a.addEventListener('pointerleave', () => pv.classList.remove('on'));
-    });
-  } else projCards.forEach(a => {
-    const t = document.createElement('span'); t.className = 'm-thumb';
-    t.innerHTML = `<img src="${srcOf(a)}" alt="" loading="lazy">`;
-    a.prepend(t);
-  });
-
-  /* ---------- cards empilhados: Serviços e Portfólio ---------- */
-  const stacks = ['#servicos', '#portfolio'].map(id => {
-    const first = $(id + ' .glass-card');
-    if (!first) return null;
-    const box = first.parentElement; box.classList.add('m-stack');
-    const cards = [...box.children].filter(n => n.classList.contains('glass-card'));
-    cards.forEach((c, k) => { c.classList.remove('reveal'); c.style.transitionDelay = ''; c.style.setProperty('--k', k); });
-    return cards;
-  }).filter(Boolean);
-  function updateStacks() {
-    stacks.forEach(cards => {
-      const tops = cards.map(c => c.getBoundingClientRect().top);
-      const stick = cards.map(c => parseFloat(getComputedStyle(c).top) || 0);
-      cards.forEach((c, i) => {
-        let depth = 0;
-        for (let j = i + 1; j < cards.length; j++) depth += clamp(1 - (tops[j] - stick[j]) / (innerHeight * .55));
-        c.style.setProperty('--m-s', (1 - depth * .045).toFixed(4));
-        c.style.setProperty('--m-b', (1 - depth * .07).toFixed(4));
-      });
-    });
-  }
-
-  /* ---------- neon azul que segue o cursor ---------- */
-  (function neon() {
+  /* ---------- halo neon azul que segue o cursor (sem rastro) ---------- */
+  if (fine) (function neon() {
     const cv = document.createElement('canvas'), cx = cv.getContext('2d');
     cv.className = 'm-neon'; cv.setAttribute('aria-hidden', 'true');
     document.body.append(cv);
@@ -203,44 +152,22 @@
       cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     size(); addEventListener('resize', size);
-    const N = 26, trail = [];
-    let tx = -999, ty = -999, x = tx, y = ty, life = 0, lastMove = 0, down = false;
-    const move = e => {
+    let tx = -999, ty = -999, x = tx, y = ty, life = 0, lastMove = 0;
+    addEventListener('pointermove', e => {
       if (x < -500) { x = e.clientX; y = e.clientY; }
       tx = e.clientX; ty = e.clientY; lastMove = performance.now();
-    };
-    addEventListener('pointermove', move, { passive: true });
-    addEventListener('pointerdown', e => { down = true; move(e); }, { passive: true });
-    addEventListener('pointerup', () => { down = false; }, { passive: true });
+    }, { passive: true });
     document.addEventListener('pointerleave', () => { lastMove = 0; });
     (function loop(t) {
-      x += (tx - x) * .28; y += (ty - y) * .28;
-      // acende ao mover, apaga devagar quando o cursor para (no toque, apaga ao soltar)
-      const active = t - lastMove < (fine ? 900 : (down ? 900 : 250));
+      x += (tx - x) * .18; y += (ty - y) * .18;
+      const active = t - lastMove < 900;
       life += ((active ? 1 : 0) - life) * (active ? .12 : .035);
-      trail.unshift({ x, y }); if (trail.length > N) trail.pop();
       cx.clearRect(0, 0, W, H);
       if (life > .01 && x > -500) {
-        // halo amplo
         const g = cx.createRadialGradient(x, y, 0, x, y, 180);
         g.addColorStop(0, `rgba(61,99,255,${.16 * life})`);
         g.addColorStop(1, 'rgba(61,99,255,0)');
         cx.fillStyle = g; cx.fillRect(x - 180, y - 180, 360, 360);
-        // rastro: brilho largo + núcleo fino, afinando até a cauda
-        cx.lineCap = 'round';
-        for (const pass of [{ w: 14, a: .10, c: '26,63,212' }, { w: 6, a: .35, c: '61,99,255' }, { w: 1.8, a: .95, c: '200,214,255' }]) {
-          for (let i = 1; i < trail.length; i++) {
-            const k = 1 - i / trail.length;
-            cx.strokeStyle = `rgba(${pass.c},${pass.a * k * life})`;
-            cx.lineWidth = pass.w * (.25 + k * .75);
-            cx.beginPath(); cx.moveTo(trail[i - 1].x, trail[i - 1].y); cx.lineTo(trail[i].x, trail[i].y); cx.stroke();
-          }
-        }
-        // ponto de luz na ponta
-        cx.fillStyle = `rgba(230,236,255,${life})`;
-        cx.shadowColor = 'rgba(61,99,255,.9)'; cx.shadowBlur = 18;
-        cx.beginPath(); cx.arc(x, y, 3, 0, 6.283); cx.fill();
-        cx.shadowBlur = 0;
       }
       requestAnimationFrame(loop);
     })(0);
@@ -264,7 +191,7 @@
       sobre.style.setProperty('--m-r', ((1 - p) * 36).toFixed(1) + 'px');
     }
     vel = dy;
-    catchUp(); revealPassed(); updateStacks();
+    catchUp(); revealPassed();
     ticking = false;
   }
   addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
